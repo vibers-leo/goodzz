@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Search, ShoppingCart, User, Menu, Heart, X, ArrowRight, LogIn, Wand2 } from "lucide-react";
+import NotificationDropdown from "@/components/NotificationDropdown";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/store/useStore";
 import { useRouter } from "next/navigation";
@@ -27,7 +29,7 @@ function AuthButton() {
   return (
     <Link href="/mypage" className="flex items-center gap-2 text-gray-700 hover:text-black transition-colors">
       {user.photoURL ? (
-        <img src={user.photoURL} alt={user.displayName || "User"} className="w-8 h-8 rounded-full border border-gray-200" />
+        <Image src={user.photoURL} alt={user.displayName || "User"} width={32} height={32} className="w-8 h-8 rounded-full border border-gray-200" unoptimized />
       ) : (
         <User className="w-5 h-5" />
       )}
@@ -142,6 +144,7 @@ export default function Navbar() {
               <Link href="/wishlist" className="text-gray-600 hover:text-black transition-colors">
                 <Heart className="w-5 h-5" />
               </Link>
+              <NotificationDropdown />
               <Link href="/cart" className="text-gray-600 hover:text-black transition-colors relative">
                 <ShoppingCart className="w-5 h-5" />
                 {mounted && cartCount > 0 && (

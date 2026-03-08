@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useStore } from '@/store/useStore';
 import { Heart, ShoppingBag, X, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
@@ -50,10 +51,12 @@ export default function WishlistPage() {
         {wishlist.map((item) => (
           <div key={item.productId} className="group relative">
             <div className="aspect-square w-full overflow-hidden rounded-2xl bg-gray-100 border border-gray-100 relative mb-4">
-                <img 
-                    src={item.thumbnail} 
-                    alt={item.name} 
-                    className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                <Image
+                    src={item.thumbnail}
+                    alt={item.name}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
                 />
                 
                 <button 

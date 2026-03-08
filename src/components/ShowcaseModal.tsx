@@ -1,17 +1,20 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Heart, Eye, Share2, Download, User } from "lucide-react";
 
 interface ShowcaseItem {
-  id: number;
+  id: number | string;
   title: string;
   author: string;
+  authorPhoto?: string;
   image: string;
   likes: number;
   views: number;
   tag: string;
+  prompt?: string;
 }
 
 interface ShowcaseModalProps {
@@ -53,10 +56,11 @@ export default function ShowcaseModal({ item, onClose }: ShowcaseModalProps) {
 
               {/* Left: Image Area */}
               <div className="md:w-2/3 bg-gray-100 flex items-center justify-center p-4 md:p-0 relative group">
-                <img 
-                    src={item.image} 
-                    alt={item.title} 
-                    className="max-w-full max-h-[50vh] md:max-h-[90vh] object-contain shadow-lg" 
+                <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    className="object-contain shadow-lg"
                 />
                  {/* Quick Actions overlay on image */}
                 <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

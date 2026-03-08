@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Package, Truck, Gift, ChevronRight, Loader2, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Order } from '@/lib/payment';
@@ -102,10 +103,12 @@ export default function MyPageDashboard() {
             {recentOrder ? (
                 <div className="flex gap-4 p-5 rounded-2xl bg-gray-50/50 border border-gray-100 group hover:border-emerald-200 transition-colors">
                     <div className="w-20 h-20 bg-white rounded-xl overflow-hidden shrink-0 border border-gray-100 shadow-sm relative">
-                        <img 
-                          src={recentOrder.items[0].options?.customDesign || 'https://via.placeholder.com/150'} 
-                          className="w-full h-full object-cover" 
+                        <Image
+                          src={recentOrder.items[0].options?.customDesign || 'https://via.placeholder.com/150'}
+                          className="object-cover"
                           alt="Recent product"
+                          fill
+                          unoptimized
                         />
                         {recentOrder.items[0].options?.customDesign && (
                           <div className="absolute top-1 right-1 bg-emerald-500 text-white p-0.5 rounded text-[8px] font-bold">AI</div>

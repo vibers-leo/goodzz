@@ -4,6 +4,7 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import { PlayCircle, BookOpen, User, Star, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const categories = [
   { name: "프롬프트 기초", count: 12 },
@@ -70,7 +71,7 @@ export default function AcademyPage() {
             </div>
             <div className="md:w-1/2 relative">
                 <div className="aspect-video bg-gray-200 rounded-2xl overflow-hidden shadow-2xl relative group cursor-pointer">
-                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1000" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Academy Hero" />
+                    <Image src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1000" className="object-cover transition-transform duration-700 group-hover:scale-105" alt="Academy Hero" fill />
                     <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
                         <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/50 group-hover:scale-110 transition-transform">
                             <PlayCircle className="w-8 h-8 text-white fill-current" />
@@ -113,7 +114,7 @@ export default function AcademyPage() {
                 {featuredCourses.map((course) => (
                     <div key={course.id} className="group relative bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl transition-all hover:-translate-y-1">
                         <div className="aspect-video bg-gray-100 relative overflow-hidden">
-                            <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            <Image src={course.thumbnail} alt={course.title} className="object-cover group-hover:scale-105 transition-transform duration-500" fill />
                             <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-sm text-white text-[10px] px-2 py-1 rounded font-bold">
                                 {course.level}
                             </div>

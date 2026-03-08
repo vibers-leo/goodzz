@@ -5,9 +5,38 @@ import Link from 'next/link';
 import { getAllCategories, getCategoryBySlug } from '@/lib/categories';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import type { Metadata } from 'next';
 
 interface ShopPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export async function generateMetadata({ searchParams }: ShopPageProps): Promise<Metadata> {
+  const resolvedSearchParams = await searchParams;
+  const category = resolvedSearchParams.category as string | undefined;
+  const query = resolvedSearchParams.q as string | undefined;
+
+  const currentCategory = category ? getCategoryBySlug(category) : null;
+
+  let title = "굿즈샵";
+  let description = "AI로 만든 커스텀 굿즈를 만나보세요. 명함, 스티커, 티셔츠, 에코백 등 다양한 상품.";
+
+  if (query) {
+    title = `"${query}" 검색 결과`;
+    description = `"${query}" 검색 결과 - 마이AI프린트샵`;
+  } else if (currentCategory) {
+    title = currentCategory.label;
+    description = `${currentCategory.label} 카테고리 - AI로 디자인한 커스텀 ${currentCategory.label} 상품을 만나보세요.`;
+  }
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title: `${title} | 마이AI프린트샵`,
+      description,
+    },
+  };
 }
 
 export default async function ShopPage({ searchParams }: ShopPageProps) {

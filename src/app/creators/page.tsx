@@ -118,8 +118,8 @@ export default function CreatorsPage() {
       <section className="py-24 text-center">
          <div className="max-w-3xl mx-auto px-4">
             <h2 className="text-3xl md:text-4xl font-bold mb-8">이제 당신의 차례입니다.</h2>
-            <Link 
-                href="/create"
+            <Link
+                href="/creators/register"
                 className="inline-flex items-center px-12 py-5 bg-blue-600 text-white rounded-full font-bold text-xl hover:bg-blue-700 transition-all hover:scale-105"
             >
                 크리에이터 신청하기 <ArrowRight className="ml-2 w-6 h-6" />

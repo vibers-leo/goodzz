@@ -56,6 +56,7 @@ export interface Product {
   isActive: boolean;
   reviewCount: number;
   rating: number;
+  printMethod?: 'dtg' | 'screen' | 'sublimation' | 'embroidery' | 'uv' | 'laser';
   volumePricing?: {
     minQuantity: number;
     discountRate: number; // 0.1 means 10% discount
@@ -70,6 +71,41 @@ export type UpdateProductInput = Partial<Omit<Product, 'id' | 'createdAt'>>;
 
 // Firestore 컬렉션 참조
 const productsCollection = collection(db, 'products');
+
+// ============ 서버사이드 인메모리 캐시 ============
+
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
+
+const CACHE_TTL = 5 * 60 * 1000; // 5분 (밀리초)
+const productCache = new Map<string, CacheEntry<Product[]>>();
+
+function getCacheKey(options?: Record<string, unknown>): string {
+  return options ? JSON.stringify(options) : '__all__';
+}
+
+function getFromCache(key: string): Product[] | null {
+  const entry = productCache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.timestamp > CACHE_TTL) {
+    productCache.delete(key);
+    return null;
+  }
+  return entry.data;
+}
+
+function setCache(key: string, data: Product[]): void {
+  productCache.set(key, { data, timestamp: Date.now() });
+  // 캐시 크기 제한 (최대 50개 키)
+  if (productCache.size > 50) {
+    const oldestKey = productCache.keys().next().value;
+    if (oldestKey !== undefined) {
+      productCache.delete(oldestKey);
+    }
+  }
+}
 
 // 문서 데이터를 Product 타입으로 변환
 function docToProduct(doc: DocumentData, id: string): Product {
@@ -91,6 +127,7 @@ function docToProduct(doc: DocumentData, id: string): Product {
     isActive: data.isActive ?? true,
     reviewCount: data.reviewCount || 0,
     rating: data.rating || 0,
+    printMethod: data.printMethod,
     volumePricing: data.volumePricing,
     createdAt: data.createdAt?.toDate?.() || new Date(),
     updatedAt: data.updatedAt?.toDate?.() || new Date(),
@@ -100,7 +137,7 @@ function docToProduct(doc: DocumentData, id: string): Product {
 // ============ 상품 조회 ============
 
 // 전체 상품 목록 조회
-// 복합 인덱스 없이 동작하도록 전체 조회 후 JS에서 필터/정렬
+// Firestore where() 쿼리로 카테고리 필터링 최적화 + 인메모리 캐시
 export async function getProducts(options?: {
   category?: string | string[]; // 단일 카테고리 또는 카테고리 배열
   isActive?: boolean;
@@ -109,23 +146,48 @@ export async function getProducts(options?: {
   limitCount?: number;
 }): Promise<Product[]> {
   try {
-    const snapshot = await getDocs(productsCollection);
-    let products = snapshot.docs.map(d => docToProduct(d.data(), d.id));
-
-    // 필터링
-    if (options?.isActive !== undefined) {
-      products = products.filter(p => p.isActive === options.isActive);
+    // 캐시 확인
+    const cacheKey = getCacheKey(options as Record<string, unknown>);
+    const cached = getFromCache(cacheKey);
+    if (cached) {
+      return cached;
     }
+
+    // Firestore 쿼리 구성 - 카테고리 필터를 서버사이드에서 처리
+    const constraints: Parameters<typeof query>[1][] = [];
+
+    if (options?.isActive !== undefined) {
+      constraints.push(where('isActive', '==', options.isActive));
+    }
+
     if (options?.category) {
-      // 배열이면 포함 여부 확인, 문자열이면 정확히 일치
       if (Array.isArray(options.category)) {
-        products = products.filter(p => options.category!.includes(p.category));
+        // Firestore 'in' 쿼리는 최대 30개 값 지원
+        if (options.category.length <= 30) {
+          constraints.push(where('category', 'in', options.category));
+        }
+        // 30개 초과 시 클라이언트 필터링으로 폴백 (아래에서 처리)
       } else {
-        products = products.filter(p => p.category === options.category);
+        constraints.push(where('category', '==', options.category));
       }
     }
 
-    // 정렬
+    let snapshot;
+    if (constraints.length > 0) {
+      const q = query(productsCollection, ...constraints);
+      snapshot = await getDocs(q);
+    } else {
+      snapshot = await getDocs(productsCollection);
+    }
+
+    let products = snapshot.docs.map(d => docToProduct(d.data(), d.id));
+
+    // 30개 초과 카테고리 배열의 경우 클라이언트 필터링 폴백
+    if (options?.category && Array.isArray(options.category) && options.category.length > 30) {
+      products = products.filter(p => options.category!.includes(p.category));
+    }
+
+    // 정렬 (Firestore 복합 인덱스 없이 JS에서 정렬)
     const sortBy = options?.sortBy || 'createdAt';
     const sortOrder = options?.sortOrder || 'desc';
     products.sort((a, b) => {
@@ -138,6 +200,9 @@ export async function getProducts(options?: {
     if (options?.limitCount) {
       products = products.slice(0, options.limitCount);
     }
+
+    // 결과를 캐시에 저장
+    setCache(cacheKey, products);
 
     return products;
   } catch (error) {
@@ -179,19 +244,67 @@ export async function getNewProducts(count: number = 8): Promise<Product[]> {
 }
 
 // 상품 검색
+// Firestore는 전문 검색을 지원하지 않으므로 텍스트 검색은 클라이언트 필터링 유지
+// 카테고리 검색인 경우 Firestore where() 쿼리로 최적화
 export async function searchProducts(searchQuery: string): Promise<Product[]> {
   try {
-    // Firestore는 전문 검색을 지원하지 않으므로, 
-    // 클라이언트 사이드에서 필터링하거나 Algolia 등을 사용해야 함
-    // 여기서는 간단히 전체 상품을 가져와서 필터링
-    const products = await getProducts({ isActive: true });
-    const query = searchQuery.toLowerCase();
-    
-    return products.filter(product => 
-      product.name.toLowerCase().includes(query) ||
-      product.category.toLowerCase().includes(query) ||
-      product.tags?.some(tag => tag.toLowerCase().includes(query))
+    const cacheKey = `search:${searchQuery.toLowerCase()}`;
+    const cached = getFromCache(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
+    const searchLower = searchQuery.toLowerCase();
+
+    // 카테고리명과 정확히 일치하면 Firestore where() 쿼리 사용
+    const categoryValues = Object.values(PRODUCT_CATEGORIES);
+    const categoryKeys = Object.keys(PRODUCT_CATEGORIES);
+    const matchedCategoryIndex = categoryValues.findIndex(
+      v => v.toLowerCase() === searchLower
     );
+    const matchedKeyIndex = categoryKeys.findIndex(
+      k => k.toLowerCase() === searchLower
+    );
+
+    if (matchedCategoryIndex !== -1) {
+      // 카테고리 한글명으로 검색 (예: "인쇄")
+      const matchedValue = categoryValues[matchedCategoryIndex];
+      const q = query(
+        productsCollection,
+        where('isActive', '==', true),
+        where('category', '==', matchedValue)
+      );
+      const snapshot = await getDocs(q);
+      const results = snapshot.docs.map(d => docToProduct(d.data(), d.id));
+      setCache(cacheKey, results);
+      return results;
+    }
+
+    if (matchedKeyIndex !== -1) {
+      // 카테고리 키로 검색 (예: "print")
+      const matchedValue = categoryValues[matchedKeyIndex];
+      const q = query(
+        productsCollection,
+        where('isActive', '==', true),
+        where('category', '==', matchedValue)
+      );
+      const snapshot = await getDocs(q);
+      const results = snapshot.docs.map(d => docToProduct(d.data(), d.id));
+      setCache(cacheKey, results);
+      return results;
+    }
+
+    // 일반 텍스트 검색: 캐시된 활성 상품 목록에서 필터링
+    const products = await getProducts({ isActive: true });
+
+    const results = products.filter(product =>
+      product.name.toLowerCase().includes(searchLower) ||
+      product.category.toLowerCase().includes(searchLower) ||
+      product.tags?.some(tag => tag.toLowerCase().includes(searchLower))
+    );
+
+    setCache(cacheKey, results);
+    return results;
   } catch (error) {
     console.error('Error searching products:', error);
     return [];

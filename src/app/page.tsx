@@ -4,6 +4,7 @@ import Footer from '@/components/Footer';
 import HomeClientContent from '@/components/HomeClientContent';
 import ReviewsSection from '@/components/ReviewsSection';
 import Link from 'next/link';
+import { getLatestReviews } from '@/lib/reviews';
 
 interface Product {
   id: string;
@@ -27,8 +28,8 @@ const categories = [
   { name: 'AI 레시피', href: '/shop?category=recipe', icon: '📚' },
 ];
 
-// 고객 리뷰
-const reviews = [
+// 하드코딩 리뷰 (DB에 리뷰가 없을 때 폴백)
+const FALLBACK_REVIEWS = [
   {
     name: '김*현',
     product: '에코백',
@@ -51,6 +52,31 @@ const reviews = [
     date: '2025.12.28'
   },
 ];
+
+// Firestore 리뷰를 HomeClientContent가 기대하는 형식으로 변환
+function formatReviewForDisplay(review: { userName: string; rating: number; content: string; createdAt: string }) {
+  const date = new Date(review.createdAt);
+  return {
+    name: review.userName,
+    product: '', // Firestore 리뷰에는 productName이 없으므로 빈 문자열
+    rating: review.rating,
+    content: review.content,
+    date: `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`,
+  };
+}
+
+async function getHomeReviews() {
+  try {
+    const dbReviews = await getLatestReviews(6);
+    if (dbReviews.length > 0) {
+      return dbReviews.map(formatReviewForDisplay);
+    }
+  } catch (error) {
+    console.error('Failed to fetch reviews from Firestore:', error);
+  }
+  // DB에 리뷰가 없거나 오류 시 하드코딩 폴백
+  return FALLBACK_REVIEWS;
+}
 
 async function getHomeProducts() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3300';
@@ -85,7 +111,10 @@ async function getHomeProducts() {
 }
 
 export default async function Home() {
-  const { aiGoodsItems, bestProducts, allProducts } = await getHomeProducts();
+  const [{ aiGoodsItems, bestProducts, allProducts }, reviews] = await Promise.all([
+    getHomeProducts(),
+    getHomeReviews(),
+  ]);
 
   return (
     <main className="min-h-screen bg-white selection:bg-emerald-100 selection:text-emerald-900">

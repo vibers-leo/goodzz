@@ -15,6 +15,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import { Order } from '@/lib/payment';
 import { toast } from 'sonner';
@@ -165,10 +166,12 @@ export default function OrderDetailPage() {
                 <div key={idx} className="py-6 first:pt-0 last:pb-0">
                   <div className="flex gap-6">
                     <div className="w-24 h-24 bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 shrink-0 relative group">
-                      <img 
-                        src={item.options?.customDesign || 'https://via.placeholder.com/150'} 
-                        className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500" 
+                      <Image
+                        src={item.options?.customDesign || 'https://via.placeholder.com/150'}
+                        className="object-cover transition-transform group-hover:scale-110 duration-500"
                         alt={item.productName}
+                        fill
+                        unoptimized
                       />
                       {item.options?.customDesign && (
                         <div className="absolute top-2 right-2 bg-emerald-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full shadow-lg">AI DESIGN</div>

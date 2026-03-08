@@ -13,6 +13,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import { getUserDesigns, DesignDraft, deleteDesign } from '@/lib/designs';
 import { getProductById } from '@/lib/products';
@@ -117,7 +118,7 @@ export default function MyDesignsPage() {
           {designs.map((design) => (
             <div key={design.id} className="group bg-white rounded-3xl border border-gray-100 overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1">
                <div className="aspect-square relative overflow-hidden bg-gray-50">
-                  <img src={design.previewUrl} className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" alt="Design Preview" />
+                  <Image src={design.previewUrl} className="object-cover transition-transform group-hover:scale-110 duration-700" alt="Design Preview" fill unoptimized />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 backdrop-blur-xs">
                      <Link 
                        href={`/editor/${design.productId}?draft=${design.id}`}

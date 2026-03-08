@@ -104,14 +104,12 @@ export default function Reviews({ productId }: ReviewsProps) {
               <div key={review.id} className={styles.photoCard}>
                 <div className={styles.photoWrapper}>
                   {review.images && review.images[0] && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img 
-                      src={review.images[0]} 
-                      alt="Review" 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x200?text=Review+Photo';
-                      }}
+                    <Image
+                      src={review.images[0]}
+                      alt="Review"
+                      fill
+                      className="object-cover"
+                      unoptimized
                     />
                   )}
                   <div className={styles.photoOverlay}>
@@ -157,14 +155,12 @@ export default function Reviews({ productId }: ReviewsProps) {
               <div className={styles.reviewImages}>
                 {review.images.map((img, idx) => (
                   <div key={idx} className={styles.thumbWrapper}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img 
-                      src={img} 
-                      alt="review" 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'https://via.placeholder.com/80?text=IMG';
-                      }}
+                    <Image
+                      src={img}
+                      alt="review"
+                      fill
+                      className="object-cover"
+                      unoptimized
                     />
                   </div>
                 ))}

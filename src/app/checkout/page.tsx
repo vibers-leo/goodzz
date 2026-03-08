@@ -5,6 +5,8 @@ import { useStore } from '@/store/useStore';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import Image from 'next/image';
+import Script from 'next/script';
 import { ArrowLeft, CreditCard, ShoppingBag, Smartphone, Loader2 } from 'lucide-react';
 import { PORTONE_CONFIG } from '@/lib/payment';
 import { useAuth } from '@/context/AuthContext';
@@ -65,6 +67,20 @@ export default function CheckoutPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // 다음 우편번호 검색
+  const openPostcode = () => {
+    new (window as any).daum.Postcode({
+      oncomplete: (data: any) => {
+        const fullAddress = `[${data.zonecode}] ${data.roadAddress}`;
+        setFormData(prev => ({
+          ...prev,
+          postcode: data.zonecode,
+          address: fullAddress,
+        }));
+      }
+    }).open();
   };
 
   // 결제 진행
@@ -230,6 +246,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gray-50 min-h-screen">
+      <Script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" strategy="lazyOnload" />
       <Link href="/cart" className="inline-flex items-center text-gray-500 hover:text-black mb-6">
         <ArrowLeft className="w-4 h-4 mr-2" /> 장바구니로 돌아가기
       </Link>
@@ -285,7 +302,7 @@ export default function CheckoutPage() {
                       className="w-1/3 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" 
                       placeholder="우편번호"
                     />
-                    <button type="button" className="px-4 py-3 bg-gray-100 text-gray-700 rounded-lg text-sm font-bold hover:bg-gray-200">
+                    <button type="button" onClick={openPostcode} className="px-4 py-3 bg-gray-100 text-gray-700 rounded-lg text-sm font-bold hover:bg-gray-200">
                       주소 찾기
                     </button>
                   </div>
@@ -388,9 +405,13 @@ export default function CheckoutPage() {
                 {cart.map((item) => (
                   <div key={item.cartId} className="flex gap-3 items-center">
                     <div className="w-14 h-14 bg-gray-50 rounded-lg overflow-hidden shrink-0 border border-gray-100 relative">
-                      <img src={item.thumbnail} className="w-full h-full object-cover" />
+                      <Image src={item.thumbnail} className="object-cover" fill sizes="56px" alt={item.name} />
                       {item.customDesignUrl && (
-                        <img src={item.customDesignUrl} className="absolute inset-0 w-2/3 h-2/3 m-auto object-contain mix-blend-multiply opacity-90" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="relative w-2/3 h-2/3">
+                            <Image src={item.customDesignUrl} className="object-contain mix-blend-multiply opacity-90" fill sizes="56px" alt="Custom" unoptimized />
+                          </div>
+                        </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -453,9 +474,13 @@ export default function CheckoutPage() {
               {cart.map((item) => (
                 <div key={item.cartId} className="flex gap-4 items-center">
                   <div className="w-16 h-16 bg-gray-50 rounded-lg overflow-hidden shrink-0 border border-gray-100 relative">
-                    <img src={item.thumbnail} className="w-full h-full object-cover" />
+                    <Image src={item.thumbnail} className="object-cover" fill sizes="64px" alt={item.name} />
                     {item.customDesignUrl && (
-                      <img src={item.customDesignUrl} className="absolute inset-0 w-2/3 h-2/3 m-auto object-contain mix-blend-multiply opacity-90" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="relative w-2/3 h-2/3">
+                          <Image src={item.customDesignUrl} className="object-contain mix-blend-multiply opacity-90" fill sizes="64px" alt="Custom" unoptimized />
+                        </div>
+                      </div>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">

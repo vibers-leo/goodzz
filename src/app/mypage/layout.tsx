@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { User, Package, Ticket, Heart, LogOut, Settings } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -28,9 +29,9 @@ export default function MyPageLayout({
         <div className="lg:w-64 shrink-0 space-y-8">
             {/* User Profile Summary */}
             <div className="flex items-center gap-4 lg:block lg:text-center pb-6 border-b border-gray-100 mb-6">
-                <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-3 overflow-hidden">
+                <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-3 overflow-hidden relative">
                     {user?.photoURL ? (
-                      <img src={user.photoURL} alt={user.displayName || 'User'} className="w-full h-full object-cover" />
+                      <Image src={user.photoURL} alt={user.displayName || 'User'} className="object-cover" fill unoptimized />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-emerald-100">
                         <User className="w-8 h-8 text-emerald-600" />

@@ -86,6 +86,39 @@ export async function getReviewsByUser(userId: string): Promise<Review[]> {
   }
 }
 
+// 최신 리뷰 조회 (홈페이지용 - 높은 평점 우선)
+export async function getLatestReviews(count: number = 6): Promise<Review[]> {
+  try {
+    // 높은 평점(4-5점) 최신순 리뷰 조회
+    const q = query(
+      reviewsCollection,
+      where('rating', '>=', 4),
+      orderBy('rating', 'desc'),
+      orderBy('createdAt', 'desc'),
+      limit(count)
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => docToReview(doc.data(), doc.id));
+  } catch (error) {
+    // 복합 인덱스가 없을 경우 폴백: 최신순만으로 조회
+    console.warn('Falling back to simple query for latest reviews:', error);
+    try {
+      const q = query(
+        reviewsCollection,
+        orderBy('createdAt', 'desc'),
+        limit(count)
+      );
+      const snapshot = await getDocs(q);
+      const reviews = snapshot.docs.map(doc => docToReview(doc.data(), doc.id));
+      // 클라이언트에서 높은 평점 우선 정렬
+      return reviews.sort((a, b) => b.rating - a.rating);
+    } catch (fallbackError) {
+      console.error('Error fetching latest reviews:', fallbackError);
+      return [];
+    }
+  }
+}
+
 // ============ 리뷰 관리 ============
 
 // 리뷰 생성

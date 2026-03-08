@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import styles from "./AdminComponents.module.css";
 import { toast } from "sonner";
 import { Loader2, Plus, Edit, Trash2, Search, Package, Check, X, Settings2, PlusCircle, MinusCircle, ChevronDown, ChevronUp } from "lucide-react";
@@ -155,8 +156,8 @@ export default function ProductManager() {
               filteredProducts.map((p) => (
                 <tr key={p.id}>
                   <td>
-                    <div className="w-12 h-12 rounded border overflow-hidden bg-gray-50">
-                      <img src={p.thumbnail} alt="" className="w-full h-full object-cover" />
+                    <div className="w-12 h-12 rounded border overflow-hidden bg-gray-50 relative">
+                      <Image src={p.thumbnail} alt="" fill className="object-cover" unoptimized />
                     </div>
                   </td>
                   <td className="font-bold">{p.name}</td>

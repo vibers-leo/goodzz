@@ -15,6 +15,7 @@ import {
   Package,
   Eye
 } from 'lucide-react';
+import Image from 'next/image';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { DesignDraft } from '@/lib/designs';
@@ -122,7 +123,7 @@ export default function DesignManager() {
              {filteredDesigns.map(design => (
                <div key={design.id} className="group flex flex-col bg-gray-50 rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg transition-all">
                   <div className="aspect-square relative bg-white">
-                     <img src={design.previewUrl} className="w-full h-full object-contain" alt="Design" />
+                     <Image src={design.previewUrl} alt="Design" fill className="object-contain" unoptimized />
                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                         <button 
                           onClick={() => setSelectedDesign(design)}
@@ -206,8 +207,8 @@ export default function DesignManager() {
                  <button onClick={() => setSelectedDesign(null)} className="text-2xl">&times;</button>
               </div>
               <div className="p-8 flex gap-8">
-                 <div className="w-1/2 aspect-square bg-gray-50 rounded-2xl overflow-hidden border">
-                    <img src={selectedDesign.previewUrl} className="w-full h-full object-contain" />
+                 <div className="w-1/2 aspect-square bg-gray-50 rounded-2xl overflow-hidden border relative">
+                    <Image src={selectedDesign.previewUrl} alt="Design" fill className="object-contain" unoptimized />
                  </div>
                  <div className="w-1/2 space-y-6">
                     <div>

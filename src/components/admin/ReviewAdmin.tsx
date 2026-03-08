@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Star, Trash2, Search, MessageSquare, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -110,7 +111,7 @@ export default function ReviewAdmin() {
                             {review.images && review.images.length > 0 && (
                                 <div className="flex gap-1 mt-2">
                                     {review.images.map((img: string, i: number) => (
-                                        <img key={i} src={img} className="w-8 h-8 rounded border border-gray-100 object-cover" />
+                                        <Image key={i} src={img} alt="" width={32} height={32} className="w-8 h-8 rounded border border-gray-100 object-cover" unoptimized />
                                     ))}
                                 </div>
                             )}

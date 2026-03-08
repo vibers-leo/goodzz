@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Star, X, Camera, Loader2, CheckCircle2 } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Star, X, Camera, Loader2, CheckCircle2, Trash2, ImagePlus } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '@/lib/firebase';
 
 interface ReviewModalProps {
   isOpen: boolean;
@@ -15,6 +17,9 @@ interface ReviewModalProps {
   userName: string;
   onSuccess?: () => void;
 }
+
+const MAX_PHOTOS = 3;
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 export default function ReviewModal({
   isOpen,
@@ -31,6 +36,73 @@ export default function ReviewModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hoverRating, setHoverRating] = useState(0);
 
+  // Photo upload state
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const newFiles: File[] = [];
+    const newPreviews: string[] = [];
+
+    for (let i = 0; i < files.length; i++) {
+      if (selectedFiles.length + newFiles.length >= MAX_PHOTOS) {
+        toast.error(`사진은 최대 ${MAX_PHOTOS}장까지 첨부할 수 있습니다.`);
+        break;
+      }
+
+      const file = files[i];
+
+      if (!file.type.startsWith('image/')) {
+        toast.error('이미지 파일만 업로드할 수 있습니다.');
+        continue;
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error('파일 크기는 5MB 이하만 가능합니다.');
+        continue;
+      }
+
+      newFiles.push(file);
+      newPreviews.push(URL.createObjectURL(file));
+    }
+
+    setSelectedFiles(prev => [...prev, ...newFiles]);
+    setPreviewUrls(prev => [...prev, ...newPreviews]);
+
+    // Reset input value so the same file can be selected again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const removePhoto = (index: number) => {
+    URL.revokeObjectURL(previewUrls[index]);
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    setPreviewUrls(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const uploadPhotos = async (): Promise<string[]> => {
+    if (selectedFiles.length === 0) return [];
+
+    const uploadedUrls: string[] = [];
+
+    for (const file of selectedFiles) {
+      const timestamp = Date.now();
+      const safeName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+      const storageRef = ref(storage, `reviews/${productId}/${userId}_${timestamp}_${safeName}`);
+
+      const snapshot = await uploadBytes(storageRef, file);
+      const downloadUrl = await getDownloadURL(snapshot.ref);
+      uploadedUrls.push(downloadUrl);
+    }
+
+    return uploadedUrls;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (content.length < 10) {
@@ -40,6 +112,12 @@ export default function ReviewModal({
 
     setIsSubmitting(true);
     try {
+      // Upload photos first
+      let imageUrls: string[] = [];
+      if (selectedFiles.length > 0) {
+        imageUrls = await uploadPhotos();
+      }
+
       const response = await fetch('/api/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -50,13 +128,19 @@ export default function ReviewModal({
           orderId,
           rating,
           content,
-          images: [], // 이미지 업로드는 추후 구현
+          images: imageUrls,
         }),
       });
 
       const data = await response.json();
       if (data.success) {
-        toast.success('리뷰가 등록되었습니다. 소중한 의견 감사합니다! ✨');
+        toast.success('리뷰가 등록되었습니다. 소중한 의견 감사합니다!');
+        // Clean up preview URLs
+        previewUrls.forEach(url => URL.revokeObjectURL(url));
+        setSelectedFiles([]);
+        setPreviewUrls([]);
+        setContent('');
+        setRating(5);
         if (onSuccess) onSuccess();
         onClose();
       } else {
@@ -74,14 +158,14 @@ export default function ReviewModal({
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
           />
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -112,22 +196,22 @@ export default function ReviewModal({
                         onMouseLeave={() => setHoverRating(0)}
                         onClick={() => setRating(star)}
                       >
-                        <Star 
-                          size={44} 
+                        <Star
+                          size={44}
                           className={`transition-colors ${
-                            star <= (hoverRating || rating) 
-                              ? 'fill-yellow-400 text-yellow-400' 
+                            star <= (hoverRating || rating)
+                              ? 'fill-yellow-400 text-yellow-400'
                               : 'text-gray-200'
-                          }`} 
+                          }`}
                         />
                       </button>
                     ))}
                   </div>
                   <span className="text-sm font-bold text-emerald-600 h-5">
-                    {rating === 5 && '최고예요! 아주 만족스러워요 ✨'}
-                    {rating === 4 && '좋아요! 생각보다 괜찮네요 😊'}
+                    {rating === 5 && '최고예요! 아주 만족스러워요'}
+                    {rating === 4 && '좋아요! 생각보다 괜찮네요'}
                     {rating === 3 && '보통이에요. 무난합니다.'}
-                    {rating === 2 && '조금 아쉬워요 😢'}
+                    {rating === 2 && '조금 아쉬워요'}
                     {rating === 1 && '별로예요. 실망스럽습니다.'}
                   </span>
                 </div>
@@ -149,18 +233,55 @@ export default function ReviewModal({
                   </div>
                 </div>
 
-                {/* Image Upload Placeholder */}
+                {/* Photo Upload */}
                 <div className="space-y-3">
-                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest block ml-1">Photo (Optional)</label>
-                    <div className="flex gap-3">
-                        <button 
-                            type="button"
-                            className="w-20 h-20 bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center gap-1 text-gray-400 hover:border-emerald-300 hover:text-emerald-500 hover:bg-emerald-50 transition-all group"
-                        >
-                            <Camera size={20} className="group-hover:scale-110 transition-transform" />
-                            <span className="text-[10px] font-bold">사진 추가</span>
-                        </button>
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest block ml-1">
+                      Photo (Optional) <span className="normal-case text-gray-300">최대 {MAX_PHOTOS}장</span>
+                    </label>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
+                    <div className="flex gap-3 flex-wrap">
+                        {/* Preview images */}
+                        {previewUrls.map((url, index) => (
+                          <div key={index} className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-gray-100 group">
+                            <img
+                              src={url}
+                              alt={`리뷰 사진 ${index + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removePhoto(index)}
+                              className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                            >
+                              <Trash2 size={16} className="text-white" />
+                            </button>
+                          </div>
+                        ))}
+
+                        {/* Add photo button */}
+                        {selectedFiles.length < MAX_PHOTOS && (
+                          <button
+                              type="button"
+                              onClick={() => fileInputRef.current?.click()}
+                              className="w-20 h-20 bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center gap-1 text-gray-400 hover:border-emerald-300 hover:text-emerald-500 hover:bg-emerald-50 transition-all group"
+                          >
+                              <Camera size={20} className="group-hover:scale-110 transition-transform" />
+                              <span className="text-[10px] font-bold">사진 추가</span>
+                          </button>
+                        )}
                     </div>
+                    {selectedFiles.length > 0 && (
+                      <p className="text-[10px] text-gray-400 ml-1">
+                        {selectedFiles.length}/{MAX_PHOTOS}장 선택됨
+                      </p>
+                    )}
                 </div>
 
                 <div className="flex flex-col gap-4 pt-4">
@@ -172,7 +293,7 @@ export default function ReviewModal({
                     {isSubmitting ? (
                         <>
                             <Loader2 className="animate-spin" size={24} />
-                            작성 중...
+                            {selectedFiles.length > 0 ? '사진 업로드 중...' : '작성 중...'}
                         </>
                     ) : (
                         <>

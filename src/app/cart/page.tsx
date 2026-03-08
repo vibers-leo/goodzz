@@ -2,11 +2,25 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useStore } from '@/store/useStore';
-import { Trash2, Plus, Minus, ArrowRight, ShoppingBag } from 'lucide-react';
+import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Tag } from 'lucide-react';
 import { toast } from 'sonner';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+
+function getVolumeDiscountedPrice(item: { price: number; quantity: number; metadata?: Record<string, any> }): number {
+  const volumePricing = item.metadata?.volumePricing;
+  const baseUnitPrice = item.metadata?.baseUnitPrice;
+  if (!volumePricing || !baseUnitPrice) return item.price;
+
+  const sorted = [...volumePricing].sort((a: any, b: any) => b.minQuantity - a.minQuantity);
+  const tier = sorted.find((t: any) => item.quantity >= t.minQuantity);
+  if (tier) {
+    return Math.round(baseUnitPrice * (1 - (tier as any).discountRate));
+  }
+  return baseUnitPrice;
+}
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity } = useStore();
@@ -18,7 +32,10 @@ export default function CartPage() {
 
   if (!mounted) return <div className="min-h-screen bg-white"></div>; // Prevent hydration error
 
-  const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const subtotal = cart.reduce((acc, item) => {
+    const effectivePrice = getVolumeDiscountedPrice(item);
+    return acc + effectivePrice * item.quantity;
+  }, 0);
   const shipping = subtotal > 50000 ? 0 : 3000;
   const total = subtotal + shipping;
 
@@ -60,16 +77,21 @@ export default function CartPage() {
             >
               {/* Image */}
               <div className="relative w-24 h-24 md:w-32 md:h-32 bg-gray-50 rounded-xl overflow-hidden shrink-0 border border-gray-100">
-                <img src={item.thumbnail} alt={item.name} className="w-full h-full object-cover" />
+                <Image src={item.thumbnail} alt={item.name} fill sizes="128px" className="object-cover" />
                 
                 {/* Custom Design Overlay */}
                 {item.customDesignUrl && (
                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                         <img 
-                            src={item.customDesignUrl} 
-                            className="w-2/3 h-2/3 object-contain mix-blend-multiply opacity-90"
-                            alt="Custom"
-                         />
+                         <div className="relative w-2/3 h-2/3">
+                           <Image
+                              src={item.customDesignUrl}
+                              className="object-contain mix-blend-multiply opacity-90"
+                              alt="Custom"
+                              fill
+                              sizes="128px"
+                              unoptimized
+                           />
+                         </div>
                      </div>
                 )}
                 

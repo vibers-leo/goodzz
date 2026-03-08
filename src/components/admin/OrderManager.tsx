@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import styles from "./AdminComponents.module.css";
 import { toast } from "sonner";
 import { Loader2, ExternalLink, RefreshCw, Search, Package } from "lucide-react";
@@ -252,7 +253,7 @@ export default function OrderManager() {
                     <div key={idx} className="flex gap-4 p-3 bg-gray-50 rounded-lg">
                       <div className="w-12 h-12 bg-white rounded border flex items-center justify-center shrink-0">
                         {item.options?.customDesign ? (
-                          <img src={item.options.customDesign} alt="Custom" className="w-10 h-10 object-contain" />
+                          <Image src={item.options.customDesign} alt="Custom" width={40} height={40} className="w-10 h-10 object-contain" unoptimized />
                         ) : (
                           <Package className="text-gray-300" />
                         )}

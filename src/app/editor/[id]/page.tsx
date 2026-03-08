@@ -22,10 +22,14 @@ import {
   ShoppingCart,
   ChevronRight,
   ZoomIn,
-  ZoomOut
+  ZoomOut,
+  RotateCw,
+  FlipHorizontal
 } from 'lucide-react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getProductById, Product } from '@/lib/products';
+import { getPrintConfig } from '@/lib/editor-config';
 import { saveDesign, getDesignById, uploadDesignImage } from '@/lib/designs';
 import { useAuth } from '@/context/AuthContext';
 import { useStore } from '@/store/useStore';
@@ -56,6 +60,10 @@ export default function DesignEditorPage() {
   const [posY, setPosY] = useState(50);
   const [rotation, setRotation] = useState(0);
   
+  // Face / Print Zone State
+  const [activeFace, setActiveFace] = useState('front');
+  const [backDesign, setBackDesign] = useState<string | null>(null);
+
   // Text Overlay State
   const [text, setText] = useState('');
   const [textScale, setTextScale] = useState(100);
@@ -251,6 +259,81 @@ export default function DesignEditorPage() {
     }
   };
 
+  const printConfig = product ? getPrintConfig(product.category) : null;
+  const activeZone = printConfig?.zones.find(z => z.id === activeFace) || printConfig?.zones[0];
+  const hasMultipleFaces = (printConfig?.zones.length || 0) > 1;
+
+  const handleFaceToggle = () => {
+    if (!hasMultipleFaces) return;
+    // Swap current design with back design
+    const nextFace = activeFace === 'front' ? 'back' : 'front';
+    setBackDesign(currentDesign);
+    setCurrentDesign(backDesign);
+    setActiveFace(nextFace);
+  };
+
+  const handleExportPNG = async () => {
+    if (!currentDesign || !product) return;
+    try {
+      const offscreen = document.createElement('canvas');
+      const size = 2048;
+      offscreen.width = size;
+      offscreen.height = size;
+      const ctx = offscreen.getContext('2d');
+      if (!ctx) return;
+
+      // Draw the product image
+      const productImg = new window.Image();
+      productImg.crossOrigin = 'anonymous';
+      await new Promise<void>((resolve, reject) => {
+        productImg.onload = () => resolve();
+        productImg.onerror = reject;
+        productImg.src = product.thumbnail;
+      });
+      ctx.drawImage(productImg, 0, 0, size, size);
+
+      // Draw the design overlay
+      const designImg = new window.Image();
+      designImg.crossOrigin = 'anonymous';
+      await new Promise<void>((resolve, reject) => {
+        designImg.onload = () => resolve();
+        designImg.onerror = reject;
+        designImg.src = currentDesign;
+      });
+
+      const dw = (scale / 100) * size;
+      const dh = (scale / 100) * size;
+      const dx = (posX / 100) * size;
+      const dy = (posY / 100) * size;
+
+      ctx.save();
+      ctx.translate(dx, dy);
+      ctx.rotate((rotation * Math.PI) / 180);
+      if (isMockupMode) {
+        ctx.globalCompositeOperation = 'multiply';
+        ctx.globalAlpha = 0.92;
+      }
+      ctx.drawImage(designImg, -dw / 2, -dh / 2, dw, dh);
+      ctx.restore();
+
+      offscreen.toBlob((blob) => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${product.name}-design.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        toast.success('PNG 이미지가 다운로드되었습니다!');
+      }, 'image/png');
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error('이미지 내보내기 중 오류가 발생했습니다.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -276,7 +359,14 @@ export default function DesignEditorPage() {
         </div>
 
         <div className="flex items-center gap-3">
-          <button 
+          <button
+            onClick={handleExportPNG}
+            disabled={!currentDesign}
+            className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-xl text-xs font-bold hover:bg-gray-50 transition-all disabled:opacity-50"
+          >
+            <Download size={14} /> PNG 내보내기
+          </button>
+          <button
             onClick={handleSaveDraft}
             disabled={isSaving || !currentDesign}
             className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-xl text-xs font-bold hover:bg-gray-50 transition-all disabled:opacity-50"
@@ -375,11 +465,30 @@ export default function DesignEditorPage() {
                     </AnimatePresence>
 
                     {/* Product Mockup */}
-                    <img 
-                        src={product.thumbnail} 
-                        className="absolute inset-0 w-full h-full object-cover pointer-events-none" 
-                        alt="Background" 
+                    <Image
+                        src={product.thumbnail}
+                        className="object-cover pointer-events-none"
+                        alt="Background"
+                        fill
+                        unoptimized
                     />
+
+                    {/* Print Zone Boundary */}
+                    {activeZone && (
+                        <div
+                            className="absolute border-2 border-dashed border-blue-400/50 pointer-events-none z-30 rounded-sm"
+                            style={{
+                                left: `${activeZone.x}%`,
+                                top: `${activeZone.y}%`,
+                                width: `${activeZone.width}%`,
+                                height: `${activeZone.height}%`,
+                            }}
+                        >
+                            <span className="absolute -top-5 left-0 text-[9px] font-bold text-blue-500 bg-white/80 px-1.5 py-0.5 rounded">
+                                {activeZone.label}
+                            </span>
+                        </div>
+                    )}
 
                     {/* Design Overlay */}
                     <AnimatePresence>
@@ -402,10 +511,13 @@ export default function DesignEditorPage() {
                             }}
                             className="cursor-move group z-10"
                         >
-                            <img
+                            <Image
                                 src={currentDesign}
                                 className="w-full h-full object-cover"
                                 alt="Current design"
+                                width={600}
+                                height={600}
+                                unoptimized
                             />
                         </motion.div>
                     )}
@@ -443,6 +555,37 @@ export default function DesignEditorPage() {
                         <span className="text-xs font-bold w-10 text-center">{scale}%</span>
                         <button onClick={() => setScale(s => Math.min(150, s + 10))} className="p-1 hover:bg-gray-100 rounded-md"><ZoomIn size={16} /></button>
                     </div>
+                    {/* Rotation Slider */}
+                    <div className="flex items-center gap-2 border-r pr-6">
+                        <input
+                            type="range"
+                            min={-180}
+                            max={180}
+                            value={rotation}
+                            onChange={e => setRotation(Number(e.target.value))}
+                            className="w-20 h-1 accent-emerald-600 cursor-pointer"
+                        />
+                        <span className="text-[10px] font-bold text-gray-500 w-10 text-center">{rotation}°</span>
+                        <button
+                            onClick={() => setRotation(0)}
+                            className="p-1 hover:bg-gray-100 rounded-md text-gray-400 hover:text-gray-600"
+                            title="회전 초기화"
+                        >
+                            <RotateCw size={14} />
+                        </button>
+                    </div>
+                    {/* Front/Back Toggle */}
+                    {hasMultipleFaces && (
+                        <div className="flex items-center gap-2 border-r pr-6">
+                            <button
+                                onClick={handleFaceToggle}
+                                className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold hover:bg-gray-100 transition-all"
+                            >
+                                <FlipHorizontal size={14} />
+                                {activeFace === 'front' ? '앞면' : '뒷면'}
+                            </button>
+                        </div>
+                    )}
                     <div className="flex items-center gap-4">
                         <label className="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" checked={isMockupMode} onChange={e => setIsMockupMode(e.target.checked)} className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500" />
@@ -557,9 +700,9 @@ export default function DesignEditorPage() {
                                     setCurrentDesign(url);
                                     setHistoryIndex(i);
                                 }}
-                                className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${historyIndex === i ? 'border-emerald-500 shadow-md' : 'border-transparent hover:border-gray-200'}`}
+                                className={`aspect-square rounded-lg overflow-hidden border-2 transition-all relative ${historyIndex === i ? 'border-emerald-500 shadow-md' : 'border-transparent hover:border-gray-200'}`}
                             >
-                                <img src={url} className="w-full h-full object-cover" alt={`History ${i}`} />
+                                <Image src={url} className="w-full h-full object-cover" alt={`History ${i}`} fill unoptimized />
                             </button>
                         ))}
                     </div>

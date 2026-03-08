@@ -1,19 +1,24 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Star, Truck, ShieldCheck, Wand2, X, RefreshCw, Download, 
-  Heart, ShoppingBag, Sliders, LayoutGrid, Type, Move, 
-  MessageSquare, AlertCircle, ChevronRight, Minus, Plus, 
-  ShoppingCart, Zap, Sparkles, CheckCircle2 
+import {
+  Star, Truck, ShieldCheck, Wand2, X, RefreshCw, Download,
+  Heart, ShoppingBag, Sliders, LayoutGrid, Type, Move,
+  MessageSquare, AlertCircle, ChevronRight, Minus, Plus,
+  ShoppingCart, Zap, Sparkles, CheckCircle2, Users, Loader2
 } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '@/lib/products';
-import { calculateProductPrice, SelectedOptions } from '@/lib/pricing';
+import { calculateProductPrice, SelectedOptions, PRINT_METHODS } from '@/lib/pricing';
 import { useRouter } from 'next/navigation';
+import { shareToKakao, shareToTwitter, shareToFacebook, shareViaClipboard } from '@/lib/social-share';
+import { Share2 } from 'lucide-react';
+import Image from 'next/image';
 import { uploadDesignImage } from '@/lib/designs';
+import { db } from '@/lib/firebase';
+import { collection, addDoc, Timestamp } from 'firebase/firestore';
 
 interface ProductDetailClientProps {
   product: Product;
@@ -56,6 +61,41 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   const currentPrice = calculateProductPrice(product, selectedGroups, quantity);
   const [reviews, setReviews] = useState<any[]>([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
+
+  // Bulk Order Inquiry State
+  const [showBulkModal, setShowBulkModal] = useState(false);
+  const [bulkForm, setBulkForm] = useState({ name: '', phone: '', email: '', quantity: '', message: '' });
+  const [bulkSubmitting, setBulkSubmitting] = useState(false);
+
+  const handleBulkSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bulkForm.name || !bulkForm.phone || !bulkForm.email || !bulkForm.quantity) {
+      toast.error('필수 항목을 모두 입력해주세요.');
+      return;
+    }
+    setBulkSubmitting(true);
+    try {
+      await addDoc(collection(db, 'bulk_inquiries'), {
+        productId: product.id,
+        productName: product.name,
+        name: bulkForm.name,
+        phone: bulkForm.phone,
+        email: bulkForm.email,
+        quantity: parseInt(bulkForm.quantity),
+        message: bulkForm.message,
+        status: 'pending',
+        createdAt: Timestamp.now(),
+      });
+      toast.success('대량주문 문의가 접수되었습니다!');
+      setShowBulkModal(false);
+      setBulkForm({ name: '', phone: '', email: '', quantity: '', message: '' });
+    } catch (error) {
+      console.error('Bulk inquiry error:', error);
+      toast.error('문의 접수 중 오류가 발생했습니다.');
+    } finally {
+      setBulkSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -153,7 +193,9 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         selectedOptions: serializedOptions,
         metadata: {
             orderMethod: orderMethod,
-            variations: variations
+            variations: variations,
+            baseUnitPrice: currentPrice,
+            volumePricing: product.volumePricing || null
         }
     });
 
@@ -171,10 +213,12 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             ref={containerRef}
             className="aspect-square bg-gray-100 rounded-2xl overflow-hidden border border-gray-100 relative group shadow-inner select-none"
         >
-          <img
+          <Image
             src={product.thumbnail}
             alt={product.name}
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover"
           />
           
           {generatedImage && (
@@ -194,10 +238,13 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                         touchAction: 'none'
                     }}
                 >
-                    <img 
-                      src={generatedImage} 
-                      className="w-full h-full object-contain mix-blend-multiply drop-shadow-sm opacity-90 transition-opacity duration-300"
+                    <Image
+                      src={generatedImage}
+                      className="object-contain mix-blend-multiply drop-shadow-sm opacity-90 transition-opacity duration-300"
                       alt="AI Design"
+                      fill
+                      sizes="50vw"
+                      unoptimized
                     />
                     {isAiMode && (
                         <div className="absolute inset-0 border-2 border-dashed border-blue-500/50 rounded-lg pointer-events-none animate-pulse">
@@ -238,6 +285,11 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             <span className="bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
               {product.category}
             </span>
+            {product.printMethod && PRINT_METHODS[product.printMethod] && (
+              <span className="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded tracking-wider">
+                {PRINT_METHODS[product.printMethod].name}
+              </span>
+            )}
             <div className="flex items-center gap-0.5 text-amber-400">
               <Star size={12} fill="currentColor" />
               <span className="text-xs font-bold text-gray-900">{product.rating || 4.9}</span>
@@ -250,6 +302,62 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             {product.description || '최고급 소재와 AI 기술이 만나 탄생한 커스텀 제품입니다.'}
           </p>
         </div>
+
+        {/* Volume Pricing Table */}
+        {product.volumePricing && product.volumePricing.length > 0 && (
+          <div className="bg-gradient-to-br from-blue-50 to-emerald-50 rounded-2xl p-5 border border-blue-100">
+            <div className="flex items-center gap-2 mb-3">
+              <Users size={16} className="text-blue-600" />
+              <h3 className="text-sm font-black text-gray-900">대량 구매 할인</h3>
+            </div>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-xs text-gray-500 border-b border-blue-100">
+                  <th className="text-left py-2 font-bold">수량</th>
+                  <th className="text-center py-2 font-bold">할인율</th>
+                  <th className="text-right py-2 font-bold">개당 가격</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...product.volumePricing]
+                  .sort((a, b) => a.minQuantity - b.minQuantity)
+                  .map((tier, idx) => {
+                    const discountPercent = Math.round(tier.discountRate * 100);
+                    const discountedPrice = Math.round(currentPrice * (1 - tier.discountRate));
+                    const isActive = quantity >= tier.minQuantity;
+                    return (
+                      <tr
+                        key={idx}
+                        className={`border-b border-blue-50 last:border-0 transition-colors ${
+                          isActive ? 'bg-emerald-50/50' : ''
+                        }`}
+                      >
+                        <td className="py-2 text-left">
+                          <span className={`font-bold ${isActive ? 'text-emerald-700' : 'text-gray-700'}`}>
+                            {tier.minQuantity}개 이상
+                          </span>
+                        </td>
+                        <td className="py-2 text-center">
+                          <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-bold ${
+                            isActive
+                              ? 'bg-emerald-100 text-emerald-700'
+                              : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            {discountPercent}% OFF
+                          </span>
+                        </td>
+                        <td className="py-2 text-right">
+                          <span className={`font-bold ${isActive ? 'text-emerald-700' : 'text-gray-700'}`}>
+                            {discountedPrice.toLocaleString()}원
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {/* Dynamic Pricing Options */}
         {product.options?.groups && (
@@ -454,8 +562,176 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
               <Zap size={20} /> 바로구매
             </button>
           </div>
+
+          {/* Social Share Buttons */}
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">공유</span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => shareToKakao({
+                  title: product.name,
+                  description: product.description || '마이AI프린트샵에서 만나보세요',
+                  imageUrl: product.thumbnail,
+                  url: `${typeof window !== 'undefined' ? window.location.origin : ''}/shop/${product.id}`,
+                })}
+                className="w-10 h-10 bg-[#FEE500] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
+                title="카카오톡 공유"
+              >
+                <span className="text-[#3C1E1E] text-xs font-bold">K</span>
+              </button>
+              <button
+                onClick={() => shareToTwitter({
+                  title: product.name,
+                  description: product.description || '',
+                  url: `${typeof window !== 'undefined' ? window.location.origin : ''}/shop/${product.id}`,
+                })}
+                className="w-10 h-10 bg-black rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
+                title="X(Twitter) 공유"
+              >
+                <span className="text-white text-xs font-bold">X</span>
+              </button>
+              <button
+                onClick={() => shareToFacebook({
+                  title: product.name,
+                  description: product.description || '',
+                  url: `${typeof window !== 'undefined' ? window.location.origin : ''}/shop/${product.id}`,
+                })}
+                className="w-10 h-10 bg-[#1877F2] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
+                title="Facebook 공유"
+              >
+                <span className="text-white text-xs font-bold">f</span>
+              </button>
+              <button
+                onClick={async () => {
+                  const url = `${window.location.origin}/shop/${product.id}`;
+                  await shareViaClipboard(url);
+                  toast.success('링크가 복사되었습니다!');
+                }}
+                className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
+                title="링크 복사"
+              >
+                <Share2 size={14} className="text-gray-600" />
+              </button>
+            </div>
+          </div>
+
+          {/* Bulk Order Inquiry Button */}
+          <button
+            onClick={() => setShowBulkModal(true)}
+            className="w-full py-4 bg-blue-50 text-blue-700 font-bold rounded-2xl hover:bg-blue-100 transition-all flex items-center justify-center gap-2 border border-blue-200"
+          >
+            <Users size={18} /> 대량주문 문의
+          </button>
         </div>
       </div>
+
+      {/* Bulk Order Inquiry Modal */}
+      <AnimatePresence>
+        {showBulkModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowBulkModal(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative bg-white w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden overflow-y-auto max-h-[90vh]"
+            >
+              <div className="p-8">
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <h2 className="text-2xl font-black text-gray-900">대량주문 문의</h2>
+                    <p className="text-gray-500 text-sm mt-1">{product.name}</p>
+                  </div>
+                  <button onClick={() => setShowBulkModal(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                    <X size={24} />
+                  </button>
+                </div>
+
+                <form onSubmit={handleBulkSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-500">이름 <span className="text-red-500">*</span></label>
+                    <input
+                      type="text"
+                      required
+                      value={bulkForm.name}
+                      onChange={(e) => setBulkForm(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="담당자명"
+                      className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-500">연락처 <span className="text-red-500">*</span></label>
+                    <input
+                      type="tel"
+                      required
+                      value={bulkForm.phone}
+                      onChange={(e) => setBulkForm(prev => ({ ...prev, phone: e.target.value }))}
+                      placeholder="010-0000-0000"
+                      className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-500">이메일 <span className="text-red-500">*</span></label>
+                    <input
+                      type="email"
+                      required
+                      value={bulkForm.email}
+                      onChange={(e) => setBulkForm(prev => ({ ...prev, email: e.target.value }))}
+                      placeholder="example@email.com"
+                      className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-500">희망 수량 <span className="text-red-500">*</span></label>
+                    <input
+                      type="number"
+                      required
+                      min="1"
+                      value={bulkForm.quantity}
+                      onChange={(e) => setBulkForm(prev => ({ ...prev, quantity: e.target.value }))}
+                      placeholder="100"
+                      className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-500">문의 내용</label>
+                    <textarea
+                      value={bulkForm.message}
+                      onChange={(e) => setBulkForm(prev => ({ ...prev, message: e.target.value }))}
+                      placeholder="추가 요청사항이나 문의 내용을 작성해주세요"
+                      rows={4}
+                      className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={bulkSubmitting}
+                    className="w-full py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {bulkSubmitting ? (
+                      <>
+                        <Loader2 className="animate-spin" size={20} />
+                        접수 중...
+                      </>
+                    ) : (
+                      <>
+                        <MessageSquare size={20} />
+                        문의 접수하기
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

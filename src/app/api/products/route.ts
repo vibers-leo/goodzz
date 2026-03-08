@@ -121,12 +121,20 @@ export async function GET(request: NextRequest) {
       }
     }
     
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       products,
       total: products.length,
     });
-    
+
+    // 캐시 헤더 추가: CDN 60초 캐시, 5분간 stale-while-revalidate
+    response.headers.set(
+      'Cache-Control',
+      'public, s-maxage=60, stale-while-revalidate=300'
+    );
+
+    return response;
+
   } catch (error) {
     console.error('Error in products API:', error);
     return NextResponse.json(

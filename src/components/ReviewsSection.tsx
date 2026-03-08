@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Star, ShieldCheck } from 'lucide-react';
 
@@ -11,6 +11,7 @@ interface Review {
   rating: number;
   content: string;
   imageUrl?: string;
+  images?: string[];
   createdAt: Date;
   isVerified: boolean;
 }
@@ -62,6 +63,28 @@ export default function ReviewsSection() {
 
     fetchReviews();
   }, []);
+
+  // Star distribution calculations
+  const { averageRating, totalCount, starDistribution } = useMemo(() => {
+    if (reviews.length === 0) {
+      return { averageRating: 0, totalCount: 0, starDistribution: [0, 0, 0, 0, 0] };
+    }
+
+    const dist = [0, 0, 0, 0, 0]; // index 0 = 1 star, index 4 = 5 stars
+    let sum = 0;
+
+    reviews.forEach(r => {
+      const starIndex = Math.min(Math.max(Math.round(r.rating), 1), 5) - 1;
+      dist[starIndex]++;
+      sum += r.rating;
+    });
+
+    return {
+      averageRating: sum / reviews.length,
+      totalCount: reviews.length,
+      starDistribution: dist,
+    };
+  }, [reviews]);
 
   const goToPrevious = () => {
     setCurrentIndex((prev) => (prev - 1 + reviews.length) % reviews.length);
@@ -115,6 +138,70 @@ export default function ReviewsSection() {
           </p>
         </div>
 
+        {/* Star Distribution Chart */}
+        <div className="max-w-4xl mx-auto mb-12">
+          <div className="bg-white rounded-3xl shadow-lg p-8 md:p-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+              {/* Average Rating */}
+              <div className="flex flex-col items-center justify-center text-center">
+                <p className="text-6xl font-black text-gray-900 leading-none">
+                  {averageRating.toFixed(1)}
+                </p>
+                <div className="flex items-center gap-1 mt-3 mb-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`w-5 h-5 ${
+                        star <= Math.round(averageRating)
+                          ? 'fill-amber-400 text-amber-400'
+                          : 'fill-gray-200 text-gray-200'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <p className="text-sm text-gray-500 font-medium">
+                  전체 리뷰 <span className="font-bold text-gray-900">{totalCount}</span>건
+                </p>
+              </div>
+
+              {/* Star Distribution Bars */}
+              <div className="md:col-span-2 space-y-2.5">
+                {[5, 4, 3, 2, 1].map((starNum) => {
+                  const count = starDistribution[starNum - 1];
+                  const percentage = totalCount > 0 ? (count / totalCount) * 100 : 0;
+                  return (
+                    <div key={starNum} className="flex items-center gap-3">
+                      <div className="flex items-center gap-1 w-16 shrink-0 justify-end">
+                        <span className="text-sm font-bold text-gray-700">{starNum}</span>
+                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                      </div>
+                      <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${percentage}%` }}
+                          transition={{ duration: 0.8, delay: (5 - starNum) * 0.1, ease: 'easeOut' }}
+                          className={`h-full rounded-full ${
+                            starNum >= 4
+                              ? 'bg-emerald-500'
+                              : starNum === 3
+                              ? 'bg-amber-400'
+                              : 'bg-red-400'
+                          }`}
+                        />
+                      </div>
+                      <div className="w-16 shrink-0 text-right">
+                        <span className="text-xs font-bold text-gray-500">
+                          {count}건 ({Math.round(percentage)}%)
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* 리뷰 슬라이더 */}
         <div className="relative max-w-4xl mx-auto">
           <AnimatePresence mode="wait">
@@ -164,6 +251,21 @@ export default function ReviewsSection() {
                   <p className="text-lg md:text-xl text-gray-800 leading-relaxed mb-6">
                     "{currentReview.content}"
                   </p>
+
+                  {/* Review photos */}
+                  {currentReview.images && currentReview.images.length > 0 && (
+                    <div className="flex gap-2 mb-6">
+                      {currentReview.images.map((imgUrl, idx) => (
+                        <div key={idx} className="w-16 h-16 rounded-xl overflow-hidden border border-gray-100">
+                          <img
+                            src={imgUrl}
+                            alt={`리뷰 사진 ${idx + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   {/* 사용자 정보 */}
                   <div className="flex items-center justify-between pt-6 border-t border-gray-100">

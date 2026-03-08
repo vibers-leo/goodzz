@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Package, Search, Loader2, ArrowRight, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import { Order } from '@/lib/payment';
 import { toast } from 'sonner';
@@ -136,10 +137,12 @@ export default function OrderHistoryPage() {
                   {order.items.map((item, idx) => (
                     <div key={idx} className={`flex gap-4 ${idx > 0 ? 'mt-6 pt-6 border-t border-gray-50' : ''}`}>
                         <div className="w-20 h-20 bg-gray-50 rounded-lg overflow-hidden shrink-0 border border-gray-100 relative">
-                            <img 
-                              src={item.options?.customDesign || 'https://via.placeholder.com/150'} 
-                              alt={item.productName} 
-                              className="w-full h-full object-cover" 
+                            <Image
+                              src={item.options?.customDesign || 'https://via.placeholder.com/150'}
+                              alt={item.productName}
+                              className="object-cover"
+                              fill
+                              unoptimized
                             />
                             {item.options?.customDesign && (
                               <div className="absolute top-1 right-1 bg-white/80 p-0.5 rounded shadow-sm">
