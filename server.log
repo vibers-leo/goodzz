@@ -1,0 +1,355 @@
+
+> myaiprintshop@0.1.0 dev
+> next dev -p 3300
+
+⚠ Invalid next.config.ts options detected: 
+⚠     Unrecognized key(s) in object: 'serverComponentsExternalPackages' at "experimental"
+⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+⚠ `experimental.serverComponentsExternalPackages` has been moved to `serverExternalPackages`. Please update your next.config.ts file accordingly.
+▲ Next.js 16.1.0 (Turbopack)
+- Local:         http://localhost:3300
+- Network:       http://192.168.219.100:3300
+- Environments: .env.local
+- Experiments (use with caution):
+  ? serverComponentsExternalPackages (invalid experimental key)
+
+✓ Starting...
+✓ Ready in 1613ms
+○ Compiling /api/vendors ...
+❌ Error getting vendors: [Error [FirebaseError]: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/myaiprintshop/firestore/indexes?create_composite=Ck1wcm9qZWN0cy9teWFpcHJpbnRzaG9wL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy92ZW5kb3JzL2luZGV4ZXMvXxABGgoKBnN0YXR1cxABGg0KCWNyZWF0ZWRBdBACGgwKCF9fbmFtZV9fEAI] {
+  code: 'failed-precondition',
+  customData: undefined,
+  toString: [Function (anonymous)]
+}
+ GET /api/vendors 200 in 5.9s (compile: 5.5s, render: 436ms)
+[2026-03-02T14:22:38.715Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Listen' stream 0x866b9c1e error. Code: 1 Message: 1 CANCELLED: Disconnecting idle stream. Timed out waiting for new targets.
+❌ Error getting vendors: [Error [FirebaseError]: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/myaiprintshop/firestore/indexes?create_composite=Ck1wcm9qZWN0cy9teWFpcHJpbnRzaG9wL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy92ZW5kb3JzL2luZGV4ZXMvXxABGgoKBnN0YXR1cxABGg0KCWNyZWF0ZWRBdBACGgwKCF9fbmFtZV9fEAI] {
+  code: 'failed-precondition',
+  customData: undefined,
+  toString: [Function (anonymous)]
+}
+ GET /api/vendors 200 in 313ms (compile: 3ms, render: 310ms)
+ POST /api/vendors 401 in 6ms (compile: 1698µs, render: 4ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+✅ Created new user with customer role: test-user-vendor1
+❌ Error creating vendor: [Error [FirebaseError]: Function addDoc() called with invalid data. Unsupported field value: undefined (found in field businessNumber in document vendors/1CYmylWjptDNhbGAW4ga)] {
+  code: 'invalid-argument',
+  customData: undefined,
+  toString: [Function (anonymous)]
+}
+❌ Error creating vendor: [Error [FirebaseError]: Function addDoc() called with invalid data. Unsupported field value: undefined (found in field businessNumber in document vendors/1CYmylWjptDNhbGAW4ga)] {
+  code: 'invalid-argument',
+  customData: undefined,
+  toString: [Function (anonymous)]
+}
+[INTERNAL_ERROR] 판매자 신청 처리 중 오류가 발생했습니다. [Error [FirebaseError]: Function addDoc() called with invalid data. Unsupported field value: undefined (found in field businessNumber in document vendors/1CYmylWjptDNhbGAW4ga)] {
+  code: 'invalid-argument',
+  customData: undefined,
+  toString: [Function (anonymous)]
+}
+ POST /api/vendors 500 in 1390ms (compile: 1551µs, render: 1389ms)
+ GET /api/vendors?status=pending 401 in 5ms (compile: 1641µs, render: 3ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+❌ Error creating vendor: [Error [FirebaseError]: Function addDoc() called with invalid data. Unsupported field value: undefined (found in field businessNumber in document vendors/NLgiEl5BV11F7Yf9dTMA)] {
+  code: 'invalid-argument',
+  customData: undefined,
+  toString: [Function (anonymous)]
+}
+❌ Error creating vendor: [Error [FirebaseError]: Function addDoc() called with invalid data. Unsupported field value: undefined (found in field businessNumber in document vendors/NLgiEl5BV11F7Yf9dTMA)] {
+  code: 'invalid-argument',
+  customData: undefined,
+  toString: [Function (anonymous)]
+}
+[INTERNAL_ERROR] 판매자 신청 처리 중 오류가 발생했습니다. [Error [FirebaseError]: Function addDoc() called with invalid data. Unsupported field value: undefined (found in field businessNumber in document vendors/NLgiEl5BV11F7Yf9dTMA)] {
+  code: 'invalid-argument',
+  customData: undefined,
+  toString: [Function (anonymous)]
+}
+ POST /api/vendors 500 in 1578ms (compile: 905ms, render: 673ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+✅ Created vendor: eZQvQn4SPo42a0LOYuVR
+✅ Vendor application created: eZQvQn4SPo42a0LOYuVR by test-user-vendor1
+ POST /api/vendors 201 in 1904ms (compile: 653ms, render: 1251ms)
+❌ Error getting vendors: [Error [FirebaseError]: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/myaiprintshop/firestore/indexes?create_composite=Ck1wcm9qZWN0cy9teWFpcHJpbnRzaG9wL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy92ZW5kb3JzL2luZGV4ZXMvXxABGgoKBnN0YXR1cxABGg0KCWNyZWF0ZWRBdBACGgwKCF9fbmFtZV9fEAI] {
+  code: 'failed-precondition',
+  customData: undefined,
+  toString: [Function (anonymous)]
+}
+ GET /api/vendors 200 in 252ms (compile: 4ms, render: 248ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+✅ Created new user with customer role: test-admin-user
+ GET /api/vendors?status=pending 401 in 481ms (compile: 9ms, render: 472ms)
+○ Compiling /api/admin/vendors/[vendorId] ...
+⨯ ./src/app/api/admin/vendors/[vendorId]/route.ts:4:1
+Export getVendorById doesn't exist in target module
+[0m [90m 2 |[39m [36mimport[39m { requireRole[33m,[39m unauthorizedResponse[33m,[39m forbiddenResponse } [36mfrom[39m [32m'@/lib/auth-middleware'[39m[33m;[39m
+ [90m 3 |[39m [36mimport[39m { [33mApiError[39m } [36mfrom[39m [32m'@/lib/api-error-handler'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m { approveVendor[33m,[39m rejectVendor[33m,[39m updateVendorStatus[33m,[39m getVendorById } [36mfrom[39m [32m'@/lib/vendors'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 5 |[39m [36mimport[39m { addRole } [36mfrom[39m [32m'@/lib/users'[39m[33m;[39m
+ [90m 6 |[39m
+ [90m 7 |[39m [90m/**[39m[0m
+
+The export getVendorById was not found in module [project]/src/lib/vendors.ts [app-route] (ecmascript).
+Did you mean to import getVendorByOwnerId?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+
+
+./src/app/api/admin/vendors/[vendorId]/route.ts:4:1
+Export updateVendorStatus doesn't exist in target module
+[0m [90m 2 |[39m [36mimport[39m { requireRole[33m,[39m unauthorizedResponse[33m,[39m forbiddenResponse } [36mfrom[39m [32m'@/lib/auth-middleware'[39m[33m;[39m
+ [90m 3 |[39m [36mimport[39m { [33mApiError[39m } [36mfrom[39m [32m'@/lib/api-error-handler'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m { approveVendor[33m,[39m rejectVendor[33m,[39m updateVendorStatus[33m,[39m getVendorById } [36mfrom[39m [32m'@/lib/vendors'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 5 |[39m [36mimport[39m { addRole } [36mfrom[39m [32m'@/lib/users'[39m[33m;[39m
+ [90m 6 |[39m
+ [90m 7 |[39m [90m/**[39m[0m
+
+The export updateVendorStatus was not found in module [project]/src/lib/vendors.ts [app-route] (ecmascript).
+Did you mean to import updateVendorStats?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+
+○ Compiling /_error ...
+ PATCH /api/admin/vendors/eZQvQn4SPo42a0LOYuVR 500 in 17.5s (compile: 17.4s, render: 190ms)
+⨯ ./src/app/api/admin/vendors/[vendorId]/route.ts:4:1
+Export updateVendorStatus doesn't exist in target module
+[0m [90m 2 |[39m [36mimport[39m { requireRole[33m,[39m unauthorizedResponse[33m,[39m forbiddenResponse } [36mfrom[39m [32m'@/lib/auth-middleware'[39m[33m;[39m
+ [90m 3 |[39m [36mimport[39m { [33mApiError[39m } [36mfrom[39m [32m'@/lib/api-error-handler'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m { approveVendor[33m,[39m rejectVendor[33m,[39m updateVendorStatus[33m,[39m getVendor } [36mfrom[39m [32m'@/lib/vendors'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 5 |[39m [36mimport[39m { addRole } [36mfrom[39m [32m'@/lib/users'[39m[33m;[39m
+ [90m 6 |[39m
+ [90m 7 |[39m [90m/**[39m[0m
+
+The export updateVendorStatus was not found in module [project]/src/lib/vendors.ts [app-route] (ecmascript).
+Did you mean to import updateVendorStats?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+
+ PATCH /api/admin/vendors/eZQvQn4SPo42a0LOYuVR 500 in 109ms (compile: 103ms, render: 6ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+✅ Created new user with customer role: test-admin-001
+ PATCH /api/admin/vendors/eZQvQn4SPo42a0LOYuVR 401 in 4.9s (compile: 3.9s, render: 941ms)
+○ Compiling /_not-found/page ...
+ GET /api/users/test-admin-001 500 in 25.9s (compile: 25.9s, render: 17ms)
+✓ Finished filesystem cache database compaction in 11.6s
+ POST /api/dev/add-admin 500 in 2.1s (compile: 2.1s, render: 18ms)
+ POST /api/dev/add-admin 500 in 366ms (compile: 351ms, render: 15ms)
+✓ Compiled in 1652ms
+✓ Compiled in 712ms
+✅ Added role "admin" to user test-admin-001
+ POST /api/dev/add-admin 200 in 1070ms (compile: 134ms, render: 937ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+Error: Route "/api/admin/vendors/[vendorId]" used `params.vendorId`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at PATCH (src\app\api\admin\vendors\[vendorId]\route.ts:23:13)
+  21 |
+  22 |   try {
+> 23 |     const { vendorId } = params;
+     |             ^
+  24 |     const body = await request.json();
+  25 |     const { action, commissionRate } = body;
+  26 |
+❌ Error getting vendor: TypeError: Cannot read properties of undefined (reading 'indexOf')
+    at getVendor (src\lib\vendors.ts:72:26)
+    at PATCH (src\app\api\admin\vendors\[vendorId]\route.ts:33:35)
+  70 | export async function getVendor(vendorId: string): Promise<Vendor | null> {
+  71 |   try {
+> 72 |     const vendorRef = doc(db, 'vendors', vendorId);
+     |                          ^
+  73 |     const vendorDoc = await getDoc(vendorRef);
+  74 |
+  75 |     if (!vendorDoc.exists()) {
+[NOT_FOUND] 판매자를 찾을 수 없습니다. 
+ PATCH /api/admin/vendors/eZQvQn4SPo42a0LOYuVR 404 in 1053ms (compile: 54ms, render: 1000ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+✅ Created new user with customer role: test-vendor-001
+✅ Created vendor: 36BeaZw8DL76fwd9sYHV
+✅ Vendor application created: 36BeaZw8DL76fwd9sYHV by test-vendor-001
+ POST /api/vendors 201 in 1708ms (compile: 351ms, render: 1357ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+Error: Route "/api/admin/vendors/[vendorId]" used `params.vendorId`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at PATCH (src\app\api\admin\vendors\[vendorId]\route.ts:23:13)
+  21 |
+  22 |   try {
+> 23 |     const { vendorId } = params;
+     |             ^
+  24 |     const body = await request.json();
+  25 |     const { action, commissionRate } = body;
+  26 |
+❌ Error getting vendor: TypeError: Cannot read properties of undefined (reading 'indexOf')
+    at getVendor (src\lib\vendors.ts:72:26)
+    at PATCH (src\app\api\admin\vendors\[vendorId]\route.ts:33:35)
+  70 | export async function getVendor(vendorId: string): Promise<Vendor | null> {
+  71 |   try {
+> 72 |     const vendorRef = doc(db, 'vendors', vendorId);
+     |                          ^
+  73 |     const vendorDoc = await getDoc(vendorRef);
+  74 |
+  75 |     if (!vendorDoc.exists()) {
+[NOT_FOUND] 판매자를 찾을 수 없습니다. 
+ PATCH /api/admin/vendors/36BeaZw8DL76fwd9sYHV 404 in 714ms (compile: 28ms, render: 685ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+Error: Route "/api/admin/vendors/[vendorId]" used `params.vendorId`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at GET (src\app\api\admin\vendors\[vendorId]\route.ts:100:13)
+   98 |
+   99 |   try {
+> 100 |     const { vendorId } = params;
+      |             ^
+  101 |
+  102 |     const vendor = await getVendor(vendorId);
+  103 |
+❌ Error getting vendor: TypeError: Cannot read properties of undefined (reading 'indexOf')
+    at getVendor (src\lib\vendors.ts:72:26)
+    at GET (src\app\api\admin\vendors\[vendorId]\route.ts:102:35)
+  70 | export async function getVendor(vendorId: string): Promise<Vendor | null> {
+  71 |   try {
+> 72 |     const vendorRef = doc(db, 'vendors', vendorId);
+     |                          ^
+  73 |     const vendorDoc = await getDoc(vendorRef);
+  74 |
+  75 |     if (!vendorDoc.exists()) {
+[NOT_FOUND] 판매자를 찾을 수 없습니다. 
+ GET /api/admin/vendors/36BeaZw8DL76fwd9sYHV 404 in 564ms (compile: 17ms, render: 547ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+❌ Error getting vendors: [Error [FirebaseError]: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/myaiprintshop/firestore/indexes?create_composite=Ck1wcm9qZWN0cy9teWFpcHJpbnRzaG9wL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy92ZW5kb3JzL2luZGV4ZXMvXxABGgoKBnN0YXR1cxABGg0KCWNyZWF0ZWRBdBACGgwKCF9fbmFtZV9fEAI] {
+  code: 'failed-precondition',
+  customData: undefined,
+  toString: [Function (anonymous)]
+}
+ GET /api/vendors?status=pending 200 in 763ms (compile: 6ms, render: 757ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+✅ Created new user with customer role: test-vendor-002
+✅ Created vendor: XC69T52dZH0oapK2oSrM
+✅ Vendor application created: XC69T52dZH0oapK2oSrM by test-vendor-002
+ POST /api/vendors 201 in 1026ms (compile: 5ms, render: 1021ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+Error: Route "/api/admin/vendors/[vendorId]" used `params.vendorId`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at GET (src\app\api\admin\vendors\[vendorId]\route.ts:100:13)
+   98 |
+   99 |   try {
+> 100 |     const { vendorId } = params;
+      |             ^
+  101 |
+  102 |     const vendor = await getVendor(vendorId);
+  103 |
+❌ Error getting vendor: TypeError: Cannot read properties of undefined (reading 'indexOf')
+    at getVendor (src\lib\vendors.ts:72:26)
+    at GET (src\app\api\admin\vendors\[vendorId]\route.ts:102:35)
+  70 | export async function getVendor(vendorId: string): Promise<Vendor | null> {
+  71 |   try {
+> 72 |     const vendorRef = doc(db, 'vendors', vendorId);
+     |                          ^
+  73 |     const vendorDoc = await getDoc(vendorRef);
+  74 |
+  75 |     if (!vendorDoc.exists()) {
+[NOT_FOUND] 판매자를 찾을 수 없습니다. 
+ GET /api/admin/vendors/XC69T52dZH0oapK2oSrM 404 in 741ms (compile: 27ms, render: 715ms)
+❌ Error getting vendors: [Error [FirebaseError]: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/myaiprintshop/firestore/indexes?create_composite=Ck1wcm9qZWN0cy9teWFpcHJpbnRzaG9wL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy92ZW5kb3JzL2luZGV4ZXMvXxABGgoKBnN0YXR1cxABGg0KCWNyZWF0ZWRBdBACGgwKCF9fbmFtZV9fEAI] {
+  code: 'failed-precondition',
+  customData: undefined,
+  toString: [Function (anonymous)]
+}
+ GET /api/vendors 200 in 250ms (compile: 9ms, render: 241ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+❌ Error getting vendors: [Error [FirebaseError]: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/myaiprintshop/firestore/indexes?create_composite=Ck1wcm9qZWN0cy9teWFpcHJpbnRzaG9wL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy92ZW5kb3JzL2luZGV4ZXMvXxABGgoKBnN0YXR1cxABGg0KCWNyZWF0ZWRBdBACGgwKCF9fbmFtZV9fEAI] {
+  code: 'failed-precondition',
+  customData: undefined,
+  toString: [Function (anonymous)]
+}
+ GET /api/vendors?status=pending 200 in 469ms (compile: 4ms, render: 465ms)
+[2026-03-02T14:42:15.726Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Listen' stream 0x72e1fb7a error. Code: 1 Message: 1 CANCELLED: Disconnecting idle stream. Timed out waiting for new targets.
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+✅ Created new user with customer role: test-vendor-003
+✅ Created vendor: aS0pK7h0uD1XpUSQl9SB
+✅ Vendor application created: aS0pK7h0uD1XpUSQl9SB by test-vendor-003
+ POST /api/vendors 201 in 4.2s (compile: 1453ms, render: 2.7s)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+❌ Error getting vendors: [Error [FirebaseError]: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/myaiprintshop/firestore/indexes?create_composite=Ck1wcm9qZWN0cy9teWFpcHJpbnRzaG9wL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy92ZW5kb3JzL2luZGV4ZXMvXxABGgoKBnN0YXR1cxABGg0KCWNyZWF0ZWRBdBACGgwKCF9fbmFtZV9fEAI] {
+  code: 'failed-precondition',
+  customData: undefined,
+  toString: [Function (anonymous)]
+}
+ GET /api/vendors?status=pending 200 in 591ms (compile: 103ms, render: 488ms)
+○ Compiling /api/dev/test-firestore ...
+🔍 Testing Firestore connection...
+📝 Attempting to write test document...
+✅ Document written with ID: njOn6CSeoQBETnyIQ4pw
+📖 Attempting to read documents...
+📊 Found 1 documents
+ GET /api/dev/test-firestore 200 in 17.2s (compile: 15.0s, render: 2.2s)
+[2026-03-02T15:13:26.363Z]  @firebase/firestore: Firestore (12.6.0): GrpcConnection RPC 'Listen' stream 0x72e1fb7c error. Code: 1 Message: 1 CANCELLED: Disconnecting idle stream. Timed out waiting for new targets.
+🔍 Checking vendors collection...
+📊 Found 4 vendors
+ GET /api/dev/check-vendors 200 in 3.1s (compile: 2.6s, render: 451ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+ GET /api/vendors?status=pending 200 in 3.4s (compile: 2.7s, render: 702ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+✓ Finished filesystem cache database compaction in 89s
+Error: Route "/api/admin/vendors/[vendorId]" used `params.vendorId`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at PATCH (src\app\api\admin\vendors\[vendorId]\route.ts:23:13)
+  21 |
+  22 |   try {
+> 23 |     const { vendorId } = params;
+     |             ^
+  24 |     const body = await request.json();
+  25 |     const { action, commissionRate } = body;
+  26 |
+❌ Error getting vendor: TypeError: Cannot read properties of undefined (reading 'indexOf')
+    at getVendor (src\lib\vendors.ts:72:26)
+    at PATCH (src\app\api\admin\vendors\[vendorId]\route.ts:33:35)
+  70 | export async function getVendor(vendorId: string): Promise<Vendor | null> {
+  71 |   try {
+> 72 |     const vendorRef = doc(db, 'vendors', vendorId);
+     |                          ^
+  73 |     const vendorDoc = await getDoc(vendorRef);
+  74 |
+  75 |     if (!vendorDoc.exists()) {
+[NOT_FOUND] 판매자를 찾을 수 없습니다. 
+ PATCH /api/admin/vendors/aS0pK7h0uD1XpUSQl9SB 404 in 4.1s (compile: 1725ms, render: 2.3s)
+✓ Finished writing to filesystem cache in 73s
+🔍 Testing getVendor with ID: aS0pK7h0uD1XpUSQl9SB
+📄 Document reference created
+📖 getDoc completed. Exists: true
+✅ Document data retrieved
+ GET /api/dev/test-get-vendor?id=aS0pK7h0uD1XpUSQl9SB 200 in 3.1s (compile: 2.7s, render: 369ms)
+🔍 Testing lib/vendors getVendor with ID: aS0pK7h0uD1XpUSQl9SB
+ GET /api/dev/test-lib-vendor?id=aS0pK7h0uD1XpUSQl9SB 200 in 1389ms (compile: 1044ms, render: 344ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+Error: Route "/api/admin/vendors/[vendorId]" used `params.vendorId`. `params` is a Promise and must be unwrapped with `await` or `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at PATCH (src\app\api\admin\vendors\[vendorId]\route.ts:23:13)
+  21 |
+  22 |   try {
+> 23 |     const { vendorId } = params;
+     |             ^
+  24 |     const body = await request.json();
+  25 |     const { action, commissionRate } = body;
+  26 |
+❌ Error getting vendor: TypeError: Cannot read properties of undefined (reading 'indexOf')
+    at getVendor (src\lib\vendors.ts:72:26)
+    at PATCH (src\app\api\admin\vendors\[vendorId]\route.ts:33:35)
+  70 | export async function getVendor(vendorId: string): Promise<Vendor | null> {
+  71 |   try {
+> 72 |     const vendorRef = doc(db, 'vendors', vendorId);
+     |                          ^
+  73 |     const vendorDoc = await getDoc(vendorRef);
+  74 |
+  75 |     if (!vendorDoc.exists()) {
+[NOT_FOUND] 판매자를 찾을 수 없습니다. 
+ PATCH /api/admin/vendors/aS0pK7h0uD1XpUSQl9SB 404 in 464ms (compile: 26ms, render: 438ms)
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+✅ Approved vendor: aS0pK7h0uD1XpUSQl9SB with commission rate 15%
+✅ Added role "seller" to user test-vendor-003
+✅ Vendor aS0pK7h0uD1XpUSQl9SB approved with commission rate 15%
+ PATCH /api/admin/vendors/aS0pK7h0uD1XpUSQl9SB 200 in 1940ms (compile: 129ms, render: 1811ms)
+ GET /api/vendors 200 in 269ms (compile: 16ms, render: 254ms)
+ GET /api/dev/check-user-role?userId=test-vendor-003 404 in 1553ms (compile: 1102ms, render: 451ms)
+ GET /api/dev/check-user-role?userId=test-vendor-003 200 in 1684ms (compile: 1309ms, render: 374ms)
+✓ Finished filesystem cache database compaction in 12.8s
+⚠️ Development mode: Using token as userId (no Firebase Admin verification)
+✅ Rejected vendor: XC69T52dZH0oapK2oSrM
+✅ Vendor XC69T52dZH0oapK2oSrM rejected
+ PATCH /api/admin/vendors/XC69T52dZH0oapK2oSrM 200 in 1165ms (compile: 53ms, render: 1112ms)
+✓ Finished filesystem cache database compaction in 20.8s
+[?25h

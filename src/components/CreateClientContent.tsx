@@ -34,7 +34,7 @@ export default function CreateClientContent({ products }: { products: Product[] 
   return (
     <>
       {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-b from-emerald-50 via-white to-white relative overflow-hidden">
+      <section className="pt-32 pb-16 bg-gradient-to-b from-indigo-50 via-white to-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #D1FAE5 0%, transparent 50%), radial-gradient(circle at 80% 50%, #FEF3C7 0%, transparent 50%)' }} />
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
@@ -43,13 +43,13 @@ export default function CreateClientContent({ products }: { products: Product[] 
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-100 text-emerald-700 rounded-full text-sm font-bold mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-bold mb-6">
               <Sparkles className="w-4 h-4" />
               Gemini Pro + Imagen 3
             </div>
             <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 leading-tight">
               AI로 나만의<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-amber-500">
                 커스텀 굿즈
               </span>를 만들어보세요
             </h1>
@@ -82,11 +82,11 @@ export default function CreateClientContent({ products }: { products: Product[] 
                 className="text-center"
               >
                 <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center ${
-                  item.color === 'emerald' ? 'bg-emerald-100' :
+                  item.color === 'emerald' ? 'bg-indigo-100' :
                   item.color === 'blue' ? 'bg-blue-100' : 'bg-amber-100'
                 }`}>
                   <item.icon className={`w-7 h-7 ${
-                    item.color === 'emerald' ? 'text-emerald-600' :
+                    item.color === 'emerald' ? 'text-indigo-600' :
                     item.color === 'blue' ? 'text-blue-600' : 'text-amber-600'
                   }`} />
                 </div>
@@ -116,7 +116,7 @@ export default function CreateClientContent({ products }: { products: Product[] 
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="bg-white rounded-2xl p-4 text-center border border-gray-100 hover:shadow-md hover:border-emerald-200 transition-all cursor-default"
+                className="bg-white rounded-2xl p-4 text-center border border-gray-100 hover:shadow-md hover:border-indigo-200 transition-all cursor-default"
               >
                 <div className="text-3xl mb-2">{style.icon}</div>
                 <h3 className="font-bold text-gray-900 text-sm mb-1">{style.name}</h3>
@@ -143,7 +143,7 @@ export default function CreateClientContent({ products }: { products: Product[] 
               onClick={() => setSelectedCategory(null)}
               className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
                 !selectedCategory
-                  ? 'bg-emerald-600 text-white'
+                  ? 'bg-indigo-600 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
@@ -155,7 +155,7 @@ export default function CreateClientContent({ products }: { products: Product[] 
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
                   selectedCategory === cat
-                    ? 'bg-emerald-600 text-white'
+                    ? 'bg-indigo-600 text-white'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
@@ -176,14 +176,14 @@ export default function CreateClientContent({ products }: { products: Product[] 
                   className="group cursor-pointer"
                 >
                   <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 mb-3">
-                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-100 via-teal-50 to-amber-50 group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-100 via-teal-50 to-amber-50 group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="w-16 h-16 bg-white/80 rounded-2xl flex items-center justify-center shadow-sm">
-                        <ShoppingBag className="w-8 h-8 text-emerald-500" />
+                        <ShoppingBag className="w-8 h-8 text-indigo-500" />
                       </div>
                     </div>
                     {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-emerald-600/0 group-hover:bg-emerald-600/80 transition-all duration-300 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-indigo-600/0 group-hover:bg-indigo-600/80 transition-all duration-300 flex items-center justify-center">
                       <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center">
                         <Wand2 className="w-8 h-8 text-white mx-auto mb-2" />
                         <span className="text-white font-bold text-sm">AI 디자인 시작</span>
@@ -191,7 +191,7 @@ export default function CreateClientContent({ products }: { products: Product[] 
                     </div>
                     {product.badge && (
                       <span className={`absolute top-3 left-3 px-2 py-1 rounded-md text-xs font-bold text-white z-10 ${
-                        product.badge === 'BEST' ? 'bg-emerald-500' :
+                        product.badge === 'BEST' ? 'bg-indigo-500' :
                         product.badge === 'HOT' ? 'bg-red-500' :
                         product.badge === 'NEW' ? 'bg-blue-500' : 'bg-gray-500'
                       }`}>
@@ -200,8 +200,8 @@ export default function CreateClientContent({ products }: { products: Product[] 
                     )}
                   </div>
                   <div>
-                    <p className="text-xs text-emerald-600 font-medium mb-1">{product.category}</p>
-                    <h3 className="font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors line-clamp-1">
+                    <p className="text-xs text-indigo-600 font-medium mb-1">{product.category}</p>
+                    <h3 className="font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
                       {product.name}
                     </h3>
                     <p className="text-lg font-bold text-gray-900 mt-1">

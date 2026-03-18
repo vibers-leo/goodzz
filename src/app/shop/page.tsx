@@ -47,21 +47,25 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       <Navbar />
       <div className="min-h-screen bg-white pt-16">
         {/* Header / Banner */}
-      <div className="bg-gray-50 py-12 border-b border-gray-100">
+      <div className="bg-gradient-to-br from-indigo-50 via-white to-amber-50 py-16 border-b border-indigo-100/50">
         <div className="container mx-auto px-4 text-center">
           {query ? (
               <div>
-                <span className="text-blue-600 font-bold mb-2 block uppercase tracking-widest text-xs italic">Search Results for</span>
-                <h1 className="text-3xl md:text-5xl font-bold text-gray-900 border-b-2 border-blue-100 inline-block px-4 pb-2">
+                <span className="text-indigo-600 font-bold mb-3 block uppercase tracking-widest text-sm flex items-center justify-center gap-2">
+                  <div className="w-1 h-1 rounded-full bg-indigo-600" />
+                  Search Results
+                  <div className="w-1 h-1 rounded-full bg-indigo-600" />
+                </span>
+                <h1 className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-amber-500 inline-block">
                     "{query}"
                 </h1>
               </div>
           ) : (
               <>
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
-                    Premium Goods Shop
+                <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+                    Premium AI Goods Shop
                 </h1>
-                <p className="text-gray-500 max-w-2xl mx-auto">
+                <p className="text-gray-600 max-w-2xl mx-auto text-lg">
                     AI로 만든 나만의 디자인을 입혀보세요. <br className="md:hidden" />
                     프리미엄 퀄리티의 굿즈를 제작해드립니다.
                 </p>
@@ -76,13 +80,13 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         {!query && (
             <div className="mb-8">
               {/* 상위 카테고리 */}
-              <div className="flex overflow-x-auto pb-4 gap-2 no-scrollbar">
+              <div className="flex overflow-x-auto pb-4 gap-3 no-scrollbar">
                 <Link
                   href="/shop"
-                  className={`px-5 py-2 rounded-full whitespace-nowrap text-sm font-semibold transition-all ${
+                  className={`px-6 py-2.5 rounded-full whitespace-nowrap text-sm font-bold transition-all ${
                     !category
-                      ? 'bg-emerald-600 text-white shadow-md'
-                      : 'bg-white text-gray-600 border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50'
+                      ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-500/30'
+                      : 'bg-white text-gray-600 border-2 border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600'
                   }`}
                 >
                   전체
@@ -93,10 +97,10 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                       <Link
                         key={cat.slug}
                         href={`/shop?category=${cat.slug}`}
-                        className={`px-5 py-2 rounded-full whitespace-nowrap text-sm font-semibold transition-all ${
+                        className={`px-6 py-2.5 rounded-full whitespace-nowrap text-sm font-bold transition-all ${
                             isActive
-                            ? 'bg-emerald-600 text-white shadow-md'
-                            : 'bg-white text-gray-600 border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50'
+                            ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-500/30'
+                            : 'bg-white text-gray-600 border-2 border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600'
                         }`}
                       >
                         {cat.label}
@@ -107,13 +111,13 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
               {/* 하위 카테고리 (현재 카테고리에 서브카테고리가 있을 때만 표시) */}
               {currentCategory && currentCategory.subcategories && currentCategory.subcategories.length > 0 && (
-                <div className="flex overflow-x-auto gap-2 no-scrollbar mt-4 pl-4 border-l-4 border-emerald-200">
+                <div className="flex overflow-x-auto gap-2 no-scrollbar mt-4 pl-4 border-l-4 border-indigo-300">
                   <Link
                     href={`/shop?category=${category}`}
-                    className={`px-4 py-1.5 rounded-full whitespace-nowrap text-xs font-medium transition-all ${
+                    className={`px-4 py-2 rounded-full whitespace-nowrap text-sm font-semibold transition-all ${
                       !subcategory
-                        ? 'bg-emerald-100 text-emerald-700 font-bold'
-                        : 'bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600'
+                        ? 'bg-indigo-100 text-indigo-700'
+                        : 'bg-gray-100 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600'
                     }`}
                   >
                     전체
@@ -124,10 +128,10 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                       <Link
                         key={sub.slug}
                         href={`/shop?category=${category}&subcategory=${sub.slug}`}
-                        className={`px-4 py-1.5 rounded-full whitespace-nowrap text-xs font-medium transition-all ${
+                        className={`px-4 py-2 rounded-full whitespace-nowrap text-sm font-semibold transition-all ${
                           isActive
-                            ? 'bg-emerald-100 text-emerald-700 font-bold'
-                            : 'bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600'
+                            ? 'bg-indigo-100 text-indigo-700'
+                            : 'bg-gray-100 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600'
                         }`}
                       >
                         {sub.label}
@@ -139,10 +143,12 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
             </div>
         )}
 
-        {/* Product Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10">
-          {filteredProducts.map((product: any) => (
-            <ProductCard key={product.id} product={product} />
+        {/* Product Grid with Masonry Layout */}
+        <div className="columns-2 md:columns-3 lg:columns-4 gap-6 space-y-6">
+          {filteredProducts.map((product: any, index: number) => (
+            <div key={product.id} className="break-inside-avoid mb-6">
+              <ProductCard product={product} index={index} />
+            </div>
           ))}
         </div>
         

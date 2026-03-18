@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PORTONE_CONFIG, PaymentResponse, Order } from '@/lib/payment';
 import { getOrderById, updateOrder } from '@/lib/orders';
+import { batchTransferToVendors } from '@/lib/portone-settlement';
+import { getAllVendors } from '@/lib/vendors';
 
 // 포트원 V2 API로 결제 검증
 async function verifyPaymentWithPortone(paymentId: string): Promise<PaymentResponse | null> {
@@ -140,6 +142,30 @@ export async function POST(request: NextRequest) {
     const updatedOrder = await getOrderById(orderId);
 
     console.log(`✅ Order ${orderId} payment verified and saved to DB`);
+
+    // Phase 5: 배분정산 실행
+    if (updatedOrder?.vendorOrders && updatedOrder.vendorOrders.length > 0) {
+      try {
+        console.log(`💰 Starting settlement for ${updatedOrder.vendorOrders.length} vendors...`);
+
+        const vendors = await getAllVendors('approved');
+        const vendorsMap = new Map(vendors.map(v => [v.id, v]));
+
+        const settlementResults = await batchTransferToVendors(
+          updatedOrder.vendorOrders,
+          vendorsMap,
+          orderId
+        );
+
+        console.log(`✅ Settlement completed for ${settlementResults.size} vendors`);
+
+        // TODO: 판매자에게 이메일 알림 발송
+        // await sendVendorNotifications(updatedOrder.vendorOrders, vendorsMap);
+      } catch (error) {
+        console.error('❌ Settlement error (order still completed):', error);
+        // 정산 실패해도 주문은 완료됨 (정산은 나중에 재시도 가능)
+      }
+    }
 
     return NextResponse.json({
       success: true,

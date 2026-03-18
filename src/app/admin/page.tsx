@@ -9,6 +9,8 @@ import AdminSettings from '@/components/admin/AdminSettings';
 import BannerManager from '@/components/admin/BannerManager';
 import ReviewAdmin from '@/components/admin/ReviewAdmin';
 import DesignManager from '@/components/admin/DesignManager';
+import VendorManager from '@/components/admin/VendorManager';
+import SettlementManager from '@/components/admin/SettlementManager';
 import { useAuth } from '@/context/AuthContext';
 import {
   LayoutDashboard,
@@ -29,7 +31,8 @@ import {
   AlertCircle,
   Sparkles,
   LogIn,
-  ShieldAlert
+  ShieldAlert,
+  DollarSign
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -380,6 +383,8 @@ export default function AdminPage() {
     { id: 'dashboard', label: '대시보드', icon: <LayoutDashboard size={20} /> },
     { id: 'orders', label: '주문 관리', icon: <ShoppingCart size={20} /> },
     { id: 'products', label: '상품 관리', icon: <Package size={20} /> },
+    { id: 'vendors', label: '판매자 관리', icon: <Users size={20} /> },
+    { id: 'settlements', label: '정산 관리', icon: <DollarSign size={20} /> },
     { id: 'designs', label: '디자인 관리', icon: <Wand2 size={20} /> },
     { id: 'banners', label: '배너 관리', icon: <Image size={20} /> },
     { id: 'reviews', label: '리뷰 관리', icon: <MessageSquare size={20} /> },
@@ -392,6 +397,8 @@ export default function AdminPage() {
       case 'dashboard': return '대시보드';
       case 'orders': return '주문 관리';
       case 'products': return '상품 관리';
+      case 'vendors': return '판매자 관리';
+      case 'settlements': return '정산 관리';
       case 'designs': return 'AI 디자인 관리';
       case 'banners': return '배너 및 팝업 관리';
       case 'reviews': return '리뷰 관리';
@@ -442,13 +449,17 @@ export default function AdminPage() {
           {activeTab === 'dashboard' && <DashboardOverview />}
 
           {activeTab === 'orders' && <OrderManager />}
-          
+
           {activeTab === 'products' && <ProductManager />}
-          
+
+          {activeTab === 'vendors' && <VendorManager />}
+
+          {activeTab === 'settlements' && <SettlementManager />}
+
           {activeTab === 'designs' && <DesignManager />}
-          
+
           {activeTab === 'banners' && <BannerManager />}
-          
+
           {activeTab === 'reviews' && <ReviewAdmin />}
           
           {activeTab === 'export-voucher' && (

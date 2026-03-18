@@ -1,8 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Sparkles, ChevronRight, Star, Heart, ShoppingBag } from 'lucide-react';
+import { Sparkles, ChevronRight, Star } from 'lucide-react';
 import Link from 'next/link';
+import ProductCard from './ProductCard';
 
 interface Product {
   id: string;
@@ -31,54 +32,6 @@ interface Props {
   reviews: Review[];
 }
 
-function ProductCard({ product, index }: { product: Product; index: number }) {
-  const formattedPrice = product.price.toLocaleString();
-
-  return (
-    <Link href={`/shop/${product.id}`}>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: index * 0.05 }}
-        className="group cursor-pointer"
-      >
-        <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 mb-3">
-          {/* Product Image */}
-          <img
-            src={product.thumbnail}
-            alt={product.name}
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-
-          {/* Badges */}
-          {product.badge && (
-            <span className={`absolute top-3 left-3 px-2 py-1 rounded-md text-xs font-bold text-white ${product.badge === 'BEST' ? 'bg-emerald-500' :
-                product.badge === 'HOT' ? 'bg-red-500' :
-                  product.badge === 'NEW' ? 'bg-blue-500' : 'bg-gray-500'
-              }`}>
-              {product.badge}
-            </span>
-          )}
-
-          {/* Wishlist */}
-          <button className="absolute top-3 right-3 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white">
-            <Heart className="w-4 h-4 text-gray-400 hover:text-red-500 transition-colors" />
-          </button>
-        </div>
-
-        <div>
-          <p className="text-xs text-emerald-600 font-medium mb-1">{product.category}</p>
-          <h3 className="font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors line-clamp-1">
-            {product.name}
-          </h3>
-          <p className="text-lg font-bold text-gray-900 mt-1">₩{formattedPrice}</p>
-        </div>
-      </motion.div>
-    </Link>
-  );
-}
-
 export default function HomeClientContent({ aiGoodsItems, bestProducts, allProducts, reviews }: Props) {
   return (
     <>
@@ -93,7 +46,7 @@ export default function HomeClientContent({ aiGoodsItems, bestProducts, allProdu
               </h2>
               <p className="text-gray-500 mt-2">AI 디자이너가 추천하는 커스텀 굿즈</p>
             </div>
-            <Link href="/shop" className="hidden md:flex items-center gap-1 text-emerald-600 font-semibold hover:gap-2 transition-all">
+            <Link href="/shop" className="hidden md:flex items-center gap-1 text-indigo-600 font-semibold hover:gap-2 transition-all">
               전체보기 <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
@@ -105,7 +58,7 @@ export default function HomeClientContent({ aiGoodsItems, bestProducts, allProdu
           </div>
 
           <div className="mt-8 text-center md:hidden">
-            <Link href="/shop" className="inline-flex items-center gap-1 text-emerald-600 font-semibold">
+            <Link href="/shop" className="inline-flex items-center gap-1 text-indigo-600 font-semibold">
               전체보기 <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
@@ -122,7 +75,7 @@ export default function HomeClientContent({ aiGoodsItems, bestProducts, allProdu
               </h2>
               <p className="text-gray-500 mt-2">가장 인기있는 상품들을 만나보세요</p>
             </div>
-            <Link href="/shop?sort=best" className="hidden md:flex items-center gap-1 text-emerald-600 font-semibold hover:gap-2 transition-all">
+            <Link href="/shop?sort=best" className="hidden md:flex items-center gap-1 text-indigo-600 font-semibold hover:gap-2 transition-all">
               전체보기 <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
@@ -145,7 +98,7 @@ export default function HomeClientContent({ aiGoodsItems, bestProducts, allProdu
               </h2>
               <p className="text-gray-500 mt-2">다양한 카테고리의 상품을 둘러보세요</p>
             </div>
-            <Link href="/shop" className="hidden md:flex items-center gap-1 text-emerald-600 font-semibold hover:gap-2 transition-all">
+            <Link href="/shop" className="hidden md:flex items-center gap-1 text-indigo-600 font-semibold hover:gap-2 transition-all">
               전체보기 <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
@@ -188,7 +141,7 @@ export default function HomeClientContent({ aiGoodsItems, bestProducts, allProdu
                   <div>
                     <span className="font-semibold text-gray-900">{review.name}</span>
                     <span className="text-gray-400 mx-2">·</span>
-                    <span className="text-emerald-600">{review.product}</span>
+                    <span className="text-indigo-600">{review.product}</span>
                   </div>
                   <span className="text-gray-400">{review.date}</span>
                 </div>
@@ -215,7 +168,7 @@ export default function HomeClientContent({ aiGoodsItems, bestProducts, allProdu
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/shop"
-                className="px-8 py-4 bg-white text-emerald-600 rounded-full font-bold text-lg hover:shadow-lg transition-all"
+                className="px-8 py-4 bg-white text-indigo-600 rounded-full font-bold text-lg hover:shadow-lg transition-all"
               >
                 상품 둘러보기
               </Link>

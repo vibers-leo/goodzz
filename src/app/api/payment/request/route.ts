@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Order, OrderItem, PaymentRequestData } from '@/lib/payment';
 import { createOrder } from '@/lib/orders';
+import { createVendorOrders } from '@/lib/portone-settlement';
+import { getAllVendors } from '@/lib/vendors';
 
 // 주문 ID 생성 (Firestore 전용이 아닌 포트원 표시용으로 사용 가능)
 function generateOrderId(): string {
@@ -37,13 +39,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Phase 5: 판매자별로 주문 그룹화 (VendorOrders 생성)
+    const vendors = await getAllVendors('approved');
+    const vendorsMap = new Map(vendors.map(v => [v.id, v]));
+
+    // items에 vendorId가 없으면 PLATFORM_DEFAULT로 설정
+    const itemsWithVendor = items.map(item => ({
+      ...item,
+      vendorId: item.vendorId || 'PLATFORM_DEFAULT',
+    }));
+
+    // vendorOrders 생성
+    const vendorOrders = createVendorOrders(itemsWithVendor, vendorsMap);
+
+    // platformFee 계산 (전체 수수료 합계)
+    const platformFee = vendorOrders.reduce((sum, vo) => sum + vo.commission, 0);
+
     // 주문 생성 (Firestore에 PENDING 상태로 저장)
     const customOrderId = generateOrderId();
-    
+
     const orderData: Omit<Order, 'id' | 'createdAt' | 'updatedAt'> = {
-      items,
+      items: itemsWithVendor,
       totalAmount,
       shippingFee,
+      platformFee,
+      vendorOrders,
       shippingInfo,
       paymentStatus: 'PENDING',
       orderStatus: 'PENDING',

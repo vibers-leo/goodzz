@@ -1,0 +1,11 @@
+
+> myaiprintshop@0.1.0 dev
+> next dev -p 3300
+
+▲ Next.js 16.1.7 (Turbopack)
+- Local:         http://localhost:3300
+- Network:       http://192.168.219.100:3300
+- Environments: .env.local
+
+✓ Starting...
+✓ Ready in 3.7s

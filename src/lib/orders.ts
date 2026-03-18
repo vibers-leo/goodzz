@@ -22,6 +22,8 @@ function docToOrder(data: DocumentData, id: string): Order {
     items: data.items || [],
     totalAmount: data.totalAmount || 0,
     shippingFee: data.shippingFee || 0,
+    platformFee: data.platformFee,
+    vendorOrders: data.vendorOrders,
     shippingInfo: data.shippingInfo || {},
     paymentId: data.paymentId,
     paymentStatus: data.paymentStatus || 'PENDING',

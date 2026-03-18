@@ -3,6 +3,8 @@ import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
 import HomeClientContent from '@/components/HomeClientContent';
 import ReviewsSection from '@/components/ReviewsSection';
+import MarqueeBanner from '@/components/MarqueeBanner';
+import FloatingActions from '@/components/FloatingActions';
 import Link from 'next/link';
 
 interface Product {
@@ -88,22 +90,25 @@ export default async function Home() {
   const { aiGoodsItems, bestProducts, allProducts } = await getHomeProducts();
 
   return (
-    <main className="min-h-screen bg-white selection:bg-emerald-100 selection:text-emerald-900">
+    <main className="min-h-screen bg-white selection:bg-indigo-100 selection:text-indigo-900">
       <Navbar />
       <Hero />
 
-      {/* Category Quick Links */}
-      <section className="py-8 bg-white border-b border-gray-100">
+      {/* Marquee Banner - 새로운 프리미엄 요소 */}
+      <MarqueeBanner />
+
+      {/* Category Quick Links - 업그레이드된 스타일 */}
+      <section className="py-10 bg-gradient-to-b from-white to-gray-50/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+          <div className="flex flex-wrap justify-center gap-3 md:gap-4">
             {categories.map((cat) => (
               <Link
                 key={cat.name}
                 href={cat.href}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 transition-all text-gray-700 font-medium"
+                className="group flex items-center gap-2.5 px-6 py-3 rounded-2xl bg-white hover:bg-gradient-to-r hover:from-indigo-50 hover:to-amber-50 border border-gray-200 hover:border-indigo-200 transition-all text-gray-700 hover:text-indigo-700 font-semibold shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
               >
-                <span>{cat.icon}</span>
-                <span>{cat.name}</span>
+                <span className="text-xl group-hover:scale-110 transition-transform">{cat.icon}</span>
+                <span className="text-sm">{cat.name}</span>
               </Link>
             ))}
           </div>
@@ -122,6 +127,9 @@ export default async function Home() {
       <ReviewsSection />
 
       <Footer />
+
+      {/* Floating Action Button - 새로운 프리미엄 요소 */}
+      <FloatingActions />
     </main>
   );
 }

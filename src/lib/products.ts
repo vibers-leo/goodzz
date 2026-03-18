@@ -60,6 +60,10 @@ export interface Product {
     minQuantity: number;
     discountRate: number; // 0.1 means 10% discount
   }[];
+  // Multi-vendor fields (Phase 5)
+  vendorId: string; // vendors 컬렉션 ID
+  vendorName?: string; // 캐시 (판매자명)
+  vendorType: 'platform' | 'marketplace'; // 'platform' = MyAIPrintShop 직판
   createdAt: Date | Timestamp;
   updatedAt: Date | Timestamp;
 }
@@ -92,6 +96,10 @@ function docToProduct(doc: DocumentData, id: string): Product {
     reviewCount: data.reviewCount || 0,
     rating: data.rating || 0,
     volumePricing: data.volumePricing,
+    // Multi-vendor fields (Phase 5)
+    vendorId: data.vendorId || 'PLATFORM_DEFAULT',
+    vendorName: data.vendorName || 'MyAIPrintShop',
+    vendorType: data.vendorType || 'platform',
     createdAt: data.createdAt?.toDate?.() || new Date(),
     updatedAt: data.updatedAt?.toDate?.() || new Date(),
   };
