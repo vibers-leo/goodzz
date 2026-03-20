@@ -1,0 +1,18 @@
+
+> myaiprintshop@0.1.0 build
+> next build
+
+  Downloading swc package @next/swc-wasm-nodejs... to C:\Users\desig\AppData\Local\next-swc
+⚠ Attempted to load @next/swc-win32-x64-msvc, but an error occurred: An Application Control policy has blocked this file.
+\\?\D:\MyAiPrintShop\myaiprintshop\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node
+  Skipping creating a lockfile at D:\MyAiPrintShop\myaiprintshop\.next\lock because we're using WASM bindings
+▲ Next.js 16.1.7 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+⚠ Attempted to load @next/swc-win32-x64-msvc, but an error occurred: An Application Control policy has blocked this file.
+\\?\D:\MyAiPrintShop\myaiprintshop\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node
+
+> Build error occurred
+Error: `turbo.createProject` is not supported by the wasm bindings.
+    at ignore-listed frames

@@ -55,6 +55,19 @@ export const PRINT_ZONES: Record<string, ProductPrintConfig> = {
       printWidthMM: 200, printHeightMM: 80, dpi: 300,
     }],
   },
+  businesscard: {
+    zones: [
+      {
+        id: 'front', label: '앞면', x: 10, y: 15, width: 80, height: 70,
+        printWidthMM: 90, printHeightMM: 50, dpi: 300,
+      },
+      {
+        id: 'back', label: '뒷면', x: 10, y: 15, width: 80, height: 70,
+        printWidthMM: 90, printHeightMM: 50, dpi: 300,
+      },
+    ],
+    canvasAspectRatio: 1.8, // 90mm / 50mm = 1.8
+  },
 };
 
 export function getPrintConfig(category: string): ProductPrintConfig {

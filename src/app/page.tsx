@@ -3,10 +3,9 @@ import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
 import HomeClientContent from '@/components/HomeClientContent';
 import ReviewsSection from '@/components/ReviewsSection';
-import MarqueeBanner from '@/components/MarqueeBanner';
-import FloatingActions from '@/components/FloatingActions';
 import Link from 'next/link';
 import { getLatestReviews } from '@/lib/reviews';
+import { Sparkles, Zap, Shield, Truck } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -119,32 +118,80 @@ export default async function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-white selection:bg-indigo-100 selection:text-indigo-900">
+    <main className="min-h-screen bg-white">
       <Navbar />
       <Hero />
 
-      {/* Marquee Banner - 새로운 프리미엄 요소 */}
-      <MarqueeBanner />
-
-      {/* Category Quick Links - 업그레이드된 스타일 */}
-      <section className="py-10 bg-gradient-to-b from-white to-gray-50/50">
+      {/* Features Section - Stripe 스타일 */}
+      <section className="py-20 bg-white border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap justify-center gap-3 md:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Zap className="w-6 h-6 text-purple-600" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">AI 디자인</h3>
+              <p className="text-sm text-gray-600">
+                몇 초만에 프로페셔널한<br />디자인 완성
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Sparkles className="w-6 h-6 text-blue-600" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">프리미엄 품질</h3>
+              <p className="text-sm text-gray-600">
+                최고급 소재와<br />정교한 프린팅
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Truck className="w-6 h-6 text-green-600" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">빠른 배송</h3>
+              <p className="text-sm text-gray-600">
+                24시간 이내 제작,<br />빠른 배송
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Shield className="w-6 h-6 text-amber-600" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">환불 보장</h3>
+              <p className="text-sm text-gray-600">
+                100% 만족 보장,<br />무료 환불
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Category Section - 미니멀하게 */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+            카테고리
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {categories.map((cat) => (
               <Link
                 key={cat.name}
                 href={cat.href}
-                className="group flex items-center gap-2.5 px-6 py-3 rounded-2xl bg-white hover:bg-gradient-to-r hover:from-indigo-50 hover:to-amber-50 border border-gray-200 hover:border-indigo-200 transition-all text-gray-700 hover:text-indigo-700 font-semibold shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
+                className="card card-hover p-6 text-center group"
               >
-                <span className="text-xl group-hover:scale-110 transition-transform">{cat.icon}</span>
-                <span className="text-sm">{cat.name}</span>
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">
+                  {cat.icon}
+                </div>
+                <span className="text-sm font-medium text-gray-700 group-hover:text-purple-600">
+                  {cat.name}
+                </span>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Client Component로 전달하여 animation 유지 */}
+      {/* 제품 섹션 */}
       <HomeClientContent
         aiGoodsItems={aiGoodsItems}
         bestProducts={bestProducts}
@@ -152,13 +199,10 @@ export default async function Home() {
         reviews={reviews}
       />
 
-      {/* 고객 리뷰 섹션 */}
+      {/* 리뷰 섹션 */}
       <ReviewsSection />
 
       <Footer />
-
-      {/* Floating Action Button - 새로운 프리미엄 요소 */}
-      <FloatingActions />
     </main>
   );
 }

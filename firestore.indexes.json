@@ -1,16 +1,12 @@
 {
   "indexes": [
     {
-      "collectionGroup": "products",
+      "collectionGroup": "reviews",
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "vendorId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "isActive",
-          "order": "ASCENDING"
+          "fieldPath": "rating",
+          "order": "DESCENDING"
         },
         {
           "fieldPath": "createdAt",
@@ -22,10 +18,6 @@
       "collectionGroup": "products",
       "queryScope": "COLLECTION",
       "fields": [
-        {
-          "fieldPath": "vendorId",
-          "order": "ASCENDING"
-        },
         {
           "fieldPath": "category",
           "order": "ASCENDING"
@@ -41,8 +33,8 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "vendorOrders.vendorId",
-          "arrayConfig": "CONTAINS"
+          "fieldPath": "userId",
+          "order": "ASCENDING"
         },
         {
           "fieldPath": "createdAt",
@@ -55,86 +47,8 @@
       "queryScope": "COLLECTION",
       "fields": [
         {
-          "fieldPath": "vendorOrders.vendorId",
-          "arrayConfig": "CONTAINS"
-        },
-        {
-          "fieldPath": "status",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "vendors",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "status",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "vendors",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "ownerId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "status",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "settlement_logs",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
           "fieldPath": "vendorId",
           "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "status",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "settlement_logs",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "vendorId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "users",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "roles",
-          "arrayConfig": "CONTAINS"
         },
         {
           "fieldPath": "createdAt",
