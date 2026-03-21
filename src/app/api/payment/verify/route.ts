@@ -3,6 +3,7 @@ import { PORTONE_CONFIG, PaymentResponse, Order } from '@/lib/payment';
 import { getOrderById, updateOrder } from '@/lib/orders';
 import { batchTransferToVendors } from '@/lib/portone-settlement';
 import { getAllVendors } from '@/lib/vendors';
+import { forwardOrderToWowPress } from '@/lib/wowpress/order-forwarder';
 
 // 포트원 V2 API로 결제 검증
 async function verifyPaymentWithPortone(paymentId: string): Promise<PaymentResponse | null> {
@@ -164,6 +165,16 @@ export async function POST(request: NextRequest) {
       } catch (error) {
         console.error('❌ Settlement error (order still completed):', error);
         // 정산 실패해도 주문은 완료됨 (정산은 나중에 재시도 가능)
+      }
+    }
+
+    // Phase 6: WowPress 주문 전달 (비차단)
+    if (updatedOrder) {
+      try {
+        await forwardOrderToWowPress(updatedOrder);
+      } catch (error) {
+        console.error('❌ WowPress forwarding error (non-blocking):', error);
+        // WowPress 전달 실패해도 주문은 완료됨 (나중에 재시도 가능)
       }
     }
 

@@ -1,6 +1,6 @@
-# 🚀 Vercel 배포 가이드
+# 🚀 MyAIPrintShop 프로덕션 배포 가이드
 
-MyAIPrintShop을 Vercel에 배포하는 방법입니다.
+MyAIPrintShop MVP (SDK, Widget, Embed, WowPress 통합 포함)를 프로덕션 환경에 배포하는 완전한 가이드입니다.
 
 ## 📋 배포 전 체크리스트
 
@@ -26,13 +26,27 @@ GOOGLE_API_KEY=your-google-ai-api-key
 NEXT_PUBLIC_SITE_URL=https://your-domain.vercel.app
 ```
 
-#### 선택 환경 변수 (결제 기능 활성화 시)
+#### PortOne 결제 설정 (필수)
 
 ```bash
 # PortOne 결제 (V2)
 NEXT_PUBLIC_PORTONE_STORE_ID=your-store-id
 NEXT_PUBLIC_PORTONE_CHANNEL_KEY=your-channel-key
 PORTONE_API_SECRET=your-api-secret
+```
+
+#### WowPress API 설정 (Print-on-Demand)
+
+```bash
+# WowPress API Key
+WOWPRESS_API_KEY=your-wowpress-api-key
+```
+
+#### 관리자 설정
+
+```bash
+# 관리자 이메일 (쉼표로 구분)
+ADMIN_EMAILS=admin@myaiprintshop.com,juno@myaiprintshop.com
 ```
 
 #### 선택 환경 변수 (Firebase Admin SDK 사용 시)
@@ -78,16 +92,41 @@ vercel --prod
 
 ## ⚙️ 빌드 설정
 
-`vercel.json` 파일이 이미 설정되어 있습니다:
+### SDK 빌드 포함
+
+`vercel.json` 파일이 SDK 빌드를 포함하도록 설정되어 있습니다:
 
 ```json
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run build && npm run build:sdk",
   "outputDirectory": ".next",
   "framework": "nextjs",
   "installCommand": "npm install"
 }
 ```
+
+**빌드 프로세스:**
+1. Next.js 앱 빌드 (`npm run build`)
+2. Buy Button SDK 빌드 (`npm run build:sdk`)
+   - 출력: `public/sdk/buy-button.min.js` (2.01 KB gzipped)
+   - 소스맵: `public/sdk/buy-button.min.js.map`
+
+### 로컬에서 프로덕션 빌드 테스트
+
+배포 전 로컬에서 빌드를 테스트하세요:
+
+```bash
+# SDK 빌드
+npm run build:sdk
+
+# Next.js 빌드
+npm run build
+
+# 프로덕션 모드 실행
+npm run start
+```
+
+에러가 없는지 확인하고 http://localhost:3300 에서 테스트하세요.
 
 ---
 
@@ -139,15 +178,45 @@ firebase deploy --only firestore:rules --project myaiprintshop
 
 ## 🎯 도메인 설정
 
-### Vercel 커스텀 도메인
+### 메인 도메인
 
 1. Vercel 대시보드 → Settings → Domains
-2. 도메인 추가 (예: myaiprintshop.co.kr)
-3. DNS 설정에 A 레코드 추가:
+2. 메인 도메인 추가 (예: `myaiprintshop.com`)
+3. DNS 설정:
    ```
    A    @    76.76.21.21
    CNAME www  cname.vercel-dns.com
    ```
+
+### 와일드카드 서브도메인 (파트너용)
+
+파트너별 전용 서브도메인 (예: `partner.myaiprintshop.com`)을 제공하려면:
+
+1. **Vercel에서 와일드카드 도메인 추가**
+   - Settings → Domains
+   - `*.myaiprintshop.com` 추가
+
+2. **DNS 레코드 추가**
+   ```
+   CNAME  *  cname.vercel-dns.com
+   ```
+
+3. **Firestore에 파트너 등록**
+
+   `api_partners` 컬렉션에 파트너 문서 추가:
+   ```javascript
+   {
+     subdomain: "partner",  // partner.myaiprintshop.com
+     status: "active",
+     // ... 기타 필드
+   }
+   ```
+
+자세한 내용은 [scripts/setup-subdomain.md](scripts/setup-subdomain.md) 참고
+
+### SSL 인증서
+
+Vercel이 자동으로 Let's Encrypt 인증서를 발급합니다 (최대 24시간 소요, 보통 10분 이내).
 
 ---
 
@@ -199,16 +268,101 @@ npx @next/bundle-analyzer
 
 ---
 
+## 🧪 WowPress 통합 설정
+
+배포 후 WowPress API 통합을 설정하세요:
+
+1. **환경 변수 확인**
+   - `WOWPRESS_API_KEY`가 Production 환경에 설정되어 있는지 확인
+
+2. **Firestore 벤더 등록**
+   - Firebase Console → Firestore
+   - `vendors/VENDOR_WOWPRESS` 문서 생성
+   - 필드: `businessName`, `vendorType`, `commissionRate`, `status: "approved"`
+
+3. **테스트**
+   ```bash
+   # 상품 동기화 API 호출 (관리자 권한 필요)
+   curl -X POST https://myaiprintshop.com/api/wowpress/sync/product/WOW001 \
+     -H "Authorization: Bearer <admin-token>"
+   ```
+
+4. **주문 전달 확인**
+   - WowPress 상품으로 테스트 주문 생성
+   - Firestore `wowpress_order_logs` 컬렉션에서 `status: "forwarded"` 확인
+
+자세한 내용은 [scripts/setup-wowpress.md](scripts/setup-wowpress.md) 참고
+
+---
+
+## 📦 SDK 배포
+
+배포 후 파트너에게 제공할 SDK URL:
+
+```html
+<!-- 프로덕션 SDK -->
+<script src="https://myaiprintshop.com/sdk/buy-button.min.js"></script>
+```
+
+**사용 예시:**
+
+```html
+<div id="buy-button"></div>
+
+<script src="https://myaiprintshop.com/sdk/buy-button.min.js"></script>
+<script>
+  MyAIPrintShop.createBuyButton({
+    apiKey: 'sk_live_xxxxxxxxxx',
+    productId: 'prod_xxxxxxxxxx',
+    containerId: 'buy-button',
+    buttonText: '지금 구매하기',
+    onPaymentSuccess: (order) => {
+      console.log('주문 완료:', order);
+    },
+  });
+</script>
+```
+
+**SDK 파일 확인:**
+- 크기: 2.01 KB (gzipped)
+- 경로: `public/sdk/buy-button.min.js`
+- 캐시: 1년 (immutable)
+
+---
+
 ## ✅ 배포 후 체크리스트
 
+### 기본 기능
 - [ ] 홈페이지 로딩 확인
 - [ ] Firebase 로그인 테스트
 - [ ] AI 이미지 생성 테스트
 - [ ] 명함 에디터 작동 확인
 - [ ] 상품 목록 로딩 확인
 - [ ] 장바구니 기능 테스트
+- [ ] 결제 플로우 (테스트 카드)
 - [ ] 모바일 반응형 확인
 - [ ] 성능 측정 (Lighthouse)
+
+### 파트너 통합
+- [ ] SDK 로드 테스트 (`https://myaiprintshop.com/sdk/buy-button.min.js`)
+- [ ] Buy Button 렌더링 확인
+- [ ] Embed 페이지 접속 (`/embed/product/[id]?apiKey=xxx`)
+- [ ] 서브도메인 접속 (`partner.myaiprintshop.com`)
+- [ ] CORS 헤더 확인 (Public API)
+
+### WowPress 통합
+- [ ] `WOWPRESS_API_KEY` 환경 변수 설정
+- [ ] `vendors/VENDOR_WOWPRESS` 문서 생성
+- [ ] 상품 동기화 API 테스트
+- [ ] 주문 전달 테스트 (실제 주문 또는 테스트 주문)
+- [ ] `wowpress_order_logs` 확인
+
+### 법적 준수
+- [ ] 이용약관 페이지 (`/terms`)
+- [ ] 개인정보처리방침 (`/privacy`)
+- [ ] 환불정책 (`/refund`)
+- [ ] Embed 페이지 법적 푸터 표시
+- [ ] 파트너 페이지 법적 푸터 표시
 
 ---
 

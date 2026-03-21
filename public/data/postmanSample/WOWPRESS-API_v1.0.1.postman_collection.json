@@ -1,0 +1,536 @@
+{
+	"info": {
+		"_postman_id": "a7fb2589-50de-4c9c-87c7-7e1cd97a2513",
+		"name": "WOWPRESS-API_v1.0.1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17374256"
+	},
+	"item": [
+		{
+			"name": "[필수]인증",
+			"item": [
+				{
+					"name": "토큰발급",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"authPw\" : \"Pass123!\",\r\n  \"authUid\" : \"wowapitest\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Service}}/api/login/issue",
+							"host": [
+								"{{Service}}"
+							],
+							"path": [
+								"api",
+								"login",
+								"issue"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "제품",
+			"item": [
+				{
+					"name": "제품목록",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3b3dwcmVzcyBvcmRlciBhcGkiLCJVU0VSTk8iOjEwODA5NywiaXNzIjoid293cHJlc3MiLCJVU0VSTkFNRSI6IuyZgOyasO2UhOugiOyKpCIsIlVTRVJfUk9MRSI6IlJPTEVfVVNFUiIsImV4cCI6MjI3Mzg5Mjc5OSwiaWF0IjoxNjY5MDkyNzgyfQ.zME0t-SgK1_86D5RHEjbN_N0nq2ZEpVHGoMOZPyqRAw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Service}}/api/v1/std/prodlist",
+							"host": [
+								"{{Service}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"std",
+								"prodlist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "제품상세 (일반명함)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3b3dwcmVzcyBvcmRlciBhcGkiLCJVU0VSTk8iOjEwODA5NywiaXNzIjoid293cHJlc3MiLCJVU0VSTkFNRSI6IuyZgOyasO2UhOugiOyKpCIsIlVTRVJfUk9MRSI6IlJPTEVfVVNFUiIsImV4cCI6MjI3Mzg5Mjc5OSwiaWF0IjoxNjY5MDkyNzgyfQ.zME0t-SgK1_86D5RHEjbN_N0nq2ZEpVHGoMOZPyqRAw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Service}}/api/v1/std/prod_info/40073",
+							"host": [
+								"{{Service}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"std",
+								"prod_info",
+								"40073"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "제품상세 (중철책자)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3b3dwcmVzcyBvcmRlciBhcGkiLCJVU0VSTk8iOjEwODA5NywiaXNzIjoid293cHJlc3MiLCJVU0VSTkFNRSI6IuyZgOyasO2UhOugiOyKpCIsIlVTRVJfUk9MRSI6IlJPTEVfVVNFUiIsImV4cCI6MjI3Mzg5Mjc5OSwiaWF0IjoxNjY5MDkyNzgyfQ.zME0t-SgK1_86D5RHEjbN_N0nq2ZEpVHGoMOZPyqRAw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Service}}/api/v1/std/prod_info/40198",
+							"host": [
+								"{{Service}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"std",
+								"prod_info",
+								"40198"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "제품가격조회 (일반명함)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3b3dwcmVzcyBvcmRlciBhcGkiLCJVU0VSTk8iOjEwODA5NywiaXNzIjoid293cHJlc3MiLCJVU0VSTkFNRSI6IuyZgOyasO2UhOugiOyKpCIsIlVTRVJfUk9MRSI6IlJPTEVfVVNFUiIsImV4cCI6MjI3Mzg5Mjc5OSwiaWF0IjoxNjY5MDkyNzgyfQ.zME0t-SgK1_86D5RHEjbN_N0nq2ZEpVHGoMOZPyqRAw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"prodno\": 40073,\r\n  \"ordqty\": \"500\",\r\n  \"ordcnt\": \"1\",\r\n  \"ordtitle\": \"C/S참고용 주문제목\",\r\n  \"ordkey\": \"seq_00000000000000000000000055\",\r\n  \"jobpresetno\": \"3110\",\r\n  \"prsjob\": [\r\n    {\r\n      \"jobno\": \"3110\",\r\n      \"covercd\": 0,\r\n      \"sizeno\": \"7071\",\r\n      \"wsize\": \"100\",\r\n      \"hsize\": \"100\",\r\n      \"jobqty\": \"500\",\r\n      \"paperno\": \"22904\",\r\n      \"colorno0\": \"255\",\r\n      \"colorno0add\": \"\"\r\n    }\r\n  ],\r\n  \"awkjob\": [\r\n    {\r\n      \"jobno\": \"11347\",\r\n      \"covercd\": 0,\r\n      \"pagecd\": \"0\",\r\n      \"sizeno\": \"7071\",\r\n      \"wsize\": \"100\",\r\n      \"hsize\": \"100\",\r\n      \"jobqty\": \"500\",\r\n      \"joboptmsg\": null\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Service}}/api/v1/ord/cjson_jobcost",
+							"host": [
+								"{{Service}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ord",
+								"cjson_jobcost"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "제품가격조회 (중철책자)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3b3dwcmVzcyBvcmRlciBhcGkiLCJVU0VSTk8iOjEwODA5NywiaXNzIjoid293cHJlc3MiLCJVU0VSTkFNRSI6IuyZgOyasO2UhOugiOyKpCIsIlVTRVJfUk9MRSI6IlJPTEVfVVNFUiIsImV4cCI6MjI3Mzg5Mjc5OSwiaWF0IjoxNjY5MDkyNzgyfQ.zME0t-SgK1_86D5RHEjbN_N0nq2ZEpVHGoMOZPyqRAw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"prodno\": 40198,\r\n  \"ordqty\": \"1\",\r\n  \"ordcnt\": \"1\",\r\n  \"ordtitle\": \"C/S참고용 주문제목\",\r\n  \"ordkey\": \"seq_00000000000000000000000095\",\r\n  \"jobpresetno\": \"17\",\r\n  \"prsjob\": [\r\n    {\r\n      \"jobno\": \"17\",\r\n      \"covercd\": 1,\r\n      \"sizeno\": \"10435\",\r\n      \"wsize\": \"183\",\r\n      \"hsize\": \"258\",\r\n      \"jobqty\": \"1\",\r\n      \"pagecnt\": \"4\",\r\n      \"paperno\": \"20066\",\r\n      \"colorno1\": \"240\",\r\n      \"colorno1add\": \"\",\r\n      \"colorno2\": \"\",\r\n      \"colorno2add\": \"\"\r\n    },\r\n    {\r\n      \"covercd\": 2,\r\n      \"sizeno\": \"10435\",\r\n      \"wsize\": \"183\",\r\n      \"hsize\": \"258\",\r\n      \"jobqty\": \"1\",\r\n      \"pagecnt\": \"4\",\r\n      \"paperno\": \"20066\",\r\n      \"colorno1\": \"240\",\r\n      \"colorno1add\": \"\",\r\n      \"colorno2\": \"\",\r\n      \"colorno2add\": \"\"\r\n    }\r\n  ],\r\n  \"awkjob\": [\r\n    {\r\n      \"jobno\": \"11307\",\r\n      \"covercd\": 1,\r\n      \"pagecd\": \"0\",\r\n      \"sizeno\": \"10435\",\r\n      \"wsize\": \"183\",\r\n      \"hsize\": \"258\",\r\n      \"jobqty\": \"1\",\r\n      \"joboptmsg\": null\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Service}}/api/v1/ord/cjson_jobcost",
+							"host": [
+								"{{Service}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ord",
+								"cjson_jobcost"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "주문요청",
+			"item": [
+				{
+					"name": "주문요청 (단건 주문)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"ord\",\r\n  \"ordreq\": [\r\n    [\r\n      {\r\n        \"prodno\": 40073,\r\n        \"ordqty\": \"500\",\r\n        \"ordcnt\": \"1\",\r\n        \"ordtitle\": \"C/S참고용 주문제목\",\r\n        \"ordkey\": \" 고객사 Key\",\r\n        \"jobpresetno\": \"3110\",\r\n        \"prsjob\": [\r\n          {\r\n            \"jobno\": \"3110\",\r\n            \"covercd\": 0,\r\n            \"sizeno\": \"5456\",\r\n            \"wsize\": \"86\",\r\n            \"hsize\": \"52\",\r\n            \"jobqty\": \"500\",\r\n            \"paperno\": \"22904\",\r\n            \"colorno0\": \"255\",\r\n            \"colorno0add\": \"\"\r\n          }\r\n        ],\r\n        \"awkjob\": []\r\n      }\r\n    ]\r\n  ],\r\n  \"dlvymcd\": \"4\",\r\n  \"dlvyfr\": {\r\n    \"name\": \"홍길동\",\r\n    \"tel\": \"010-1234-5678\",\r\n    \"zipcode\": \"12345\",\r\n    \"sd\": \"서울특별시\",\r\n    \"sgg\": \"서초구\",\r\n    \"umd\": \"대방동\",\r\n    \"addr1\": \"서울특별시 서초구 대방동\",\r\n    \"addr2\": \"100-100호\"\r\n  },\r\n  \"dlvyto\": {\r\n    \"name\": \"길동홍\",\r\n    \"tel\": \"010-5678-1234\",\r\n    \"zipcode\": \"63563\",\r\n    \"sd\": \"서울\",\r\n    \"sgg\": \"금천구\",\r\n    \"umd\": \"가산동\",\r\n    \"addr1\": \"서울 금천구 가산디지털2로 53\",\r\n    \"addr2\": \"한라시그마밸리15층 1510호 (가산동)\",\r\n    \"dlvymsg\": \"문앞에 두세요.\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Service}}/api/v1/ord/cjson_order",
+							"host": [
+								"{{Service}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ord",
+								"cjson_order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "주문요청 (부자재 포함 주문)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"ord\",\r\n  \"ordreq\": [\r\n    [\r\n      {\r\n        \"prodno\": 40073,\r\n        \"ordqty\": \"500\",\r\n        \"ordcnt\": \"1\",\r\n        \"ordtitle\": \"원주문\",\r\n        \"ordkey\": \"고객사 Key 123\",\r\n        \"jobpresetno\": \"3110\",\r\n        \"prsjob\": [\r\n          {\r\n            \"jobno\": \"3110\",\r\n            \"covercd\": 0,\r\n            \"sizeno\": \"5456\",\r\n            \"wsize\": \"86\",\r\n            \"hsize\": \"52\",\r\n            \"jobqty\": \"500\",\r\n            \"paperno\": \"22904\",\r\n            \"colorno0\": \"255\",\r\n            \"colorno0add\": \"\"\r\n          }\r\n        ],\r\n        \"awkjob\": []\r\n      },\r\n      {\r\n        \"prodno\": 40123,\r\n        \"ordqty\": \"100\",\r\n        \"ordcnt\": \"1\",\r\n        \"ordtitle\": \"부자재\",\r\n        \"ordkey\": \"고객사 Key 124\",\r\n        \"jobpresetno\": \"30\",\r\n        \"prsjob\": [\r\n          {\r\n            \"jobno\": \"30\",\r\n            \"covercd\": 0,\r\n            \"sizeno\": \"7051\",\r\n            \"wsize\": \"\",\r\n            \"hsize\": \"\",\r\n            \"jobqty\": \"100\"\r\n          }\r\n        ],\r\n        \"awkjob\": []\r\n      }\r\n    ]\r\n  ],\r\n  \"dlvymcd\": \"4\",\r\n  \"dlvyfr\": {\r\n    \"name\": \"홍길동\",\r\n    \"tel\": \"010-1234-5678\",\r\n    \"zipcode\": \"12345\",\r\n    \"sd\": \"서울특별시\",\r\n    \"sgg\": \"서초구\",\r\n    \"umd\": \"대방동\",\r\n    \"addr1\": \"서울특별시 서초구 대방동\",\r\n    \"addr2\": \"100-100호\"\r\n  },\r\n  \"dlvyto\": {\r\n    \"name\": \"길동홍\",\r\n    \"tel\": \"010-5678-1234\",\r\n    \"zipcode\": \"63563\",\r\n    \"sd\": \"서울\",\r\n    \"sgg\": \"금천구\",\r\n    \"umd\": \"가산동\",\r\n    \"addr1\": \"서울 금천구 가산디지털2로 53\",\r\n    \"addr2\": \"한라시그마밸리15층 1510호 (가산동)\",\r\n    \"dlvymsg\": \"문앞에 두세요.\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Service}}/api/v1/ord/cjson_order",
+							"host": [
+								"{{Service}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ord",
+								"cjson_order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "주문요청 (복수건 주문)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"action\": \"ord\",\r\n  \"ordreq\": [\r\n    [\r\n      {\r\n        \"prodno\": 40073,\r\n        \"ordqty\": \"500\",\r\n        \"ordcnt\": \"1\",\r\n        \"ordtitle\": \"C/S참고용 주문제목\",\r\n        \"ordkey\": \"고객KEY 123\",\r\n        \"jobpresetno\": \"3110\",\r\n        \"prsjob\": [\r\n          {\r\n            \"jobno\": \"3110\",\r\n            \"covercd\": 0,\r\n            \"sizeno\": \"5456\",\r\n            \"wsize\": \"86\",\r\n            \"hsize\": \"52\",\r\n            \"jobqty\": \"500\",\r\n            \"paperno\": \"22904\",\r\n            \"colorno0\": \"255\"\r\n          }\r\n        ],\r\n        \"awkjob\": []\r\n      }\r\n    ],\r\n    [\r\n      {\r\n        \"prodno\": 40073,\r\n        \"ordqty\": \"500\",\r\n        \"ordcnt\": \"1\",\r\n        \"ordtitle\": \"C/S참고용 주문제목\",\r\n        \"ordkey\": \"고객KEY 456\",\r\n        \"jobpresetno\": \"3110\",\r\n        \"prsjob\": [\r\n          {\r\n            \"jobno\": \"3110\",\r\n            \"covercd\": 0,\r\n            \"sizeno\": \"5456\",\r\n            \"wsize\": \"86\",\r\n            \"hsize\": \"52\",\r\n            \"jobqty\": \"500\",\r\n            \"paperno\": \"22904\",\r\n            \"colorno0\": \"255\"\r\n          }\r\n        ],\r\n        \"awkjob\": []\r\n      }\r\n    ]\r\n  ],\r\n  \"dlvymcd\": \"4\",\r\n  \"dlvyfr\": {\r\n    \"name\": \"홍길동\",\r\n    \"tel\": \"010-1234-5678\",\r\n    \"zipcode\": \"12345\",\r\n    \"sd\": \"서울특별시\",\r\n    \"sgg\": \"서초구\",\r\n    \"umd\": \"대방동\",\r\n    \"addr1\": \"서울특별시 서초구 대방동\",\r\n    \"addr2\": \"100-100호\"\r\n  },\r\n  \"dlvyto\": {\r\n    \"name\": \"길동홍\",\r\n    \"tel\": \"010-5678-1234\",\r\n    \"zipcode\": \"63563\",\r\n    \"sd\": \"서울\",\r\n    \"sgg\": \"금천구\",\r\n    \"umd\": \"가산동\",\r\n    \"addr1\": \"서울 금천구 가산디지털2로 53\",\r\n    \"addr2\": \"한라시그마밸리15층 1510호 (가산동)\",\r\n    \"dlvymsg\": \"문앞에 두세요.\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Service}}/api/v1/ord/cjson_order",
+							"host": [
+								"{{Service}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ord",
+								"cjson_order"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "주문조회",
+			"item": [
+				{
+					"name": "주문정보",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{Service}}/api/v1/ord/order/WPRAM2211213805",
+							"host": [
+								"{{Service}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ord",
+								"order",
+								"WPRAM2211213805"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "주문배송리스트조회",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"stdt\": \"2022-07-27\",\r\n\t\"ordkey\":\"고객사 key\"\r\n}\r\n\r\n/*\r\n\t\"stdt\": \"2022-07-27\",\r\n\t\"eddt\": \"2022-07-27\",\r\n\t\"ordtitle\": \"API\",\r\n\t\"validord\": \"Y\",\r\n\t\"ordkey\":\"고객사 key\"\r\n\t\"shipnum\": \"123456767\",\r\n\t\"dboxnum\": \"4-109-4621304\",\r\n*/",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Service}}/api/v1/ord/ord_list",
+							"host": [
+								"{{Service}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ord",
+								"ord_list"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "주문수정",
+			"item": [
+				{
+					"name": "주문취소",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"ordnum\":\"WPAAP2212012680\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Service}}/api/v1/ord/ord_cancel",
+							"host": [
+								"{{Service}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ord",
+								"ord_cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "묶음배송",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"ordnum\":\"WPAAP2212012691\",\r\n    \"dboxnum\":\"4-109-4621320\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Service}}/api/v1/dlvy/bdle",
+							"host": [
+								"{{Service}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"dlvy",
+								"bdle"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "Token",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3b3dwcmVzcyBvcmRlciBhcGkiLCJVU0VSTk8iOjEwODA5NywiaXNzIjoid293cHJlc3MiLCJVU0VSTkFNRSI6IuyZgOyasO2UhOugiOyKpCIsIlVTRVJfUk9MRSI6IlJPTEVfVVNFUiIsImV4cCI6MjI3Mzg5Mjc5OSwiaWF0IjoxNjY5MDkyNzgyfQ.zME0t-SgK1_86D5RHEjbN_N0nq2ZEpVHGoMOZPyqRAw"
+		}
+	]
+}

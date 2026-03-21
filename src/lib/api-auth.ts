@@ -19,6 +19,14 @@ export interface ApiPartner {
     totalRequests: number;
     lastRequestAt?: Date;
   };
+  // CORS 화이트리스트 (파트너별 허용 오리진)
+  allowedOrigins?: string[]; // ['https://partner.com', 'https://www.partner.com'] 또는 ['*']
+  // 기능 플래그
+  features?: {
+    sdkEnabled: boolean;     // Buy Button SDK 사용 가능 여부
+    widgetEnabled: boolean;  // Product Widget 사용 가능 여부
+    embedEnabled: boolean;   // iframe Embed 사용 가능 여부
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -83,6 +91,12 @@ export async function validateApiKey(apiKey: string): Promise<ApiPartner | null>
       usage: {
         totalRequests: data.usage?.totalRequests || 0,
         lastRequestAt: data.usage?.lastRequestAt?.toDate(),
+      },
+      allowedOrigins: data.allowedOrigins || ['*'], // 기본값: 모든 오리진 허용
+      features: data.features || {
+        sdkEnabled: true,
+        widgetEnabled: true,
+        embedEnabled: true,
       },
       createdAt: data.createdAt?.toDate() || new Date(),
       updatedAt: data.updatedAt?.toDate() || new Date(),
@@ -189,6 +203,12 @@ export async function createApiPartner(data: {
       usage: {
         totalRequests: 0,
       },
+      allowedOrigins: ['*'], // 기본값: 모든 오리진 허용 (프로덕션에서는 구체적으로 설정)
+      features: {
+        sdkEnabled: true,
+        widgetEnabled: true,
+        embedEnabled: true,
+      },
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
     });
@@ -227,6 +247,12 @@ async function getPartnerById(partnerId: string): Promise<ApiPartner | null> {
       usage: {
         totalRequests: data.usage?.totalRequests || 0,
         lastRequestAt: data.usage?.lastRequestAt?.toDate(),
+      },
+      allowedOrigins: data.allowedOrigins || ['*'],
+      features: data.features || {
+        sdkEnabled: true,
+        widgetEnabled: true,
+        embedEnabled: true,
       },
       createdAt: data.createdAt?.toDate(),
       updatedAt: data.updatedAt?.toDate(),
