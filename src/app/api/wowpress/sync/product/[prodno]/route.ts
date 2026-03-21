@@ -68,6 +68,7 @@ export async function POST(
       subcategory: 'wowpress',
       vendorId: WOWPRESS_VENDOR_ID,
       vendorName: 'WowPress',
+      vendorType: 'marketplace', // WowPress는 마켓플레이스
       stock: 9999, // WowPress는 주문 제작이므로 재고 무제한
       isActive: true,
       reviewCount: 0,
