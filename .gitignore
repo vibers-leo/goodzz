@@ -31,12 +31,23 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files
+.env*.local
 .env
-.env.local
-.env.*.local
 
 # vercel
 .vercel
+
+# turbo
+.turbo
+
+# logs
+*.log
+
+# session logs
+session-logs/
+
+# package lock (using bun)
+package-lock.json
 
 # typescript
 *.tsbuildinfo
