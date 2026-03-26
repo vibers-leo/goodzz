@@ -73,90 +73,41 @@ export default function Navbar() {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
-                <span className="text-white font-bold text-sm">M</span>
-              </div>
-              <span className="text-lg font-semibold text-gray-900 hidden sm:block">
-                마이AI프린트샵
+              <span className="text-xl font-black tracking-tighter text-gray-900">
+                GOODZZ
               </span>
             </Link>
 
             {/* Desktop Menu - 심플하게 */}
             <div className="hidden md:flex items-center gap-1">
-              {getAllCategories().map(cat => (
-                <div
-                  key={cat.slug}
-                  className="relative group"
-                  onMouseEnter={() => setHoveredCategory(cat.slug)}
-                  onMouseLeave={() => setHoveredCategory(null)}
-                >
-                  <Link
-                    href={`/shop?category=${cat.slug}`}
-                    className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors rounded-md hover:bg-gray-50"
-                  >
-                    {cat.label}
-                  </Link>
-
-                  {/* 드롭다운 */}
-                  {cat.subcategories && cat.subcategories.length > 0 && hoveredCategory === cat.slug && (
-                    <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-                      <Link
-                        href={`/shop?category=${cat.slug}`}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium"
-                      >
-                        전체 보기
-                      </Link>
-                      <div className="border-t border-gray-100 my-1" />
-                      {cat.subcategories.map(sub => (
-                        <Link
-                          key={sub.slug}
-                          href={`/shop?category=${cat.slug}&subcategory=${sub.slug}`}
-                          className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
-                        >
-                          {sub.label}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-              <Link
-                href="/create"
-                className="px-3 py-2 text-sm font-medium text-purple-600 hover:text-purple-700 transition-colors rounded-md hover:bg-purple-50"
-              >
-                AI 디자인
-              </Link>
+              <Link href="/" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors rounded-md hover:bg-gray-50">홈</Link>
+              <Link href="/shop" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors rounded-md hover:bg-gray-50">상품</Link>
+              <Link href="/create" className="px-3 py-2 text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors rounded-md hover:bg-primary-50">AI 디자인</Link>
+              <Link href="/mypage" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors rounded-md hover:bg-gray-50">마이페이지</Link>
             </div>
 
             {/* Desktop Icons - 미니멀하게 */}
             <div className="hidden md:flex items-center gap-3">
+              <Link
+                href="/create"
+                className="btn btn-primary btn-sm hidden lg:flex mr-2"
+              >
+                무료로 시작하기
+              </Link>
               <button
                 onClick={() => setIsSearchOpen(true)}
                 className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
+                title="검색"
               >
                 <Search className="w-5 h-5" />
               </button>
-              <Link
-                href="/mypage/designs"
-                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
-                title="나의 AI 디자인"
-              >
-                <Wand2 className="w-5 h-5" />
-              </Link>
-              <Link
-                href="/wishlist"
-                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
-              >
-                <Heart className="w-5 h-5" />
-              </Link>
-              <NotificationDropdown />
               <Link
                 href="/cart"
                 className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors relative"
               >
                 <ShoppingCart className="w-5 h-5" />
                 {mounted && cartCount > 0 && (
-                  <span className="absolute top-0 right-0 bg-purple-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium">
+                  <span className="absolute top-0 right-0 bg-primary-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-medium">
                     {cartCount}
                   </span>
                 )}
@@ -178,22 +129,33 @@ export default function Navbar() {
         {isMenuOpen && (
           <div className="md:hidden bg-white border-t border-gray-200">
             <div className="px-4 py-4 space-y-2">
-              {getAllCategories().map(cat => (
-                <Link
-                  key={cat.slug}
-                  href={`/shop?category=${cat.slug}`}
-                  className="block py-2 text-gray-700 font-medium"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {cat.label}
-                </Link>
-              ))}
+              <Link
+                href="/"
+                className="block py-2 text-gray-700 font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                홈
+              </Link>
+              <Link
+                href="/shop"
+                className="block py-2 text-gray-700 font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                상품
+              </Link>
               <Link
                 href="/create"
-                className="block py-2 text-purple-600 font-medium"
+                className="block py-2 text-primary-600 font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
                 AI 디자인
+              </Link>
+              <Link
+                href="/mypage"
+                className="block py-2 text-gray-700 font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                마이페이지
               </Link>
               <div className="pt-4 flex items-center gap-4 border-t border-gray-200">
                 <button onClick={() => { setIsSearchOpen(true); setIsMenuOpen(false); }}>

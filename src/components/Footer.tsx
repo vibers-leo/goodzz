@@ -13,28 +13,25 @@ export default function Footer() {
           {/* Brand & Contact */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-linear-to-r from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">M</span>
-              </div>
-              <span className="text-xl font-bold text-white">마이AI프린트샵</span>
+              <span className="text-xl font-black tracking-tighter text-white">GOODZZ(굿쯔)</span>
             </div>
             <p className="text-gray-400 mb-6 max-w-md leading-relaxed">
-              AI 디자이너와 함께 만드는 나만의 특별한 굿즈. 
-              아이디어만 있으면 제작부터 배송까지 모든 것을 처리합니다.
+              소상공인과 브랜드를 위한 AI 굿즈 제작 플랫폼. 
+              디자이너 없이도 고퀄리티 굿즈를 소량으로 부담 없이 제작하세요.
             </p>
             
             <div className="space-y-3">
               <div className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-emerald-500" />
+                <Phone className="w-4 h-4 text-primary-500" />
                 <span className="font-medium text-white">고객센터: 010-4866-5805</span>
               </div>
               <div className="flex items-center gap-3">
-                <Clock className="w-4 h-4 text-emerald-500" />
+                <Clock className="w-4 h-4 text-primary-500" />
                 <span>평일 09:00 - 18:00 / 점심 12:00 - 13:00</span>
               </div>
               <div className="flex items-center gap-3">
-                <Mail className="w-4 h-4 text-emerald-500" />
-                <span>batakspot@naver.com</span>
+                <Mail className="w-4 h-4 text-primary-500" />
+                <span>support@goodzz.co.kr</span>
               </div>
             </div>
           </div>
@@ -44,19 +41,16 @@ export default function Footer() {
             <h4 className="text-white font-bold mb-4">바로가기</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/shop" className="hover:text-emerald-400 transition-colors">전체 상품</Link>
+                <Link href="/" className="hover:text-primary-400 transition-colors">홈</Link>
               </li>
               <li>
-                <Link href="/shop?category=goods" className="hover:text-emerald-400 transition-colors">굿즈/팬시</Link>
+                <Link href="/shop" className="hover:text-primary-400 transition-colors">전체 상품</Link>
               </li>
               <li>
-                <Link href="/shop?category=fashion" className="hover:text-emerald-400 transition-colors">패션/어패럴</Link>
+                <Link href="/create" className="hover:text-primary-400 transition-colors">AI 디자인</Link>
               </li>
               <li>
-                <Link href="/shop?category=print" className="hover:text-emerald-400 transition-colors">인쇄</Link>
-              </li>
-              <li>
-                <Link href="/create" className="hover:text-emerald-400 transition-colors">AI 디자이너</Link>
+                <Link href="/mypage" className="hover:text-primary-400 transition-colors">마이페이지</Link>
               </li>
             </ul>
           </div>
@@ -66,26 +60,23 @@ export default function Footer() {
             <h4 className="text-white font-bold mb-4">고객지원</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/faq" className="hover:text-emerald-400 transition-colors">자주 묻는 질문</Link>
+                <Link href="/faq" className="hover:text-primary-400 transition-colors">자주 묻는 질문</Link>
               </li>
               <li>
-                <Link href="/terms" className="hover:text-emerald-400 transition-colors">이용약관</Link>
+                <Link href="/terms" className="hover:text-primary-400 transition-colors">이용약관</Link>
               </li>
               <li>
-                <Link href="/privacy" className="hover:text-emerald-400 transition-colors">개인정보처리방침</Link>
+                <Link href="/privacy" className="hover:text-primary-400 transition-colors">개인정보처리방침</Link>
               </li>
               <li>
-                <Link href="/shipping" className="hover:text-emerald-400 transition-colors">배송/환불 안내</Link>
+                <Link href="/refund" className="hover:text-primary-400 transition-colors">환불/배송 정책</Link>
               </li>
             </ul>
             
             {/* Social Links */}
             <div className="flex gap-3 mt-6">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-emerald-600 transition-colors">
+              <a href="https://instagram.com/goodzz_official" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary-600 transition-colors">
                 <Instagram className="w-5 h-5" />
-              </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-emerald-600 transition-colors">
-                <Youtube className="w-5 h-5" />
               </a>
             </div>
           </div>
@@ -102,7 +93,7 @@ export default function Footer() {
               <p>주소: 부산광역시 수영구 수영로 47 2층</p>
             </div>
             <p className="text-gray-600">
-              © 2026 마이AI프린트샵. All rights reserved.
+              © 2026 GOODZZ(굿쯔). All rights reserved.
             </p>
           </div>
         </div>
