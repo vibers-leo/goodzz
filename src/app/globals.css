@@ -130,28 +130,12 @@
   --transition-bounce: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-@theme inline {
+@theme {
+  --font-sans: 'Pretendard', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-accent: var(--accent);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #2C2420;
-    --background-secondary: #221B17;
-    --surface: #3E342F;
-    --surface-elevated: #4A403A;
-    --foreground: #FFF9F5;
-    --foreground-secondary: #D4C9C1;
-    --foreground-muted: #A39B94;
-    --border: #564841;
-    --border-light: #3E342F;
-    --border-strong: #6B5B52;
-  }
 }
 
 /* ===========================

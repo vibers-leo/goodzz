@@ -2,23 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 
-const geistSans = localFont({
-  src: [
-    { path: "../../public/fonts/Geist-Regular.woff2", weight: "400" },
-    { path: "../../public/fonts/Geist-Medium.woff2", weight: "500" },
-    { path: "../../public/fonts/Geist-SemiBold.woff2", weight: "600" },
-    { path: "../../public/fonts/Geist-Bold.woff2", weight: "700" },
-  ],
-  variable: "--font-geist-sans",
-});
 
-const geistMono = localFont({
-  src: [
-    { path: "../../public/fonts/GeistMono-Regular.woff2", weight: "400" },
-    { path: "../../public/fonts/GeistMono-Medium.woff2", weight: "500" },
-  ],
-  variable: "--font-geist-mono",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://goodzz.co.kr'),
@@ -64,9 +48,7 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard-dynamic-subset.css"
         />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className="antialiased">
         <AuthProvider>
           <CartSync />
           {children}
