@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Phone, Mail, MapPin, Clock, Instagram, Youtube } from 'lucide-react';
 
 export default function Footer() {
@@ -12,8 +13,14 @@ export default function Footer() {
           
           {/* Brand & Contact */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-xl font-black tracking-tighter text-white">GOODZZ</span>
+            <div className="flex items-center gap-2 mb-4 opacity-50 grayscale brightness-200">
+              <Image 
+                src="/logo.png" 
+                alt="GOODZZ" 
+                width={100} 
+                height={30} 
+                className="h-6 w-auto object-contain"
+              />
             </div>
             <p className="text-gray-400 mb-6 max-w-md leading-relaxed">
               소상공인과 브랜드를 위한 AI 굿즈 제작 플랫폼. 

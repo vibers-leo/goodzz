@@ -73,9 +73,14 @@ export default function Navbar() {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group">
-              <span className="text-xl font-black tracking-tighter text-gray-900">
-                GOODZZ
-              </span>
+              <Image 
+                src="/logo.png" 
+                alt="GOODZZ" 
+                width={120} 
+                height={36} 
+                className="h-7 w-auto object-contain"
+                priority 
+              />
             </Link>
 
             {/* Desktop Menu - 심플하게 */}
