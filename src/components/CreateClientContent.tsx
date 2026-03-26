@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Wand2, ShoppingBag, ArrowRight, Palette, Layers, Zap } from 'lucide-react';
 import Link from 'next/link';
+import { X, Globe, CreditCard } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
 
 interface Product {
   id: string;
@@ -25,6 +27,26 @@ const AI_STYLES = [
 
 export default function CreateClientContent({ products }: { products: Product[] }) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setUploadedImage(url);
+    }
+  };
+
+  const handleProductClick = (e: React.MouseEvent, product: Product) => {
+    if (uploadedImage) {
+      e.preventDefault();
+      setSelectedProduct(product);
+      setIsOrderModalOpen(true);
+    }
+  };
 
   const categories = [...new Set(products.map(p => p.category))];
   const filteredProducts = selectedCategory
@@ -56,9 +78,19 @@ export default function CreateClientContent({ products }: { products: Product[] 
               어떤 상품이든 찰떡같이 입혀서 전 세계로 배송해 드립니다.
             </p>
             <div className="flex justify-center flex-col sm:flex-row gap-4 mb-4">
-              <button className="btn btn-primary btn-lg flex items-center justify-center gap-2 font-bold px-8">
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleImageUpload} 
+                className="hidden" 
+                accept="image/jpeg, image/png, image/webp"
+              />
+              <button 
+                onClick={() => fileInputRef.current?.click()}
+                className="btn btn-primary btn-lg flex items-center justify-center gap-2 font-bold px-8"
+              >
                 <Palette className="w-5 h-5" />
-                사진 갤러리에서 업로드 (JPG, PNG)
+                {uploadedImage ? '다른 사진으로 변경하기' : '사진 갤러리에서 업로드 (JPG, PNG)'}
               </button>
             </div>
           </motion.div>
@@ -73,9 +105,9 @@ export default function CreateClientContent({ products }: { products: Product[] 
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: Palette, step: '01', title: '상품 선택', desc: '아래에서 커스텀할 상품을 선택하세요', color: 'primary' },
-              { icon: Wand2, step: '02', title: 'AI 디자인 생성', desc: '텍스트로 설명하면 AI가 디자인을 만듭니다', color: 'secondary' },
-              { icon: ShoppingBag, step: '03', title: '주문 & 배송', desc: '마음에 드는 디자인으로 바로 주문하세요', color: 'accent' },
+              { icon: Palette, step: '01', title: '사진 업로드', desc: '굿즈로 만들고 싶은 사진을 한 장 골라주세요', color: 'primary' },
+              { icon: Wand2, step: '02', title: '자동 합성 미리보기', desc: '모든 굿즈에 내 사진이 자동 적용됩니다', color: 'secondary' },
+              { icon: ShoppingBag, step: '03', title: '글로벌 주문 🚀', desc: '전 세계 어디든 빠르고 안전하게 배송해드려요', color: 'accent' },
             ].map((item, i) => (
               <motion.div
                 key={item.step}
@@ -103,33 +135,7 @@ export default function CreateClientContent({ products }: { products: Product[] 
         </div>
       </section>
 
-      {/* AI Styles Preview */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-4">
-            6가지 AI 스타일
-          </h2>
-          <p className="text-gray-500 text-center mb-10">
-            Gemini Pro가 프롬프트를 최적화하고, Imagen 3가 고품질 이미지를 생성합니다
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {AI_STYLES.map((style, i) => (
-              <motion.div
-                key={style.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                className="bg-white rounded-2xl p-4 text-center border border-gray-100 hover:shadow-md hover:border-primary-200 transition-all cursor-default"
-              >
-                <div className="text-3xl mb-2">{style.icon}</div>
-                <h3 className="font-bold text-gray-900 text-sm mb-1">{style.name}</h3>
-                <p className="text-xs text-gray-400">{style.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* Product Selector */}
       <section className="py-16 bg-white">
@@ -169,8 +175,9 @@ export default function CreateClientContent({ products }: { products: Product[] 
           {/* Product Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {filteredProducts.map((product, i) => (
-              <Link key={product.id} href={`/editor/${product.id}`}>
+              <div key={product.id}>
                 <motion.div
+                  onClick={(e) => handleProductClick(e, product)}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -178,17 +185,41 @@ export default function CreateClientContent({ products }: { products: Product[] 
                   className="group cursor-pointer"
                 >
                   <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 mb-3">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary-100 via-white to-amber-50 group-hover:scale-105 transition-transform duration-500" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-16 h-16 bg-white/80 rounded-2xl flex items-center justify-center shadow-sm">
-                        <ShoppingBag className="w-8 h-8 text-primary-500" />
-                      </div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-100 group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 flex items-center justify-center p-6">
+                      {uploadedImage ? (
+                        <motion.div 
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="relative w-full h-full flex items-center justify-center"
+                        >
+                          {/* Mockup Base Background (Placeholder icon) */}
+                          <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                            <ShoppingBag className="w-24 h-24 text-gray-400" />
+                          </div>
+                          
+                          {/* Image placed on the product */}
+                          <div className="relative w-3/4 h-3/4 shadow-2xl rounded-sm overflow-hidden border-4 border-white rotate-[-2deg]">
+                            <img 
+                              src={uploadedImage} 
+                              alt="Mockup Preview" 
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </motion.div>
+                      ) : (
+                        <div className="w-16 h-16 bg-white/80 rounded-2xl flex items-center justify-center shadow-sm">
+                          <ShoppingBag className="w-8 h-8 text-primary-500" />
+                        </div>
+                      )}
                     </div>
                     {/* Hover overlay */}
                     <div className="absolute inset-0 bg-primary-600/0 group-hover:bg-primary-600/80 transition-all duration-300 flex items-center justify-center">
                       <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center">
                         <Wand2 className="w-8 h-8 text-white mx-auto mb-2" />
-                        <span className="text-white font-bold text-sm">AI 디자인 시작</span>
+                        <span className="text-white font-bold text-sm">
+                          {uploadedImage ? '글로벌 주문하기' : 'AI 보정 & 제작'}
+                        </span>
                       </div>
                     </div>
                     {product.badge && (
@@ -211,11 +242,114 @@ export default function CreateClientContent({ products }: { products: Product[] 
                     </p>
                   </div>
                 </motion.div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>
       </section>
+
+      {/* Global Order Modal */}
+      <AnimatePresence>
+        {isOrderModalOpen && selectedProduct && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsOrderModalOpen(false)}
+              className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]"
+            >
+              {/* Left: Preview */}
+              <div className="w-full md:w-1/2 bg-gray-50 p-8 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-gray-100">
+                <div className="relative aspect-square w-full max-w-sm rounded-2xl overflow-hidden bg-white shadow-inner border border-gray-100 p-8">
+                   <div className="absolute inset-0 flex items-center justify-center opacity-5">
+                      <ShoppingBag className="w-32 h-32 text-gray-400" />
+                   </div>
+                   <div className="relative w-full h-full flex items-center justify-center border-4 border-white shadow-xl rotate-[-2deg]">
+                      <img 
+                        src={uploadedImage!} 
+                        alt="Final Mockup" 
+                        className="w-full h-full object-cover"
+                      />
+                   </div>
+                </div>
+                <div className="mt-6 text-center">
+                  <span className="text-primary-600 font-bold text-sm uppercase tracking-widest">{selectedProduct.category}</span>
+                  <h3 className="text-2xl font-black text-gray-900 mt-1">{selectedProduct.name}</h3>
+                </div>
+              </div>
+
+              {/* Right: Checkout Form */}
+              <div className="w-full md:w-1/2 p-8 overflow-y-auto">
+                <div className="flex justify-between items-start mb-8">
+                  <div>
+                    <h2 className="text-2xl font-black text-gray-900">Global Order</h2>
+                    <p className="text-gray-500 text-sm mt-1">전 세계 어디든 5~7일 내에 도착합니다.</p>
+                  </div>
+                  <button 
+                    onClick={() => setIsOrderModalOpen(false)}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <X className="w-6 h-6 text-gray-400" />
+                  </button>
+                </div>
+
+                <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); alert('Global Order Placed!'); setIsOrderModalOpen(false); }}>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                       <Globe className="w-4 h-4 text-primary-500" /> Shipping Country
+                    </label>
+                    <select className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none font-medium">
+                      <option>South Korea (KR)</option>
+                      <option>United States (US)</option>
+                      <option>Japan (JP)</option>
+                      <option>Germany (DE)</option>
+                      <option>United Kingdom (GB)</option>
+                    </select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Recipient Name</label>
+                      <input type="text" placeholder="John Doe" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none font-medium" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Phone</label>
+                      <input type="text" placeholder="+82 10..." className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none font-medium" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Detailed Address</label>
+                    <textarea rows={2} placeholder="Street, Apartment, City, State, Zip" className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none font-medium resize-none"></textarea>
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-100">
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-gray-500 font-medium">Total Amount</span>
+                      <span className="text-2xl font-black text-gray-900">{(selectedProduct.price).toLocaleString()}원</span>
+                    </div>
+                    <button className="w-full py-4 bg-primary-600 text-white rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:bg-primary-700 transition-colors shadow-lg shadow-primary-500/20">
+                      <CreditCard className="w-6 h-6" />
+                      Checkout and Order
+                    </button>
+                    <p className="text-center text-xs text-gray-400 mt-4 leading-relaxed">
+                      By clicking the button, you agree to GOODZZ's <br />
+                      Terms of Service and Global Shipping Policy.
+                    </p>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
