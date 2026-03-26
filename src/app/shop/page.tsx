@@ -76,26 +76,28 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       <Navbar />
       <div className="min-h-screen bg-white pt-16">
         {/* Header / Banner */}
-      <div className="bg-gradient-to-br from-primary-50 via-white to-amber-50 py-16 border-b border-primary-100/50">
-        <div className="container mx-auto px-4 text-center">
+      <div className="bg-gradient-to-br from-primary-900 via-primary-800 to-accent-900 py-24 border-b border-white/10 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5 mix-blend-overlay"></div>
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary-500 opacity-30 rounded-full mix-blend-screen blur-[100px] animate-float" />
+        <div className="container mx-auto px-4 text-center relative z-10 animate-fadeInUp">
           {query ? (
               <div>
-                <span className="text-primary-600 font-bold mb-3 block uppercase tracking-widest text-sm flex items-center justify-center gap-2">
-                  <div className="w-1 h-1 rounded-full bg-primary-600" />
+                <span className="text-accent-300 font-bold mb-3 block uppercase tracking-widest text-sm flex items-center justify-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-accent-400" />
                   Search Results
-                  <div className="w-1 h-1 rounded-full bg-primary-600" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-accent-400" />
                 </span>
-                <h1 className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text text-gradient inline-block">
+                <h1 className="text-4xl md:text-6xl font-extrabold text-white inline-block drop-shadow-lg">
                     "{query}"
                 </h1>
               </div>
           ) : (
               <>
-                <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 drop-shadow-md tracking-tight">
                     브랜드 굿즈 직접 만들기
                 </h1>
-                <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-                    사장님을 위한 맞춤형 브랜드 굿즈. <br className="md:hidden" />
+                <p className="text-primary-100 max-w-2xl mx-auto text-lg md:text-xl font-medium leading-relaxed">
+                    사장님을 위한 맞춤형 브랜드 굿즈. <br className="hidden md:block" />
                     수량은 가볍게, 퀄리티는 완벽하게 제작해드립니다.
                 </p>
               </>

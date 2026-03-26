@@ -34,8 +34,9 @@ export default function CreateClientContent({ products }: { products: Product[] 
   return (
     <>
       {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-b from-primary-50 via-white to-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #FF6B6B20 0%, transparent 50%), radial-gradient(circle at 80% 50%, #4ECDC420 0%, transparent 50%)' }} />
+      <section className="pt-32 pb-20 bg-gradient-to-br from-primary-900 via-primary-800 to-accent-900 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5 mix-blend-overlay"></div>
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary-500 opacity-30 rounded-full mix-blend-screen blur-[100px] animate-float" />
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <motion.div
@@ -43,24 +44,24 @@ export default function CreateClientContent({ products }: { products: Product[] 
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-100 text-primary-700 rounded-full text-sm font-bold mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-primary-100 rounded-full text-sm font-bold mb-6 backdrop-blur-md border border-white/20">
               <Sparkles className="w-4 h-4" />
               AI 디자이너 활용
             </div>
-            <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 drop-shadow-md tracking-tight">
               우리 가게{' '}
-              <span className="text-gradient">
+              <span className="text-primary-300">
                 브랜드 굿즈
               </span> 만들기
             </h1>
-            <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-10">
-              원하는 카테고리를 선택하고 AI 디자이너와 함께<br />
+            <p className="text-lg md:text-xl text-primary-100 max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
+              원하는 카테고리를 선택하고 AI 디자이너와 함께<br className="hidden sm:block" />
               우리 가게만의 특별한 굿즈를 만들어보세요.
             </p>
             <div className="flex justify-center flex-col sm:flex-row gap-4 mb-4">
-              <button className="btn btn-primary bg-primary-100 text-primary-700 hover:bg-primary-200 border-none btn-lg flex items-center justify-center gap-2 font-bold shadow-sm">
+              <button className="btn btn-primary border-none btn-lg flex items-center justify-center gap-2 font-bold shadow-xl">
                 <Palette className="w-5 h-5" />
-                내 브랜드 키트 등록하기 (로고/컬러)
+                내 브랜드 키트 등록 (로고/컬러)
               </button>
             </div>
           </motion.div>

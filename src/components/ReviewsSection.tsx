@@ -126,8 +126,8 @@ export default function ReviewsSection() {
         </div>
 
         {/* Star Distribution Chart */}
-        <div className="max-w-4xl mx-auto mb-12">
-          <div className="bg-white rounded-3xl shadow-lg p-8 md:p-10">
+        <div className="max-w-4xl mx-auto mb-12 animate-fadeInUp">
+          <div className="glass-panel bg-white/80 rounded-3xl shadow-lg p-8 md:p-10 border border-white/50">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
               {/* Average Rating */}
               <div className="flex flex-col items-center justify-center text-center">
@@ -190,15 +190,15 @@ export default function ReviewsSection() {
         </div>
 
         {/* 리뷰 슬라이더 */}
-        <div className="relative max-w-4xl mx-auto">
+        <div className="relative max-w-4xl mx-auto animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
           <AnimatePresence mode="wait">
             <motion.div
               key={currentIndex}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-              className="bg-white rounded-3xl shadow-xl p-8 md:p-12"
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -10 }}
+              transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
+              className="glass-panel bg-white/90 rounded-3xl shadow-xl p-8 md:p-12 border border-white/40"
             >
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 {/* 왼쪽: 리뷰 이미지 */}
