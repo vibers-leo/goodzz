@@ -18,12 +18,12 @@ export async function generateMetadata({ searchParams }: ShopPageProps): Promise
 
   const currentCategory = category ? getCategoryBySlug(category) : null;
 
-  let title = "굿즈샵";
-  let description = "AI로 만든 커스텀 굿즈를 만나보세요. 명함, 스티커, 티셔츠, 에코백 등 다양한 상품.";
+  let title = "상품 전체보기";
+  let description = "사장님을 위한 맞춤형 브랜드 굿즈. 명함, 스티커, 전단지 등 굿쯔(GOODZZ).";
 
   if (query) {
     title = `"${query}" 검색 결과`;
-    description = `"${query}" 검색 결과 - 마이AI프린트샵`;
+    description = `"${query}" 검색 결과 - GOODZZ(굿쯔)`;
   } else if (currentCategory) {
     title = currentCategory.label;
     description = `${currentCategory.label} 카테고리 - AI로 디자인한 커스텀 ${currentCategory.label} 상품을 만나보세요.`;
@@ -33,7 +33,7 @@ export async function generateMetadata({ searchParams }: ShopPageProps): Promise
     title,
     description,
     openGraph: {
-      title: `${title} | 마이AI프린트샵`,
+      title: `${title} | GOODZZ(굿쯔)`,
       description,
     },
   };
@@ -76,27 +76,27 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       <Navbar />
       <div className="min-h-screen bg-white pt-16">
         {/* Header / Banner */}
-      <div className="bg-gradient-to-br from-indigo-50 via-white to-amber-50 py-16 border-b border-indigo-100/50">
+      <div className="bg-gradient-to-br from-primary-50 via-white to-amber-50 py-16 border-b border-primary-100/50">
         <div className="container mx-auto px-4 text-center">
           {query ? (
               <div>
-                <span className="text-indigo-600 font-bold mb-3 block uppercase tracking-widest text-sm flex items-center justify-center gap-2">
-                  <div className="w-1 h-1 rounded-full bg-indigo-600" />
+                <span className="text-primary-600 font-bold mb-3 block uppercase tracking-widest text-sm flex items-center justify-center gap-2">
+                  <div className="w-1 h-1 rounded-full bg-primary-600" />
                   Search Results
-                  <div className="w-1 h-1 rounded-full bg-indigo-600" />
+                  <div className="w-1 h-1 rounded-full bg-primary-600" />
                 </span>
-                <h1 className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-amber-500 inline-block">
+                <h1 className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text text-gradient inline-block">
                     "{query}"
                 </h1>
               </div>
           ) : (
               <>
                 <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
-                    Premium AI Goods Shop
+                    브랜드 굿즈 직접 만들기
                 </h1>
                 <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-                    AI로 만든 나만의 디자인을 입혀보세요. <br className="md:hidden" />
-                    프리미엄 퀄리티의 굿즈를 제작해드립니다.
+                    사장님을 위한 맞춤형 브랜드 굿즈. <br className="md:hidden" />
+                    수량은 가볍게, 퀄리티는 완벽하게 제작해드립니다.
                 </p>
               </>
           )}
@@ -114,8 +114,8 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                   href="/shop"
                   className={`px-6 py-2.5 rounded-full whitespace-nowrap text-sm font-bold transition-all ${
                     !category
-                      ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-500/30'
-                      : 'bg-white text-gray-600 border-2 border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600'
+                      ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30'
+                      : 'bg-white text-gray-600 border-2 border-gray-200 hover:border-primary-300 hover:bg-primary-50 hover:text-primary-600'
                   }`}
                 >
                   전체
@@ -128,8 +128,8 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                         href={`/shop?category=${cat.slug}`}
                         className={`px-6 py-2.5 rounded-full whitespace-nowrap text-sm font-bold transition-all ${
                             isActive
-                            ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-500/30'
-                            : 'bg-white text-gray-600 border-2 border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600'
+                            ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/30'
+                            : 'bg-white text-gray-600 border-2 border-gray-200 hover:border-primary-300 hover:bg-primary-50 hover:text-primary-600'
                         }`}
                       >
                         {cat.label}
@@ -140,13 +140,13 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
               {/* 하위 카테고리 (현재 카테고리에 서브카테고리가 있을 때만 표시) */}
               {currentCategory && currentCategory.subcategories && currentCategory.subcategories.length > 0 && (
-                <div className="flex overflow-x-auto gap-2 no-scrollbar mt-4 pl-4 border-l-4 border-indigo-300">
+                <div className="flex overflow-x-auto gap-2 no-scrollbar mt-4 pl-4 border-l-4 border-primary-300">
                   <Link
                     href={`/shop?category=${category}`}
                     className={`px-4 py-2 rounded-full whitespace-nowrap text-sm font-semibold transition-all ${
                       !subcategory
-                        ? 'bg-indigo-100 text-indigo-700'
-                        : 'bg-gray-100 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600'
+                        ? 'bg-primary-100 text-primary-700'
+                        : 'bg-gray-100 text-gray-600 hover:bg-primary-50 hover:text-primary-600'
                     }`}
                   >
                     전체
@@ -159,8 +159,8 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
                         href={`/shop?category=${category}&subcategory=${sub.slug}`}
                         className={`px-4 py-2 rounded-full whitespace-nowrap text-sm font-semibold transition-all ${
                           isActive
-                            ? 'bg-indigo-100 text-indigo-700'
-                            : 'bg-gray-100 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600'
+                            ? 'bg-primary-100 text-primary-700'
+                            : 'bg-gray-100 text-gray-600 hover:bg-primary-50 hover:text-primary-600'
                         }`}
                       >
                         {sub.label}

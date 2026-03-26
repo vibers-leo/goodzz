@@ -18,62 +18,34 @@ export interface Category {
 
 export const CATEGORIES: Category[] = [
   {
-    slug: 'print',
-    label: '인쇄',
-    dbValues: ['인쇄'],
-    subcategories: [
-      { slug: 'business-card', label: '명함', dbValue: '명함' },
-      { slug: 'sticker', label: '스티커', dbValue: '스티커' },
-      { slug: 'banner', label: '현수막/배너', dbValue: '현수막' },
-      { slug: 'poster', label: '포스터', dbValue: '포스터' },
-      { slug: 'leaflet', label: '리플렛/팜플렛', dbValue: '리플렛' },
-      { slug: 'promotion', label: '홍보물/기타', dbValue: '홍보물' },
-      { slug: 'booklet', label: '책자', dbValue: '책자' },
-      { slug: 'postcard', label: '엽서/메세지카드', dbValue: '엽서' },
-      { slug: 'photocard', label: '포토카드', dbValue: '포토카드' },
-      { slug: 'envelope', label: '봉투', dbValue: '봉투' },
-      { slug: 'id-card', label: '사원증', dbValue: '사원증' },
-    ]
+    slug: 'business-card',
+    label: '명함',
+    dbValues: ['명함']
   },
   {
-    slug: 'goods',
-    label: '굿즈/팬시',
-    dbValues: ['굿즈', '잡화', '문구'],
-    subcategories: [
-      { slug: 'stationery', label: '문구', dbValue: '문구' },
-      { slug: 'goods-items', label: '굿즈', dbValue: '굿즈' },
-      { slug: 'fancy', label: '팬시', dbValue: '팬시' },
-    ]
+    slug: 'sticker',
+    label: '스티커',
+    dbValues: ['스티커']
   },
   {
-    slug: 'fashion',
-    label: '패션/어패럴',
-    dbValues: ['의류', '패션'],
-    subcategories: [
-      { slug: 'tshirt', label: '티셔츠', dbValue: '티셔츠' },
-      { slug: 'hoodie', label: '후드/후드집업', dbValue: '후드' },
-      { slug: 'ecobag', label: '에코백', dbValue: '에코백' },
-    ]
+    slug: 'flyer',
+    label: '전단지/리플렛',
+    dbValues: ['전단지', '리플렛', '팜플렛']
   },
   {
-    slug: 'store',
-    label: '우리가게',
-    dbValues: ['가게', '매장'],
-    subcategories: [
-      { slug: 'sign', label: '사인제품', dbValue: '사인' },
-      { slug: 'signature', label: '시그니처', dbValue: '시그니처' },
-      { slug: 'cafe', label: '카페용품', dbValue: '카페용품' },
-    ]
+    slug: 'eco-bag',
+    label: '에코백',
+    dbValues: ['에코백']
   },
   {
-    slug: 'custom',
-    label: '주문제작',
-    dbValues: ['주문제작']
+    slug: 'shopping-bag',
+    label: '쇼핑백',
+    dbValues: ['쇼핑백']
   },
   {
-    slug: 'recipe',
-    label: 'AI 레시피',
-    dbValues: ['레시피']
+    slug: 'packaging',
+    label: '포장박스',
+    dbValues: ['포장박스', '패키지']
   }
 ];
 
