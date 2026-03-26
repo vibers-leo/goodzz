@@ -94,7 +94,7 @@ export default function EditorHeader() {
     try {
       const previewDataUrl = canvasRef.toDataURL({
         format: 'png',
-        multiplier: 1,
+        multiplier: 3, // 고해상도 제작 도안급 추출
       });
       const uploadedUrl = await uploadDesignImage(
         user?.uid || 'guest',
@@ -166,9 +166,9 @@ export default function EditorHeader() {
           <button
             onClick={handleOrder}
             disabled={!hasDesign || isSaving}
-            className="flex items-center gap-2 px-5 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 disabled:opacity-50"
+            className="flex items-center gap-2 px-5 py-2 bg-primary-600 text-white rounded-xl text-xs font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-100 disabled:opacity-50"
           >
-            <ShoppingCart size={14} /> 주문하기
+            <ShoppingCart size={14} /> 제작 요청 & 주문하기
           </button>
         </div>
       </header>

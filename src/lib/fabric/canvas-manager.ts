@@ -120,23 +120,42 @@ export async function addPrintZoneOverlay(
     width: w,
     height: h,
     fill: 'transparent',
-    stroke: '#60a5fa',
-    strokeWidth: 2,
-    strokeDashArray: [8, 4],
+    stroke: '#3b82f6',
+    strokeWidth: 1.5,
+    strokeDashArray: [6, 3],
     selectable: false,
     evented: false,
     excludeFromExport: true,
-    opacity: 0.6,
+    opacity: 0.8,
   } as any);
   (rect as any)._isPrintZone = true;
 
-  const label = new FabricText(zone.label, {
+  // Safe Zone (80% of Print Zone)
+  const safePadding = w * 0.1;
+  const safeRect = new Rect({
+    left: x + safePadding,
+    top: y + safePadding,
+    width: w - safePadding * 2,
+    height: h - safePadding * 2,
+    fill: 'transparent',
+    stroke: '#10b981',
+    strokeWidth: 1,
+    strokeDashArray: [2, 2],
+    selectable: false,
+    evented: false,
+    excludeFromExport: true,
+    opacity: 0.5,
+  } as any);
+  (safeRect as any)._isPrintZone = true;
+
+  const label = new FabricText(`${zone.label} (Print Area)`, {
     left: x,
-    top: y - 18,
-    fontSize: 11,
+    top: y - 22,
+    fontSize: 10,
     fontWeight: 'bold',
-    fill: '#3b82f6',
-    backgroundColor: 'rgba(255,255,255,0.8)',
+    fill: '#ffffff',
+    backgroundColor: '#3b82f6',
+    padding: 4,
     selectable: false,
     evented: false,
     excludeFromExport: true,
@@ -144,6 +163,7 @@ export async function addPrintZoneOverlay(
   (label as any)._isPrintZone = true;
 
   canvas.add(rect);
+  canvas.add(safeRect);
   canvas.add(label);
   canvas.renderAll();
 }

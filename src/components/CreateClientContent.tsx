@@ -224,20 +224,24 @@ export default function CreateClientContent({ products }: { products: Product[] 
                         </motion.div>
                       </div>
                       
-                      <div className="text-center">
-                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{item.category}</span>
-                        <h3 className="text-xl font-black text-gray-900 mt-1 mb-4">{item.name}</h3>
-                        <button 
-                          onClick={() => {
-                            const p = products.find(p => p.name.includes(item.category)) || products[0];
-                            setSelectedProduct(p);
-                            setIsOrderModalOpen(true);
-                          }}
-                          className="bg-white px-6 py-3 rounded-full text-sm font-bold text-gray-900 shadow-lg hover:shadow-xl transition-all border border-gray-50 flex items-center gap-2 group-hover:scale-110 active:scale-95"
-                        >
-                          이 시안으로 주문 <ArrowRight className="w-4 h-4" />
-                        </button>
-                      </div>
+                  <div className="text-center space-y-2">
+                    <button 
+                      onClick={() => {
+                        const p = products.find(p => p.name.includes(item.category)) || products[0];
+                        setSelectedProduct(p);
+                        setIsOrderModalOpen(true);
+                      }}
+                      className="bg-white px-6 py-3 rounded-full text-sm font-bold text-gray-900 shadow-lg hover:shadow-xl transition-all border border-gray-50 flex items-center gap-2 group-hover:scale-105 active:scale-95 w-full justify-center"
+                    >
+                      바로 주문 <ArrowRight className="w-4 h-4" />
+                    </button>
+                    <Link 
+                      href={`/editor/${(products.find(p => p.name.includes(item.category)) || products[0]).id}?imageUrl=${encodeURIComponent(uploadedImage!)}`}
+                      className="bg-gray-900/10 backdrop-blur-md px-6 py-3 rounded-full text-sm font-bold text-gray-900 hover:bg-gray-900/20 transition-all flex items-center gap-2 w-full justify-center border border-black/5"
+                    >
+                      편집하기 <Layers className="w-4 h-4" />
+                    </Link>
+                  </div>
                     </motion.div>
                   ))}
                 </div>
@@ -324,13 +328,19 @@ export default function CreateClientContent({ products }: { products: Product[] 
                       )}
                     </div>
                     {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-primary-600/0 group-hover:bg-primary-600/80 transition-all duration-300 flex items-center justify-center">
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center">
-                        <Wand2 className="w-8 h-8 text-white mx-auto mb-2" />
-                        <span className="text-white font-bold text-sm">
-                          {uploadedImage ? '글로벌 주문하기' : 'AI 보정 & 제작'}
-                        </span>
-                      </div>
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center space-y-2">
+                        <button 
+                          onClick={(e) => handleProductClick(e, product)}
+                          className="bg-white text-gray-900 px-4 py-2 rounded-full font-bold text-xs flex items-center gap-1 mx-auto hover:bg-primary-50 transition-colors"
+                        >
+                          <ShoppingBag className="w-3.5 h-3.5" /> 바로 주문
+                        </button>
+                        <Link 
+                          href={`/editor/${product.id}${uploadedImage ? `?imageUrl=${encodeURIComponent(uploadedImage)}` : ''}`}
+                          className="bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-full font-bold text-xs flex items-center gap-1 mx-auto hover:bg-white/30 transition-colors border border-white/30"
+                        >
+                          <Layers className="w-3.5 h-3.5" /> {uploadedImage ? '편집하기' : '커스텀 시작'}
+                        </Link>
                     </div>
                     {product.badge && (
                       <span className={`absolute top-3 left-3 px-2 py-1 rounded-md text-xs font-bold text-white z-10 ${

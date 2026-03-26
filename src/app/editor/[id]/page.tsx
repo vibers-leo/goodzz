@@ -19,6 +19,7 @@ export default function DesignEditorPage() {
   const { id } = useParams();
   const searchParams = useSearchParams();
   const draftId = searchParams.get('draft');
+  const imageUrl = searchParams.get('imageUrl');
   const { user } = useAuth();
   const router = useRouter();
 
@@ -73,6 +74,25 @@ export default function DesignEditorPage() {
 
     loadDraft();
   }, [canvasRef, draftId, user]);
+
+  // Load external image from URL (from upload flow)
+  useEffect(() => {
+    if (!canvasRef || !imageUrl) return;
+
+    const loadExternalImage = async () => {
+      try {
+        const { addImageToCanvas } = await import('@/lib/fabric/object-helpers');
+        await addImageToCanvas(canvasRef, imageUrl);
+        canvasRef.renderAll();
+        toast.success('사진이 로드되었습니다. 자유롭게 편집해보세요!');
+      } catch (error) {
+        console.error('Failed to load image from URL:', error);
+        toast.error('이미지를 로드하는 데 실패했습니다.');
+      }
+    };
+
+    loadExternalImage();
+  }, [canvasRef, imageUrl]);
 
   // Attach snap guides and keyboard shortcuts when canvas is ready
   useEffect(() => {
