@@ -48,7 +48,7 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css" />
         <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js" async></script>
       </head>
-      <body className="antialiased bg-zinc-950 text-zinc-200 selection:bg-amber-500/30 selection:text-amber-200">
+      <body className="antialiased bg-white text-gray-900 selection:bg-blue-100 selection:text-blue-900">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -75,6 +75,18 @@ export default function RootLayout({
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-CGK1BSBM63"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-CGK1BSBM63');
+          `}
+        </Script>
         <AuthProvider>
           <CartSync />
           {children}
