@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -48,6 +49,12 @@ export default function RootLayout({
         <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js" async></script>
       </head>
       <body className="antialiased bg-zinc-950 text-zinc-200 selection:bg-amber-500/30 selection:text-amber-200">
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7704550771011130"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         <AuthProvider>
           <CartSync />
           {children}
