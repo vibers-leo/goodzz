@@ -94,7 +94,7 @@ export default function LandingFeatures() {
             </p>
             <div className="rounded-2xl overflow-hidden bg-zinc-800/50" style={{ aspectRatio: '16/9' }}>
               <img
-                src="https://picsum.photos/seed/goodzz-ai-design/800/450"
+                src="https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&q=80&w=800"
                 alt="AI 시안 생성"
                 className="w-full h-full object-cover opacity-70"
                 loading="lazy"

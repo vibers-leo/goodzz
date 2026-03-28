@@ -128,7 +128,7 @@ export default function LandingHero() {
               >
                 <div className="rounded-2xl overflow-hidden mb-4 bg-zinc-800" style={{ aspectRatio: '1/1' }}>
                   <img
-                    src="https://picsum.photos/seed/goodzz-hero/400/400"
+                    src="https://images.unsplash.com/photo-1597484661643-2f5fef640dd1?auto=format&fit=crop&q=80&w=800"
                     alt="굿즈 미리보기"
                     className="w-full h-full object-cover"
                     loading="eager"

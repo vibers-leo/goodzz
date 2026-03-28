@@ -6,19 +6,19 @@ const STEPS = [
     num: '01',
     title: '사진을 올려주세요',
     desc: '스마트폰으로 찍은 사진도 충분합니다. AI가 자동으로 배경 제거, 밝기 보정, 해상도 최적화를 처리합니다.',
-    img: 'https://picsum.photos/seed/goodzz-step1/600/600',
+    img: 'https://images.unsplash.com/photo-1611162618758-2a29a995354b?auto=format&fit=crop&q=80&w=600',
   },
   {
     num: '02',
     title: '원하는 굿즈를 고르세요',
     desc: '명함, 포스터, 에코백 등 원하는 상품을 선택하면 AI가 즉시 맞춤 시안을 제안합니다. 에디터로 직접 수정할 수도 있습니다.',
-    img: 'https://picsum.photos/seed/goodzz-step2/600/600',
+    img: 'https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&q=80&w=600',
   },
   {
     num: '03',
     title: '주문하고 받으면 끝',
     desc: '안전한 결제 후 제작이 시작됩니다. 실시간으로 제작 상태를 확인하고, 빠르게 배송받으세요.',
-    img: 'https://picsum.photos/seed/goodzz-step3/600/600',
+    img: 'https://images.unsplash.com/photo-1580674285054-bed31e145f59?auto=format&fit=crop&q=80&w=600',
   },
 ];
 

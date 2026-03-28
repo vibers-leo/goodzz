@@ -1,0 +1,15 @@
+#!/usr/bin/expect -f
+set timeout -1
+spawn ./deploy.sh root@49.50.138.93
+
+expect {
+    -re ".*es.*o.*" {
+        send "yes\r"
+        exp_continue
+    }
+    -re ".*assword:.*" {
+        send "Elfoq2026^\r"
+        exp_continue
+    }
+    eof
+}
