@@ -1,189 +1,176 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: '이용약관 | GOODZZ',
   description: 'GOODZZ 서비스 이용약관',
 };
 
-/**
- * 이용약관 페이지
- *
- * 전자상거래법 제13조에 따른 필수 표시사항
- */
 export default function TermsPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold mb-8">이용약관</h1>
+    <div className="min-h-screen bg-white">
+      <div className="max-w-4xl mx-auto px-6 py-16 md:py-24">
+        <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
+          이용약관
+        </h1>
+        <p className="text-sm text-gray-500 mb-12">
+          시행일자: 2026년 3월 28일
+        </p>
 
-      <div className="prose prose-gray max-w-none">
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">제1조 (목적)</h2>
-          <p className="text-gray-700 leading-relaxed mb-4">
-            본 약관은 GOODZZ(이하 "회사")이 제공하는
-            AI 기반 프린트샵 서비스(이하 "서비스")의 이용과 관련하여
-            회사와 이용자 간의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.
+        {/* 제1조 */}
+        <section className="mb-10">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            제1조 (목적)
+          </h2>
+          <p className="text-base text-gray-700 leading-relaxed">
+            본 약관은 위로(이하 &ldquo;회사&rdquo;)가 운영하는 GOODZZ 웹사이트(이하 &ldquo;사이트&rdquo;)에서 제공하는 AI 굿즈 제작 플랫폼 서비스(이하 &ldquo;서비스&rdquo;)를 이용함에 있어 회사와 이용자의 권리, 의무 및 책임사항을 규정함을 목적으로 합니다.
           </p>
         </section>
 
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">제2조 (정의)</h2>
-          <ul className="list-disc pl-6 text-gray-700 space-y-2">
-            <li>
-              <strong>"서비스"</strong>란 회사가 제공하는 AI 이미지 생성,
-              명함 제작, 인쇄물 주문 등의 온라인 서비스를 의미합니다.
-            </li>
-            <li>
-              <strong>"이용자"</strong>란 본 약관에 따라 회사가 제공하는
-              서비스를 이용하는 회원 및 비회원을 말합니다.
-            </li>
-            <li>
-              <strong>"회원"</strong>이란 회사에 개인정보를 제공하여
-              회원등록을 한 자로서, 회사의 정보를 지속적으로 제공받으며
-              회사가 제공하는 서비스를 계속적으로 이용할 수 있는 자를 말합니다.
-            </li>
-            <li>
-              <strong>"파트너"</strong>란 회사와 API 계약을 체결하고
-              회사의 SDK/Widget을 통해 상품을 판매하는 제3자를 말합니다.
-            </li>
-          </ul>
-        </section>
-
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">제3조 (약관의 게시와 개정)</h2>
-          <ol className="list-decimal pl-6 text-gray-700 space-y-2">
-            <li>
-              회사는 이 약관의 내용을 이용자가 쉽게 알 수 있도록
-              서비스 초기 화면에 게시합니다.
-            </li>
-            <li>
-              회사는 「전자상거래 등에서의 소비자보호에 관한 법률」,
-              「약관의 규제에 관한 법률」, 「전자문서 및 전자거래기본법」,
-              「전자금융거래법」, 「전자서명법」, 「정보통신망 이용촉진 및
-              정보보호 등에 관한 법률」, 「소비자기본법」 등 관련법을
-              위배하지 않는 범위에서 이 약관을 개정할 수 있습니다.
-            </li>
-            <li>
-              회사가 약관을 개정할 경우에는 적용일자 및 개정사유를 명시하여
-              현행약관과 함께 그 적용일자 7일 전부터 적용일자 전일까지
-              공지합니다. 다만, 이용자에게 불리한 약관의 개정의 경우에는
-              최소한 30일 전부터 공지합니다.
-            </li>
-          </ol>
-        </section>
-
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">제4조 (서비스의 제공 및 변경)</h2>
-          <ol className="list-decimal pl-6 text-gray-700 space-y-2">
-            <li>
-              회사는 다음과 같은 서비스를 제공합니다:
-              <ul className="list-disc pl-6 mt-2 space-y-1">
-                <li>AI 이미지 생성 서비스</li>
-                <li>명함, 전단지 등 인쇄물 디자인 편집 서비스</li>
-                <li>인쇄물 주문 및 배송 서비스</li>
-                <li>파트너 API/SDK 서비스</li>
-                <li>기타 회사가 추가 개발하거나 제휴계약 등을 통해 제공하는 서비스</li>
-              </ul>
-            </li>
-            <li>
-              회사는 상품 또는 용역의 품절 또는 기술적 사양의 변경 등의
-              경우에는 장차 체결되는 계약에 의해 제공할 상품 또는 용역의
-              내용을 변경할 수 있습니다. 이 경우에는 변경된 상품 또는
-              용역의 내용 및 제공일자를 명시하여 현재의 상품 또는 용역의
-              내용을 게시한 곳에 즉시 공지합니다.
-            </li>
-          </ol>
-        </section>
-
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">제5조 (청약철회 및 환불)</h2>
-          <ol className="list-decimal pl-6 text-gray-700 space-y-2">
-            <li>
-              회사와 재화 등의 구매에 관한 계약을 체결한 이용자는
-              「전자상거래 등에서의 소비자보호에 관한 법률」 제13조 제2항에
-              따른 계약내용에 관한 서면을 받은 날(그 서면을 받은 때보다
-              재화 등의 공급이 늦게 이루어진 경우에는 재화 등을 공급받거나
-              재화 등의 공급이 시작된 날을 말합니다)부터 7일 이내에는
-              청약의 철회를 할 수 있습니다.
-            </li>
-            <li>
-              다음 각 호의 경우에는 회사는 이용자의 청약철회를 제한할 수 있습니다:
-              <ul className="list-disc pl-6 mt-2 space-y-1">
-                <li>이용자에게 책임 있는 사유로 재화 등이 멸실 또는 훼손된 경우</li>
-                <li>이용자의 사용 또는 일부 소비에 의하여 재화 등의 가치가 현저히 감소한 경우</li>
-                <li>시간의 경과에 의하여 재판매가 곤란할 정도로 재화 등의 가치가 현저히 감소한 경우</li>
-                <li>맞춤형 인쇄물 등 주문제작 상품의 경우</li>
-              </ul>
-            </li>
-            <li>
-              환불은 청약철회 요청일로부터 3영업일 이내에 처리됩니다.
-            </li>
-          </ol>
-        </section>
-
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">제6조 (개인정보보호)</h2>
-          <p className="text-gray-700 leading-relaxed mb-4">
-            회사는 이용자의 개인정보 수집 시 서비스 제공을 위하여 필요한
-            범위에서 최소한의 개인정보를 수집합니다. 자세한 내용은
-            <a href="/privacy" className="text-blue-600 hover:underline mx-1">
-              개인정보처리방침
-            </a>
-            을 참조하시기 바랍니다.
-          </p>
-        </section>
-
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">제7조 (파트너 서비스 이용)</h2>
-          <ol className="list-decimal pl-6 text-gray-700 space-y-2">
-            <li>
-              파트너 웹사이트를 통해 회사의 상품을 구매하는 경우에도
-              본 약관이 적용됩니다.
-            </li>
-            <li>
-              통신판매업자는 GOODZZ이며, 파트너는 단순 판매 중개 역할을 수행합니다.
-            </li>
-            <li>
-              구매, 환불, AS 등 모든 거래 관련 사항은 회사가 책임집니다.
-            </li>
-          </ol>
-        </section>
-
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">제8조 (면책조항)</h2>
-          <ol className="list-decimal pl-6 text-gray-700 space-y-2">
-            <li>
-              회사는 천재지변 또는 이에 준하는 불가항력으로 인하여
-              서비스를 제공할 수 없는 경우에는 서비스 제공에 관한
-              책임이 면제됩니다.
-            </li>
-            <li>
-              회사는 이용자의 귀책사유로 인한 서비스 이용의 장애에 대하여
-              책임을 지지 않습니다.
-            </li>
-            <li>
-              회사는 이용자가 서비스를 이용하여 기대하는 수익을 상실한 것에
-              대하여 책임을 지지 않으며, 그 밖에 서비스를 통하여 얻은
-              자료로 인한 손해 등에 대하여도 책임을 지지 않습니다.
-            </li>
-          </ol>
-        </section>
-
-        <section className="mb-8 p-6 bg-gray-50 rounded-lg">
-          <h2 className="text-2xl font-semibold mb-4">사업자 정보</h2>
-          <div className="text-gray-700 space-y-2">
-            <p><strong>상호:</strong> GOODZZ</p>
-            <p><strong>대표자:</strong> 홍길동</p>
-            <p><strong>사업자등록번호:</strong> 123-45-67890</p>
-            <p><strong>통신판매업신고:</strong> 제2024-서울강남-0001호</p>
-            <p><strong>주소:</strong> 서울시 강남구 테헤란로 123</p>
-            <p><strong>전화:</strong> 02-1234-5678</p>
-            <p><strong>이메일:</strong> support@goodzz.co.kr</p>
+        {/* 제2조 */}
+        <section className="mb-10">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            제2조 (정의)
+          </h2>
+          <div className="space-y-3 text-base text-gray-700 leading-relaxed">
+            <p>본 약관에서 사용하는 용어의 정의는 다음과 같습니다.</p>
+            <ul className="list-decimal list-inside space-y-2 ml-4">
+              <li>&ldquo;서비스&rdquo;라 함은 회사가 제공하는 AI 굿즈 디자인, 제작, 주문, 배송 등 제반 서비스를 의미합니다.</li>
+              <li>&ldquo;이용자&rdquo;라 함은 사이트에 접속하여 본 약관에 따라 회사가 제공하는 서비스를 이용하는 고객을 말합니다.</li>
+              <li>&ldquo;굿즈&rdquo;라 함은 회사가 제작·판매하는 맞춤형 인쇄 상품을 의미합니다.</li>
+              <li>&ldquo;개인정보&rdquo;라 함은 생존하는 개인에 관한 정보로서 성명, 연락처 등 개인을 식별할 수 있는 정보를 말합니다.</li>
+            </ul>
           </div>
         </section>
 
-        <div className="mt-12 pt-8 border-t border-gray-200 text-sm text-gray-500">
-          <p>공고일자: 2024년 1월 1일</p>
-          <p>시행일자: 2024년 1월 1일</p>
+        {/* 제3조 */}
+        <section className="mb-10">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            제3조 (약관의 게시와 개정)
+          </h2>
+          <div className="space-y-3 text-base text-gray-700 leading-relaxed">
+            <p>① 회사는 본 약관의 내용을 이용자가 쉽게 알 수 있도록 사이트 내에 게시합니다.</p>
+            <p>② 회사는 필요한 경우 관련 법령을 위배하지 않는 범위에서 본 약관을 개정할 수 있습니다.</p>
+            <p>③ 회사가 약관을 개정할 경우에는 적용일자 및 개정사유를 명시하여 현행약관과 함께 사이트에 그 적용일자 7일 전부터 적용일자 전일까지 공지합니다.</p>
+            <p>④ 이용자가 개정약관의 적용에 동의하지 않는 경우 회사는 개정 약관의 내용을 적용할 수 없으며, 이 경우 이용자는 서비스 이용을 중단할 수 있습니다.</p>
+          </div>
+        </section>
+
+        {/* 제4조 */}
+        <section className="mb-10">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            제4조 (서비스의 제공 및 변경)
+          </h2>
+          <div className="space-y-3 text-base text-gray-700 leading-relaxed">
+            <p>① 회사는 다음과 같은 서비스를 제공합니다.</p>
+            <ul className="list-disc list-inside space-y-2 ml-4">
+              <li>AI 기반 굿즈 디자인 생성 서비스</li>
+              <li>맞춤형 굿즈 제작 및 인쇄 서비스</li>
+              <li>상품 주문 및 배송 서비스</li>
+              <li>기타 회사가 추가 개발하거나 제휴를 통해 제공하는 서비스</li>
+            </ul>
+            <p>② 회사는 상당한 이유가 있는 경우에 운영상, 기술상의 필요에 따라 제공하고 있는 서비스를 변경할 수 있습니다.</p>
+          </div>
+        </section>
+
+        {/* 제5조 */}
+        <section className="mb-10">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            제5조 (청약철회 및 환불)
+          </h2>
+          <div className="space-y-3 text-base text-gray-700 leading-relaxed">
+            <p>① 회사와 재화 등의 구매에 관한 계약을 체결한 이용자는 「전자상거래 등에서의 소비자보호에 관한 법률」 제13조 제2항에 따른 계약내용에 관한 서면을 받은 날부터 7일 이내에는 청약의 철회를 할 수 있습니다.</p>
+            <p>② 다만 맞춤형 인쇄물 등 주문제작 상품의 경우, 제작이 시작된 이후에는 청약철회가 제한될 수 있습니다.</p>
+            <p>③ 환불은 청약철회 요청일로부터 3영업일 이내에 처리됩니다.</p>
+          </div>
+        </section>
+
+        {/* 제6조 */}
+        <section className="mb-10">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            제6조 (서비스의 중단)
+          </h2>
+          <div className="space-y-3 text-base text-gray-700 leading-relaxed">
+            <p>① 회사는 컴퓨터 등 정보통신설비의 보수점검, 교체 및 고장, 통신의 두절 등의 사유가 발생한 경우에는 서비스의 제공을 일시적으로 중단할 수 있습니다.</p>
+            <p>② 제1항의 사유로 서비스 제공이 일시 중단됨으로 인하여 이용자 또는 제3자가 입은 손해에 대하여는 배상하지 아니합니다. 다만, 회사에 고의 또는 중과실이 있는 경우에는 그러하지 아니합니다.</p>
+          </div>
+        </section>
+
+        {/* 제7조 */}
+        <section className="mb-10">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            제7조 (이용자의 의무)
+          </h2>
+          <div className="space-y-3 text-base text-gray-700 leading-relaxed">
+            <p>① 이용자는 다음 행위를 하여서는 안 됩니다.</p>
+            <ul className="list-disc list-inside space-y-2 ml-4">
+              <li>신청 또는 변경 시 허위 내용의 등록</li>
+              <li>타인의 정보 도용</li>
+              <li>회사가 게시한 정보의 변경</li>
+              <li>회사와 기타 제3자의 저작권 등 지적재산권에 대한 침해</li>
+              <li>회사 및 기타 제3자의 명예를 손상시키거나 업무를 방해하는 행위</li>
+            </ul>
+          </div>
+        </section>
+
+        {/* 제8조 */}
+        <section className="mb-10">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            제8조 (저작권의 귀속 및 이용제한)
+          </h2>
+          <div className="space-y-3 text-base text-gray-700 leading-relaxed">
+            <p>① 회사가 작성한 저작물에 대한 저작권 기타 지적재산권은 회사에 귀속합니다.</p>
+            <p>② 이용자가 업로드한 이미지의 저작권은 이용자에게 있으며, 회사는 굿즈 제작 목적으로만 사용합니다.</p>
+          </div>
+        </section>
+
+        {/* 제9조 */}
+        <section className="mb-10">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            제9조 (분쟁해결)
+          </h2>
+          <div className="space-y-3 text-base text-gray-700 leading-relaxed">
+            <p>① 회사는 이용자가 제기하는 정당한 의견이나 불만을 반영하고 그 피해를 보상처리하기 위하여 피해보상처리기구를 설치·운영합니다.</p>
+            <p>② 회사는 이용자로부터 제출되는 불만사항 및 의견은 우선적으로 그 사항을 처리합니다.</p>
+          </div>
+        </section>
+
+        {/* 제10조 */}
+        <section className="mb-10">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            제10조 (재판권 및 준거법)
+          </h2>
+          <div className="space-y-3 text-base text-gray-700 leading-relaxed">
+            <p>① 회사와 이용자 간에 발생한 서비스 이용에 관한 분쟁에 대하여는 대한민국 법을 적용합니다.</p>
+            <p>② 회사와 이용자 간에 발생한 분쟁에 관한 소송은 민사소송법상의 관할법원에 제기합니다.</p>
+          </div>
+        </section>
+
+        {/* 부칙 */}
+        <section className="mb-10 pt-8 border-t border-gray-200">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            부칙
+          </h2>
+          <p className="text-base text-gray-700 leading-relaxed">
+            본 약관은 2026년 3월 28일부터 시행됩니다.
+          </p>
+        </section>
+
+        {/* 문의 안내 */}
+        <div className="mt-12 p-6 bg-gray-50 rounded-2xl">
+          <h3 className="text-lg font-bold text-gray-900 mb-3">
+            이용약관 관련 문의
+          </h3>
+          <div className="text-sm text-gray-600 space-y-1">
+            <p>이메일: support@goodzz.co.kr</p>
+            <p>사업자: 위로 (대표 김정원, 사업자등록번호 545-16-01046)</p>
+          </div>
+        </div>
+
+        <div className="mt-8 text-center">
+          <Link href="/" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
+            ← 홈으로 돌아가기
+          </Link>
         </div>
       </div>
     </div>
