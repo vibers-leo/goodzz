@@ -35,19 +35,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const title = product.name;
   const description = product.description
     ? product.description.slice(0, 160)
-    : `${product.name} - 마이AI프린트샵에서 AI로 디자인된 커스텀 상품을 만나보세요.`;
+    : `${product.name} - GOODZZ에서 AI로 디자인된 커스텀 상품을 만나보세요.`;
 
   return {
     title,
     description,
     openGraph: {
-      title: `${title} | 마이AI프린트샵`,
+      title: `${title} | GOODZZ`,
       description,
       ...(product.imageUrl ? { images: [{ url: product.imageUrl, alt: product.name }] } : {}),
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | 마이AI프린트샵`,
+      title: `${title} | GOODZZ`,
       description,
       ...(product.imageUrl ? { images: [product.imageUrl] } : {}),
     },

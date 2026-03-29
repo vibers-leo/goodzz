@@ -139,42 +139,132 @@ export async function forwardOrderToWowPress(order: any): Promise<void> {
  * WowPress 주문 상태 동기화
  *
  * WowPress에서 주문 상태를 조회하여 GOODZZ 주문 업데이트
- *
- * @param myOrderId - GOODZZ 주문 ID
  */
-export async function syncWowPressOrderStatus(myOrderId: string): Promise<void> {
-  console.log(`🔄 WowPress 주문 상태 동기화: ${myOrderId}`);
+export async function syncWowPressOrderStatus(myOrderId: string): Promise<boolean> {
+  console.log(`🔄 WowPress 주문 상태 동기화 시작: ${myOrderId}`);
 
   try {
-    // 1. wowpress_order_logs에서 주문 로그 조회
-    // 2. WowPress API로 상태 조회
-    // 3. GOODZZ 주문 상태 업데이트
-    // 4. 송장 번호가 있으면 업데이트
+    // 1. GOODZZ 주문 조회
+    const { getOrderById } = await import('@/lib/orders');
+    const order = await getOrderById(myOrderId);
+    if (!order) throw new Error('주문을 찾을 수 없습니다.');
 
-    // TODO: 구현
-    console.log('⚠️  아직 구현되지 않았습니다');
+    // 2. WowPress 주문 번호(externalOrderId) 찾기
+    const wowpressVendorOrder = order.vendorOrders?.find(
+      (vo: any) => vo.vendorId === WOWPRESS_VENDOR_ID && vo.externalOrderId
+    );
+
+    if (!wowpressVendorOrder) {
+      console.log('ℹ️  WowPress 주문 번호가 없습니다.');
+      return false;
+    }
+
+    const externalOrderId = wowpressVendorOrder.externalOrderId;
+    const client = getWowPressClient();
+
+    // 3. WowPress API로 상태 조회
+    const wpStatus = await client.getOrderStatus(externalOrderId);
+    console.log(`📦 WowPress 상태: ${wpStatus.status}, 송장: ${wpStatus.trackingNumber || '없음'}`);
+
+    // 4. 상태 매핑
+    let newStatus: any = order.orderStatus;
+    if (wpStatus.status === 'printing') newStatus = 'PREPARING';
+    else if (wpStatus.status === 'shipped') newStatus = 'SHIPPED';
+    else if (wpStatus.status === 'delivered') newStatus = 'DELIVERED';
+    else if (wpStatus.status === 'cancelled') newStatus = 'CANCELLED';
+
+    // 5. 주문 업데이트
+    const updateData: any = {};
+    const voIndex = order.vendorOrders.findIndex((vo: any) => vo.vendorId === WOWPRESS_VENDOR_ID);
+
+    if (newStatus !== order.orderStatus) {
+      updateData.orderStatus = newStatus;
+    }
+
+    if (wpStatus.trackingNumber) {
+      updateData[`vendorOrders.${voIndex}.trackingNumber`] = wpStatus.trackingNumber;
+      updateData[`vendorOrders.${voIndex}.carrier`] = wpStatus.carrier || '대한통운';
+      
+      // 전체 주문 상태도 배송중으로 업데이트
+      if (order.orderStatus !== 'SHIPPED' && order.orderStatus !== 'DELIVERED') {
+        updateData.orderStatus = 'SHIPPED';
+      }
+    }
+
+    if (Object.keys(updateData).length > 0) {
+      await updateOrder(myOrderId, updateData);
+      console.log(`✅ 주문 상태 업데이트 완료: ${myOrderId} -> ${newStatus}`);
+      return true;
+    }
+
+    return false;
   } catch (error) {
-    console.error('주문 상태 동기화 실패:', error);
+    console.error(`❌ 주문 상태 동기화 실패 (${myOrderId}):`, error);
+    return false;
   }
 }
 
 /**
- * 배치 주문 전달 (크론 작업용)
- *
- * 실패한 주문들을 재시도
+ * 모든 활성 주문 상태 동기화
+ * (관리자 페이지나 크론 앱에서 호출)
+ */
+export async function syncActiveOrders(): Promise<{ success: number; failed: number }> {
+  console.log('🔄 모든 활성 WowPress 주문 동기화 중...');
+  
+  const { getOrders } = await import('@/lib/orders');
+  // 배송 완료되지 않은 주문들 조회
+  const activeOrders = await getOrders();
+  const targetOrders = activeOrders.filter(o => 
+    (o.orderStatus === 'PAID' || o.orderStatus === 'PREPARING' || o.orderStatus === 'SHIPPED') &&
+    o.vendorOrders?.some((vo: any) => vo.vendorId === WOWPRESS_VENDOR_ID && vo.externalOrderId)
+  ) || [];
+
+  console.log(`🔎 대상 주문 ${targetOrders.length}개 발견`);
+
+  let successCount = 0;
+  let failedCount = 0;
+
+  for (const order of targetOrders) {
+    const success = await syncWowPressOrderStatus(order.id);
+    if (success) successCount++;
+    else failedCount++;
+  }
+
+  return { success: successCount, failed: failedCount };
+}
+
+/**
+ * 실패한 주문 재시도
  */
 export async function retryFailedOrders(): Promise<void> {
   console.log('🔄 실패한 WowPress 주문 재시도 중...');
 
   try {
-    // 1. wowpress_order_logs에서 status='failed'인 주문 조회
-    // 2. 재시도 횟수 확인
-    // 3. forwardOrderToWowPress() 재호출
-    // 4. 성공/실패 로그 업데이트
+    const { collection, query, where, getDocs } = await import('firebase/firestore');
+    const logsRef = collection(db, 'wowpress_order_logs');
+    const q = query(logsRef, where('status', '==', 'failed'), where('retryCount', '<', 3));
+    const snapshot = await getDocs(q);
 
-    // TODO: 구현
-    console.log('⚠️  아직 구현되지 않았습니다');
+    console.log(`🔎 재시도 대상 ${snapshot.size}건 발견`);
+
+    for (const logDoc of snapshot.docs) {
+      const logData = logDoc.data();
+      const { getOrderById } = await import('@/lib/orders');
+      const order = await getOrderById(logData.myOrderId);
+      
+      if (order) {
+        console.log(`🚀 주문 재시도: ${order.id}`);
+        await forwardOrderToWowPress(order);
+        
+        // 로그 업데이트
+        const { doc, updateDoc } = await import('firebase/firestore');
+        await updateDoc(doc(db, 'wowpress_order_logs', logDoc.id), {
+          retryCount: (logData.retryCount || 0) + 1,
+          updatedAt: Timestamp.now()
+        });
+      }
+    }
   } catch (error) {
-    console.error('재시도 실패:', error);
+    console.error('재시도 프로세스 실패:', error);
   }
 }

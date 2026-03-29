@@ -37,7 +37,7 @@ interface FormData {
 
 export default function BusinessPlanPage() {
   const [formData, setFormData] = useState<FormData>({
-    companyName: 'MY AI PRINT SHOP',
+    companyName: 'GOODZZ',
     bizNo: '',
     ceo: '',
     establishmentDate: '',
@@ -60,7 +60,7 @@ export default function BusinessPlanPage() {
     hscode: '',
     
     // Sections
-    overview: `MY AI PRINT SHOP은 생성형 AI 기술을 활용한 맞춤형 프린팅 굿즈 제작 플랫폼입니다.
+    overview: `GOODZZ는 생성형 AI 기술을 활용한 맞춤형 프린팅 굿즈 제작 플랫폼입니다.
 
 당사는 Google Vertex AI 기반의 이미지 생성 기술을 활용하여, 고객이 텍스트 프롬프트만으로 독창적인 디자인을 생성하고, 이를 다양한 굿즈(티셔츠, 에코백, 머그컵, 스티커 등)에 즉시 적용하여 주문할 수 있는 서비스를 제공합니다.
 

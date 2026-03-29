@@ -1,13 +1,22 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextResponse } from 'next/server';
 
-// Mock images for fallback/demo mode
+// Mock images for final fallback
 const MOCK_IMAGES = [
   'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?auto=format&fit=crop&q=80&w=600',
   'https://images.unsplash.com/photo-1636955860106-9eb84e578c3c?auto=format&fit=crop&q=80&w=600',
   'https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&q=80&w=600',
   'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600',
 ];
+
+/**
+ * Pollinations.ai image generation (Free fallback from ai-recipe)
+ */
+async function generateWithPollinations(prompt: string): Promise<string> {
+  const encodedPrompt = encodeURIComponent(prompt + ', high quality, clean merchandise design, professional vector style');
+  const seed = Math.floor(Math.random() * 1000000);
+  return `https://image.pollinations.ai/prompt/${encodedPrompt}?seed=${seed}&width=1024&height=1024&nologo=true`;
+}
 
 /**
  * Gemini API Integration for Image Generation
@@ -33,14 +42,15 @@ export async function POST(req: Request) {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         
         const systemInstruction = `
-          You are a professional AI Art Prompt Engineer for a custom goods shop.
-          Transform the user's idea into a high-quality English prompt for Imagen 3.
+          You are a professional AI Art Prompt Engineer for GOODZZ, a premium custom goods shop.
+          Transform the user's idea into a high-quality, professional English prompt for Imagen 3.
           
-          Guidelines:
-          - Style: ${style || 'Modern & Clean'}
-          - Background: ${removeBackground ? 'Pure white background, high contrast' : 'Natural artistic background'}
-          - Details: 8k resolution, cinematic lighting, sharp focus.
-          - Constraints: Return ONLY the English prompt.
+          Design Guidelines:
+          - Style: ${style || 'Clean & Professional Vector'}
+          - Formatting: Flat design, vector art, sticker style, or clean digital illustration.
+          - Background: ${removeBackground ? 'Pure solid white background, isolated object, no shadows' : 'Clean minimalist studio background'}
+          - Quality: 8k resolution, sharp edges, vibrant colors, premium texture.
+          - Constraints: Focus on designs that look good on T-shirts, mugs, and stickers. Return ONLY the English prompt.
         `;
         
         const result = await model.generateContent([systemInstruction, `User Input: ${prompt}`]);
@@ -58,13 +68,14 @@ export async function POST(req: Request) {
     const isRealMode = !!apiKey;
 
     if (!isRealMode) {
-      await new Promise(r => setTimeout(r, 1500));
-      const randomImage = MOCK_IMAGES[Math.floor(Math.random() * MOCK_IMAGES.length)];
+      console.log('[AI-Recipe] Using Pollinations.ai fallback...');
+      const pollinationsUrl = await generateWithPollinations(enhancedPrompt);
+      
       return NextResponse.json({ 
-        url: randomImage,
+        url: pollinationsUrl,
         enhancedPrompt,
-        mode: 'demo',
-        message: 'Running in demo mode (GOOGLE_API_KEY missing)'
+        mode: 'pollinations',
+        message: 'Running with free AI fallback (Pollinations.ai)'
       });
     }
 
@@ -114,12 +125,13 @@ export async function POST(req: Request) {
       });
     } catch (genErr) {
       console.error('Image Generation Error:', genErr);
-      // Fallback to demo if real fails (e.g., quota or region restriction)
+      // Fallback to Pollinations instead of static Unsplash
+      const fallbackUrl = await generateWithPollinations(enhancedPrompt);
       return NextResponse.json({ 
-        url: MOCK_IMAGES[0],
+        url: fallbackUrl,
         enhancedPrompt,
-        mode: 'fallback',
-        message: 'Real generation failed, used fallback. Error: ' + (genErr instanceof Error ? genErr.message : String(genErr))
+        mode: 'fallback-pollinations',
+        message: 'Real generation failed, used Pollinations fallback. Error: ' + (genErr instanceof Error ? genErr.message : String(genErr))
       });
     }
 

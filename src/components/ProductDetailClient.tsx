@@ -225,6 +225,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover"
+            priority
           />
           
           {generatedImage && (
@@ -285,27 +286,28 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
       </div>
 
       {/* Right: Product Info & Options */}
-      <div className="space-y-8">
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="bg-indigo-50 text-indigo-600 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+      <div className="space-y-6">
+        <div className="pb-6 border-b border-gray-100">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="bg-gray-900 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest">
               {product.category}
             </span>
             {product.printMethod && PRINT_METHODS[product.printMethod] && (
-              <span className="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded tracking-wider">
+              <span className="bg-blue-50 text-blue-600 text-[10px] font-bold px-2.5 py-1 rounded-full tracking-wider">
                 {PRINT_METHODS[product.printMethod].name}
               </span>
             )}
-            <div className="flex items-center gap-0.5 text-amber-400">
-              <Star size={12} fill="currentColor" />
-              <span className="text-xs font-bold text-gray-900">{product.rating || 4.9}</span>
+            <div className="flex items-center gap-1 ml-auto">
+              <Star size={14} className="text-amber-400 fill-current" />
+              <span className="text-sm font-black text-gray-900">{product.rating || 4.9}</span>
+              <span className="text-xs text-gray-400 font-medium">(120+ reviews)</span>
             </div>
           </div>
-          <h1 className="text-3xl font-black text-gray-900 leading-tight mb-2">
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight mb-3" style={{ fontFamily: "'Outfit', sans-serif" }}>
             {product.name}
           </h1>
-          <p className="text-gray-500 text-sm leading-relaxed">
-            {product.description || '최고급 소재와 AI 기술이 만나 탄생한 커스텀 제품입니다.'}
+          <p className="text-gray-500 text-sm leading-relaxed max-w-lg">
+            {product.description || '최고급 소재와 AI 기술이 만나 탄생한 커스텀 제품입니다. 세상에 단 하나뿐인 디자인을 지금 바로 완성해보세요.'}
           </p>
         </div>
 
@@ -367,34 +369,38 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
         {/* Dynamic Pricing Options */}
         {product.options?.groups && (
-          <div className="space-y-6">
+          <div className="grid grid-cols-1 gap-6">
             {product.options.groups.map(group => (
               <div key={group.id} className="space-y-3">
-                <label className="text-sm font-black text-gray-900 flex items-center gap-2">
-                  {group.label}
-                  {group.required && <span className="text-red-500 text-xs">*</span>}
-                </label>
+                <div className="flex justify-between items-end">
+                  <label className="text-xs font-black text-gray-400 uppercase tracking-widest">
+                    {group.label} {group.required && <span className="text-red-500">*</span>}
+                  </label>
+                  <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">필수 선택</span>
+                </div>
                 <div className="grid grid-cols-2 gap-2">
                   {group.values.map(val => (
                     <button
                       key={val.id}
                       onClick={() => setSelectedGroups(prev => ({ ...prev, [group.id]: val.id }))}
-                      className={`p-3 rounded-xl text-left border-2 transition-all ${
+                      className={`p-3 rounded-2xl text-left border-2 transition-all relative ${
                         selectedGroups[group.id] === val.id 
-                          ? 'border-indigo-600 bg-indigo-50 shadow-md' 
-                          : 'border-gray-100 hover:border-gray-200 bg-white'
+                          ? 'border-gray-900 bg-white shadow-sm' 
+                          : 'border-gray-50 hover:border-gray-200 bg-gray-50/50'
                       }`}
                     >
-                      <div className="flex justify-between items-center">
-                        <span className={`text-xs font-bold ${selectedGroups[group.id] === val.id ? 'text-indigo-700' : 'text-gray-600'}`}>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className={`text-xs font-bold ${selectedGroups[group.id] === val.id ? 'text-gray-900' : 'text-gray-500'}`}>
                           {val.label}
                         </span>
-                        {val.id === selectedGroups[group.id] && <CheckCircle2 size={12} className="text-indigo-600" />}
+                        {val.id === selectedGroups[group.id] && <CheckCircle2 size={14} className="text-gray-900" />}
                       </div>
-                      {val.priceAdded && val.priceAdded !== 0 && (
-                        <p className="text-[10px] text-gray-400 mt-1">
+                      {val.priceAdded && val.priceAdded !== 0 ? (
+                        <p className={`text-[10px] font-bold ${selectedGroups[group.id] === val.id ? 'text-gray-900' : 'text-gray-400'}`}>
                           +{val.priceAdded.toLocaleString()}원
                         </p>
+                      ) : (
+                        <p className="text-[10px] text-gray-400">추가 금액 없음</p>
                       )}
                     </button>
                   ))}
@@ -518,21 +524,22 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           </div>
 
           {/* Pricing Details & Summary */}
-          <div className="bg-white rounded-2xl p-4 border border-gray-100 space-y-3">
+          <div className="bg-gray-50 rounded-[2rem] p-6 border border-gray-100 space-y-4">
              <div className="flex justify-between items-center cursor-pointer group" onClick={() => setShowPriceDetails(!showPriceDetails)}>
-                <div className="flex items-center gap-1.5 text-xs font-bold text-gray-400 group-hover:text-gray-600 transition-colors">
-                  가격 상세 보기
-                  <ChevronRight size={12} className={`transition-transform ${showPriceDetails ? 'rotate-90' : ''}`} />
+                <div className="flex items-center gap-1.5 text-xs font-bold text-gray-400 group-hover:text-gray-900 transition-colors">
+                  상세 견적 보기
+                  <ChevronRight size={14} className={`transition-transform duration-300 ${showPriceDetails ? 'rotate-90' : ''}`} />
                 </div>
                 <div className="text-right">
                   <motion.p 
                       key={currentPrice * quantity * variations}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="text-2xl font-black text-gray-900"
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="text-3xl font-black text-gray-900 tracking-tight"
+                      style={{ fontFamily: "'Outfit', sans-serif" }}
                   >
                       {((currentPrice * quantity * variations) * 1.1).toLocaleString()}원
-                      <span className="text-[10px] font-normal text-gray-400 ml-1">(VAT 별도)</span>
+                      <span className="text-[10px] font-bold text-gray-400 ml-2 uppercase tracking-widest">Inc. VAT</span>
                   </motion.p>
                 </div>
              </div>
@@ -543,29 +550,41 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden space-y-2 pt-2 border-t border-dashed border-gray-100"
+                    className="overflow-hidden space-y-2.5 pt-4 border-t border-dashed border-gray-200"
                   >
                     {[
-                      { label: '상품 기본액', val: currentPrice * quantity * variations },
-                      { label: '출력 인쇄비', val: orderMethod === 'self' ? 0 : 5000 },
-                      { label: '부가세 (10%)', val: (currentPrice * quantity * variations) * 0.1 }
+                      { label: '상품 기본 단가', val: currentPrice * quantity * variations },
+                      { label: '제작 및 출력 공정비', val: orderMethod === 'self' ? 0 : 5000 },
+                      { label: '부가가치세 (10%)', val: (currentPrice * quantity * variations) * 0.1 }
                     ].map((item, idx) => (
-                      <div key={idx} className="flex justify-between text-[11px]">
-                        <span className="text-gray-400">{item.label}</span>
-                        <span className="font-bold text-gray-600">+{item.val.toLocaleString()}원</span>
+                      <div key={idx} className="flex justify-between text-xs">
+                        <span className="text-gray-400 font-medium">{item.label}</span>
+                        <span className="font-bold text-gray-900">+{item.val.toLocaleString()}원</span>
                       </div>
                     ))}
+                    <div className="pt-2 mt-2 border-t border-gray-100 flex justify-between text-xs">
+                       <span className="text-gray-900 font-black">최종 합계</span>
+                       <span className="text-blue-600 font-black tracking-tight leading-none text-sm">
+                         {((currentPrice * quantity * variations) * 1.1).toLocaleString()}원
+                       </span>
+                    </div>
                   </motion.div>
                 )}
              </AnimatePresence>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <button onClick={handleAddToCart} className="bg-black text-white font-bold py-5 rounded-3xl hover:bg-gray-800 transition-all flex items-center justify-center gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4">
+            <button 
+              onClick={handleAddToCart} 
+              className="bg-white text-gray-900 border-2 border-gray-900 font-bold py-5 rounded-[2rem] hover:bg-gray-50 transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+            >
               <ShoppingCart size={20} /> 장바구니
             </button>
-            <button onClick={() => { handleAddToCart(); router.push('/checkout'); }} className="bg-gradient-to-r from-indigo-600 to-indigo-500 text-white font-bold py-5 rounded-3xl hover:from-indigo-700 hover:to-indigo-600 transition-all flex items-center justify-center gap-2">
-              <Zap size={20} /> 바로구매
+            <button 
+              onClick={() => { handleAddToCart(); router.push('/checkout'); }} 
+              className="bg-gray-900 text-white font-bold py-5 rounded-[2rem] hover:bg-gray-800 transition-all flex items-center justify-center gap-2 active:scale-[0.98] shadow-xl shadow-gray-200"
+            >
+              <Zap size={20} className="fill-current" /> 바로구매
             </button>
           </div>
 
@@ -576,7 +595,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
               <button
                 onClick={() => shareToKakao({
                   title: product.name,
-                  description: product.description || '마이AI프린트샵에서 만나보세요',
+                  description: product.description || 'GOODZZ에서 만나보세요',
                   imageUrl: product.thumbnail,
                   url: `${typeof window !== 'undefined' ? window.location.origin : ''}/shop/${product.id}`,
                 })}
@@ -764,114 +783,6 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
         <ReviewGrid reviews={reviews} isLoading={reviewsLoading} />
       </div>
-
-      {/* Bulk Order Inquiry Modal */}
-      <AnimatePresence>
-        {showBulkModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowBulkModal(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden overflow-y-auto max-h-[90vh]"
-            >
-              <div className="p-8">
-                <div className="flex justify-between items-start mb-6">
-                  <div>
-                    <h2 className="text-2xl font-black text-gray-900">대량주문 문의</h2>
-                    <p className="text-gray-500 text-sm mt-1">{product.name}</p>
-                  </div>
-                  <button onClick={() => setShowBulkModal(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                    <X size={24} />
-                  </button>
-                </div>
-
-                <form onSubmit={handleBulkSubmit} className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-500">이름 <span className="text-red-500">*</span></label>
-                    <input
-                      type="text"
-                      required
-                      value={bulkForm.name}
-                      onChange={(e) => setBulkForm(prev => ({ ...prev, name: e.target.value }))}
-                      placeholder="담당자명"
-                      className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-500">연락처 <span className="text-red-500">*</span></label>
-                    <input
-                      type="tel"
-                      required
-                      value={bulkForm.phone}
-                      onChange={(e) => setBulkForm(prev => ({ ...prev, phone: e.target.value }))}
-                      placeholder="010-0000-0000"
-                      className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-500">이메일 <span className="text-red-500">*</span></label>
-                    <input
-                      type="email"
-                      required
-                      value={bulkForm.email}
-                      onChange={(e) => setBulkForm(prev => ({ ...prev, email: e.target.value }))}
-                      placeholder="example@email.com"
-                      className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-500">희망 수량 <span className="text-red-500">*</span></label>
-                    <input
-                      type="number"
-                      required
-                      min="1"
-                      value={bulkForm.quantity}
-                      onChange={(e) => setBulkForm(prev => ({ ...prev, quantity: e.target.value }))}
-                      placeholder="100"
-                      className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-500">문의 내용</label>
-                    <textarea
-                      value={bulkForm.message}
-                      onChange={(e) => setBulkForm(prev => ({ ...prev, message: e.target.value }))}
-                      placeholder="추가 요청사항이나 문의 내용을 작성해주세요"
-                      rows={4}
-                      className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={bulkSubmitting}
-                    className="w-full py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-                  >
-                    {bulkSubmitting ? (
-                      <>
-                        <Loader2 className="animate-spin" size={20} />
-                        접수 중...
-                      </>
-                    ) : (
-                      <>
-                        <MessageSquare size={20} />
-                        문의 접수하기
-                      </>
-                    )}
-                  </button>
-                </form>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
 
       {/* Review Write Modal */}
       <ReviewModal 

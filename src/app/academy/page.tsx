@@ -53,7 +53,7 @@ export default function AcademyPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-12">
             <div className="md:w-1/2 space-y-6">
-              <span className="text-blue-600 font-bold tracking-widest uppercase text-sm">Myaiprintshop Academy</span>
+              <span className="text-blue-600 font-bold tracking-widest uppercase text-sm">GOODZZ Academy</span>
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
                 AI 크리에이터를 위한 <br />
                 <span className="text-gray-400">성장의 모든 것</span>

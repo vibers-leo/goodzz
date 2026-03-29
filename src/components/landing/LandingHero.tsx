@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 
 export default function LandingHero() {
@@ -120,11 +121,13 @@ export default function LandingHero() {
                 className="bg-white rounded-[2rem] p-5 w-80 sm:w-96 shadow-2xl border border-gray-100"
               >
                 <div className="rounded-2xl overflow-hidden mb-5 bg-gray-50 border border-gray-100" style={{ aspectRatio: '1/1' }}>
-                  <img
+                  <Image
                     src="https://images.unsplash.com/photo-1597484661643-2f5fef640dd1?auto=format&fit=crop&q=80&w=800"
                     alt="굿즈 미리보기"
+                    fill
                     className="w-full h-full object-cover mix-blend-multiply"
-                    loading="eager"
+                    priority
+                    sizes="(max-width: 768px) 100vw, 400px"
                   />
                 </div>
                 <div className="flex items-center justify-between px-1">

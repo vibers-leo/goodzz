@@ -15,7 +15,7 @@ interface Review {
   productName?: string;
 }
 
-// MY AI PRINT SHOP 맞춤 리뷰 데이터
+// GOODZZ 맞춤 리뷰 데이터
 const reviews: Review[] = [
   {
     id: 1,

@@ -60,6 +60,7 @@ export interface VendorOrder {
     carrier?: string;
     shippedAt?: string;
   };
+  externalOrderId?: string;
 }
 
 // 주문 타입

@@ -99,12 +99,28 @@ export default function CreateClientContent({ products }: { products: Product[] 
                   {uploadedImage ? '다른 사진으로 변경' : '사진 업로드하여 시작'}
                 </button>
                 <button 
-                  onClick={() => {
+                  onClick={async () => {
                     setIsGenerating(true);
-                    setTimeout(() => {
+                    try {
+                      const res = await fetch('/api/generate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                          prompt: 'A vibrant, creative artistic design for a t-shirt, modern abstract style',
+                          style: 'Vibrant & Modern'
+                        })
+                      });
+                      const data = await res.json();
+                      if (data.url) {
+                        setUploadedImage(data.url);
+                      } else {
+                        throw new Error('Generation failed');
+                      }
+                    } catch (err) {
                       setUploadedImage('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&q=80&w=1000');
+                    } finally {
                       setIsGenerating(false);
-                    }, 1000);
+                    }
                   }}
                   className="px-6 py-4 bg-white text-gray-900 border border-gray-200 rounded-xl font-bold text-base hover:bg-gray-50 hover:shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-sm"
                 >
