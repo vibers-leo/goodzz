@@ -7,7 +7,6 @@
     "icon": "./assets/icon.png",
     "scheme": "goodzz",
     "userInterfaceStyle": "light",
-    "newArchEnabled": false,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
