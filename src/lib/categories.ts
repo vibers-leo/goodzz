@@ -20,7 +20,7 @@ export const CATEGORIES: Category[] = [
   {
     slug: 'business-card',
     label: '명함',
-    dbValues: ['명함']
+    dbValues: ['명함', '인쇄']
   },
   {
     slug: 'sticker',
@@ -33,19 +33,29 @@ export const CATEGORIES: Category[] = [
     dbValues: ['전단지', '리플렛', '팜플렛']
   },
   {
-    slug: 'eco-bag',
-    label: '에코백',
-    dbValues: ['에코백']
+    slug: 'fashion',
+    label: '의류/패션',
+    dbValues: ['의류', '패션', '패션/어패럴']
   },
   {
-    slug: 'shopping-bag',
-    label: '쇼핑백',
-    dbValues: ['쇼핑백']
+    slug: 'living',
+    label: '홈/리빙',
+    dbValues: ['홈/리빙', '리빙']
+  },
+  {
+    slug: 'tech',
+    label: '테크/액세서리',
+    dbValues: ['테크', '테크/가전']
+  },
+  {
+    slug: 'goods',
+    label: '굿즈/팬시',
+    dbValues: ['굿즈', '굿즈/팬시', '문구', '잡화', '인테리어']
   },
   {
     slug: 'packaging',
     label: '포장박스',
-    dbValues: ['포장박스', '패키지']
+    dbValues: ['포장박스', '패키지', '쇼핑백']
   }
 ];
 
