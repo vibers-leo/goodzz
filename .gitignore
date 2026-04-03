@@ -52,3 +52,8 @@ package-lock.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Expo mobile app
+mobile/node_modules/
+mobile/dist/
+mobile/.expo/
