@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { 
+import {
   getProductById,
   updateProduct,
   deleteProduct,
   Product
 } from '@/lib/products';
 import { MOCK_PRODUCTS } from '@/lib/mock-data';
+import { requireRole, unauthorizedResponse } from '@/lib/auth-middleware';
 
 // Mock 상품을 DB 상품 형태로 변환 (Fallback용)
 function mockToProduct(mock: typeof MOCK_PRODUCTS[0]): Product {
@@ -104,15 +105,31 @@ export async function GET(
   }
 }
 
-// PATCH: 상품 수정
+// PATCH: 상품 수정 (관리자 또는 본인 상품)
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const authResult = await requireRole(request, ['admin', 'seller']);
+    if (!authResult.authorized) return unauthorizedResponse(authResult.error);
+
     const { id } = await params;
+
+    // seller는 본인 상품만 수정 가능
+    if (authResult.roles?.includes('seller') && !authResult.roles?.includes('admin')) {
+      const product = await getProductById(id);
+      if (!product) return NextResponse.json({ error: '상품을 찾을 수 없습니다.' }, { status: 404 });
+
+      // vendorId의 ownerId가 현재 userId인지 확인
+      const { getVendorById } = await import('@/lib/vendors');
+      const vendor = await getVendorById(product.vendorId);
+      if (!vendor || vendor.ownerId !== authResult.userId) {
+        return NextResponse.json({ error: '본인 상품만 수정할 수 있습니다.' }, { status: 403 });
+      }
+    }
+
     const body = await request.json();
-    
     const success = await updateProduct(id, body);
     
     if (!success) {
@@ -135,13 +152,27 @@ export async function PATCH(
   }
 }
 
-// DELETE: 상품 삭제
+// DELETE: 상품 삭제 (관리자 또는 본인 상품)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const authResult = await requireRole(request, ['admin', 'seller']);
+    if (!authResult.authorized) return unauthorizedResponse(authResult.error);
+
     const { id } = await params;
+
+    if (authResult.roles?.includes('seller') && !authResult.roles?.includes('admin')) {
+      const product = await getProductById(id);
+      if (!product) return NextResponse.json({ error: '상품을 찾을 수 없습니다.' }, { status: 404 });
+      const { getVendorById } = await import('@/lib/vendors');
+      const vendor = await getVendorById(product.vendorId);
+      if (!vendor || vendor.ownerId !== authResult.userId) {
+        return NextResponse.json({ error: '본인 상품만 삭제할 수 있습니다.' }, { status: 403 });
+      }
+    }
+
     const success = await deleteProduct(id);
     
     if (!success) {

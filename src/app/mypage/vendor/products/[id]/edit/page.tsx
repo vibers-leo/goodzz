@@ -51,9 +51,10 @@ export default function EditProductPage() {
   }, [productId, router]);
 
   async function handleSubmit(data: ProductFormData) {
+    const token = await user?.getIdToken();
     const res = await fetch(`/api/products/${productId}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({
         ...data,
         thumbnail: data.images[0] || '',
@@ -71,7 +72,8 @@ export default function EditProductPage() {
     if (!confirm('정말 이 상품을 삭제하시겠습니까?')) return;
     setDeleting(true);
     try {
-      const res = await fetch(`/api/products/${productId}`, { method: 'DELETE' });
+      const token = await user?.getIdToken();
+      const res = await fetch(`/api/products/${productId}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
       const result = await res.json();
       if (!result.success) throw new Error(result.error);
       toast.success('상품이 삭제되었습니다.');

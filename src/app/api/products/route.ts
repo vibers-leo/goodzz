@@ -9,7 +9,7 @@ import {
 } from '@/lib/products';
 import { MOCK_PRODUCTS } from '@/lib/mock-data';
 import { getDbCategories, getSubCategoryDbValue } from '@/lib/categories';
-import { requireAdmin, unauthorizedResponse } from '@/lib/auth-middleware';
+import { requireRole, requireAdmin, unauthorizedResponse } from '@/lib/auth-middleware';
 
 // Mock 상품을 DB 상품 형태로 변환
 function mockToProduct(mock: typeof MOCK_PRODUCTS[0]): Product {
@@ -146,21 +146,21 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST: 상품 생성 (관리자 전용)
+// POST: 상품 생성 (관리자 또는 승인된 판매자)
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    // 관리자 인증 검사
-    const authResult = await requireAdmin(request);
+    const authResult = await requireRole(request, ['admin', 'seller']);
     if (!authResult.authorized) {
       return unauthorizedResponse(authResult.error);
     }
 
     const body = await request.json();
-    const { name, price, category, thumbnail, stock } = body;
+    const { name, price, category, stock } = body;
+    const thumbnail = body.thumbnail || body.images?.[0];
 
     if (!name || !price || !category || !thumbnail) {
       return NextResponse.json(
-        { error: '필수 상품 정보가 누락되었습니다.' },
+        { error: '필수 상품 정보가 누락되었습니다. (상품명, 가격, 카테고리, 이미지)' },
         { status: 400 }
       );
     }
@@ -168,21 +168,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const productId = await createProduct({
       name,
       price: Number(price),
+      originalPrice: body.originalPrice ? Number(body.originalPrice) : undefined,
       category,
       thumbnail,
       stock: Number(stock || 100),
-      isActive: true,
-      reviewCount: 0,
-      rating: 0,
+      isActive: body.isActive ?? true,
+      reviewCount: body.reviewCount ?? 0,
+      rating: body.rating ?? 0,
       tags: body.tags || [],
       description: body.description || '',
       images: body.images || [thumbnail],
-      options: body.options || {
-        sizes: ['S', 'M', 'L', 'XL'],
-        colors: [{ name: 'White', hex: '#FFFFFF' }]
-      },
+      options: body.options || {},
+      volumePricing: body.volumePricing || [],
       vendorId: body.vendorId || 'PLATFORM_DEFAULT',
-      vendorType: body.vendorType || 'platform'
+      vendorName: body.vendorName || '',
+      vendorType: body.vendorType || 'platform',
     });
 
     if (!productId) {
