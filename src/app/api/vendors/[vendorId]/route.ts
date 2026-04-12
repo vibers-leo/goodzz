@@ -99,6 +99,7 @@ export async function PATCH(
       'email',
       'phone',
       'bankAccount',
+      'store',
     ];
 
     const updateData: any = {};

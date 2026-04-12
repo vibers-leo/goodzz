@@ -297,6 +297,13 @@ export default function VendorDashboardPage() {
               color: 'from-amber-500 to-amber-600',
             },
             {
+              title: '스토어 관리',
+              desc: '브랜드 스토어를 꾸며보세요',
+              icon: DollarSign,
+              href: '/mypage/vendor/store',
+              color: 'from-purple-500 to-purple-600',
+            },
+            {
               title: '정산 내역',
               desc: '정산 내역을 확인하세요',
               icon: DollarSign,

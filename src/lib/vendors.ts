@@ -47,6 +47,20 @@ export interface Vendor {
   // 상태
   status: VendorStatus;
 
+  // 스토어 프로필
+  store?: {
+    slug: string;           // URL slug (예: 'cafe-mocha')
+    logo?: string;          // 로고 이미지 URL
+    banner?: string;        // 배너 이미지 URL
+    description?: string;   // 브랜드 소개
+    shortBio?: string;      // 한줄 소개
+    category?: string;      // 업종 (카페, 베이커리, 플라워샵 등)
+    location?: string;      // 지역
+    instagram?: string;
+    website?: string;
+    themeColor?: string;    // 브랜드 컬러 (#hex)
+  };
+
   // 통계 (캐시)
   stats?: {
     totalSales: number;
@@ -82,6 +96,28 @@ export async function getVendor(vendorId: string): Promise<Vendor | null> {
     return null;
   }
 }
+
+/**
+ * 스토어 slug로 판매자 조회
+ */
+export async function getVendorBySlug(slug: string): Promise<Vendor | null> {
+  try {
+    const vendorsRef = collection(db, 'vendors');
+    const q = query(vendorsRef, where('store.slug', '==', slug), where('status', '==', 'approved'));
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) return null;
+    const d = snapshot.docs[0];
+    return { id: d.id, ...d.data() } as Vendor;
+  } catch (error) {
+    console.error('❌ Error getting vendor by slug:', error);
+    return null;
+  }
+}
+
+/**
+ * getVendorById 별칭 (auth-middleware 등에서 사용)
+ */
+export const getVendorById = getVendor;
 
 /**
  * ownerId로 판매자 조회

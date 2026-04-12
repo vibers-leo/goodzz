@@ -79,6 +79,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: '스토어', href: '/shop' },
+    { name: '브랜드', href: '/brands' },
     { name: '굿즈 만들기', href: '/create' },
     { name: '크리에이터 스튜디오', href: '/studio' },
     { name: '아카데미', href: '/academy' },

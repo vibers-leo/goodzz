@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'kr.object.ncloudstorage.com',
+      },
+      {
+        protocol: 'https',
         hostname: '*.googleusercontent.com',
       },
     ],
