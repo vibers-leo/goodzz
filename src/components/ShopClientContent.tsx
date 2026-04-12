@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
 
 interface ShopClientContentProps {
@@ -22,6 +23,25 @@ export default function ShopClientContent({
   currentCategory,
   allCategories,
 }: ShopClientContentProps) {
+  const searchParams = useSearchParams();
+  const brandFilter = searchParams.get('brand');
+
+  // 브랜드 목록 추출
+  const brands = useMemo(() => {
+    const map = new Map<string, string>();
+    products.forEach((p: any) => {
+      if (p.vendorName && p.vendorType === 'marketplace') {
+        map.set(p.vendorId, p.vendorName);
+      }
+    });
+    return Array.from(map.entries()).map(([id, name]) => ({ id, name }));
+  }, [products]);
+
+  // 브랜드 필터 적용
+  const filteredProducts = brandFilter
+    ? products.filter((p: any) => p.vendorId === brandFilter)
+    : products;
+
   return (
     <div className="min-h-[100dvh] bg-[#FAFAFA]">
       {/* Background Subtletty */}
@@ -139,14 +159,43 @@ export default function ShopClientContent({
           </div>
         )}
 
+        {/* Brand Filter */}
+        {brands.length > 0 && !query && (
+          <div className="mb-8 flex flex-wrap justify-center gap-2">
+            <Link
+              href={category ? `/shop?category=${category}` : '/shop'}
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${
+                !brandFilter
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-white text-gray-500 border border-gray-200 hover:text-purple-600 hover:border-purple-200'
+              }`}
+            >
+              전체 브랜드
+            </Link>
+            {brands.map((b) => (
+              <Link
+                key={b.id}
+                href={category ? `/shop?category=${category}&brand=${b.id}` : `/shop?brand=${b.id}`}
+                className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${
+                  brandFilter === b.id
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-white text-gray-500 border border-gray-200 hover:text-purple-600 hover:border-purple-200'
+                }`}
+              >
+                {b.name}
+              </Link>
+            ))}
+          </div>
+        )}
+
         {/* Product Grid Layout */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {products.map((product: any, index: number) => (
+          {filteredProducts.map((product: any, index: number) => (
              <ProductCard key={product.id} product={product} index={index} />
           ))}
         </div>
-        
-        {products.length === 0 && (
+
+        {filteredProducts.length === 0 && (
           <div className="py-24 text-center bg-white border border-gray-200 rounded-3xl mt-10 shadow-sm">
             {/* @ts-ignore */}
             <iconify-icon icon="solar:ghost-bold" class="text-6xl text-gray-300 mb-4" />

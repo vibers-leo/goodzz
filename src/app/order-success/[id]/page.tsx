@@ -123,7 +123,11 @@ export default function OrderSuccessPage() {
               <div className="mt-8 bg-primary-50 p-4 rounded-xl border border-primary-100 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Wand2 className="w-5 h-5 text-primary-600" />
-                  <p className="text-sm text-primary-700 font-medium">현재 **WowPress** 생산소로 고해상도 도안이 전송되었습니다.</p>
+                  <p className="text-sm text-primary-700 font-medium">
+                    {order.vendorOrders?.[0]?.vendorName
+                      ? `${order.vendorOrders[0].vendorName}에서 상품을 준비 중입니다.`
+                      : '생산소로 고해상도 도안이 전송되었습니다.'}
+                  </p>
                 </div>
                 {order.vendorOrders?.[0]?.externalOrderId && (
                   <span className="text-[10px] bg-white px-2 py-1 rounded-md border border-primary-200 text-primary-500 font-mono">
