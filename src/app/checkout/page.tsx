@@ -8,7 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Script from 'next/script';
 import { ArrowLeft, CreditCard, ShoppingBag, Smartphone, Loader2 } from 'lucide-react';
-import { PORTONE_CONFIG } from '@/lib/payment';
+import { TOSS_CONFIG } from '@/lib/payment';
 import { useAuth } from '@/context/AuthContext';
 
 // 결제 수단 타입
@@ -51,19 +51,20 @@ export default function CheckoutPage() {
       }));
     }
 
-    // 포트원 SDK 로드
-    const loadPortone = async () => {
+    // 토스 페이먼츠 SDK 로드
+    const loadToss = async () => {
       try {
-        const PortOne = await import('@portone/browser-sdk/v2');
-        (window as any).PortOne = PortOne;
+        const { loadTossPayments } = await import('@tosspayments/tosspayments-sdk');
+        const toss = await loadTossPayments(TOSS_CONFIG.clientKey);
+        (window as any).TossPayments = toss;
         setPortoneLoaded(true);
-        console.log('✅ PortOne SDK loaded');
+        console.log('✅ Toss Payments SDK loaded');
       } catch (error) {
-        console.error('Failed to load PortOne SDK:', error);
+        console.error('Failed to load Toss SDK:', error);
       }
     };
     
-    loadPortone();
+    loadToss();
   }, [user]);
 
   const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -179,44 +180,35 @@ export default function CheckoutPage() {
       const { orderId, paymentRequest } = orderData;
       console.log('📦 Order created:', orderId);
 
-      // 2. 포트원 결제창 호출
-      const PortOne = (window as any).PortOne;
-      
-      if (!PortOne) {
-        // SDK 미로드 시 테스트 모드로 처리
-        console.log('⚠️ PortOne SDK not loaded, using test mode');
+      // 2. 토스 결제창 호출
+      const toss = (window as any).TossPayments;
+
+      if (!toss) {
+        console.log('⚠️ Toss SDK not loaded, using test mode');
         await handleTestPayment(orderId);
         return;
       }
 
-      // 포트원 V2 결제 요청
-      const paymentResponse = await PortOne.requestPayment({
-        storeId: PORTONE_CONFIG.storeId,
-        channelKey: PORTONE_CONFIG.channelKey,
-        paymentId: `payment-${orderId}-${Date.now()}`,
+      const tossMethod = paymentMethod === 'CARD' ? '카드'
+        : paymentMethod === 'EASY_PAY' ? '간편결제'
+        : paymentMethod === 'VIRTUAL_ACCOUNT' ? '가상계좌'
+        : '계좌이체';
+
+      // 토스 결제위젯이 아닌 일반 결제 (requestPayment)
+      const payment = toss.payment({ customerKey: user?.uid || `guest_${Date.now()}` });
+      await payment.requestPayment({
+        method: tossMethod,
+        amount: { currency: 'KRW', value: total },
+        orderId,
         orderName: paymentRequest.orderName,
-        totalAmount: paymentRequest.totalAmount,
-        currency: 'CURRENCY_KRW',
-        payMethod: paymentMethod === 'CARD' ? 'CARD' : 
-                   paymentMethod === 'EASY_PAY' ? 'EASY_PAY' :
-                   paymentMethod === 'VIRTUAL_ACCOUNT' ? 'VIRTUAL_ACCOUNT' : 'TRANSFER',
-        customer: {
-          fullName: paymentRequest.customer.name,
-          email: paymentRequest.customer.email,
-          phoneNumber: paymentRequest.customer.phone,
-        },
-        customData: orderId, // 주문 ID 저장
+        customerName: paymentRequest.customer.name,
+        customerEmail: paymentRequest.customer.email,
+        customerMobilePhone: paymentRequest.customer.phone?.replace(/-/g, ''),
+        successUrl: `${window.location.origin}/checkout/success?orderId=${orderId}&amount=${total}`,
+        failUrl: `${window.location.origin}/checkout/fail?orderId=${orderId}`,
       });
 
-      console.log('💳 Payment response:', paymentResponse);
-
-      if (paymentResponse.code) {
-        // 결제 실패
-        throw new Error(paymentResponse.message || '결제가 취소되었습니다.');
-      }
-
-      // 3. 결제 검증
-      await verifyPayment(paymentResponse.paymentId, orderId);
+      // 토스는 successUrl로 리다이렉트되므로 여기에 도달하지 않음
 
     } catch (error: any) {
       console.error('Payment error:', error);

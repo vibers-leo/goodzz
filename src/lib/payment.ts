@@ -1,14 +1,18 @@
-// 포트원 결제 설정
-// 실제 사용 시 환경 변수에서 가져오세요
+// ────────────────────────────────────────────
+// 토스 페이먼츠 결제 설정
+// https://docs.tosspayments.com/reference
+// ────────────────────────────────────────────
+export const TOSS_CONFIG = {
+  clientKey: process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY || '',
+  secretKey: process.env.TOSS_SECRET_KEY || '',
+  // 토스 결제 승인 API 엔드포인트
+  apiUrl: 'https://api.tosspayments.com/v1',
+};
 
+// 레거시 호환 (기존 코드에서 PORTONE_CONFIG 참조하는 곳)
 export const PORTONE_CONFIG = {
-  // 포트원 V2 Store ID (테스트용)
-  storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID || 'store-test-id',
-  
-  // 채널 키 (결제 수단별로 다름)
-  channelKey: process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || 'channel-key-test',
-  
-  // API Secret (서버사이드에서만 사용)
+  storeId: process.env.NEXT_PUBLIC_PORTONE_STORE_ID || '',
+  channelKey: process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY || '',
   apiSecret: process.env.PORTONE_API_SECRET || '',
 };
 
