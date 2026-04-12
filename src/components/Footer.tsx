@@ -59,9 +59,9 @@ export default function Footer() {
             <ul className="space-y-4">
               {[
                 { name: '상품 목록', href: '/shop' },
+                { name: '브랜드', href: '/brands' },
                 { name: '굿즈 만들기', href: '/create' },
                 { name: '마이페이지', href: '/mypage' },
-                { name: '장바구니', href: '/cart' },
               ].map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">

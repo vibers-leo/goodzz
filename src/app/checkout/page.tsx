@@ -34,6 +34,11 @@ export default function CheckoutPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [portoneLoaded, setPortoneLoaded] = useState(false);
 
+  // 쿠폰
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountType: string; discountValue: number } | null>(null);
+  const [couponLoading, setCouponLoading] = useState(false);
+
   useEffect(() => {
     setMounted(true);
     
@@ -63,7 +68,34 @@ export default function CheckoutPage() {
 
   const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const shipping = subtotal > 50000 ? 0 : 3000;
-  const total = subtotal + shipping;
+
+  // 쿠폰 할인 계산
+  const couponDiscount = appliedCoupon
+    ? appliedCoupon.discountType === 'fixed'
+      ? appliedCoupon.discountValue
+      : Math.round(subtotal * appliedCoupon.discountValue / 100)
+    : 0;
+  const total = Math.max(0, subtotal + shipping - couponDiscount);
+
+  async function applyCoupon() {
+    if (!couponCode.trim()) return;
+    setCouponLoading(true);
+    try {
+      const res = await fetch(`/api/coupons/validate?code=${encodeURIComponent(couponCode.trim().toUpperCase())}&amount=${subtotal}`);
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        toast.error(data.error || '쿠폰을 사용할 수 없습니다.');
+        setAppliedCoupon(null);
+        return;
+      }
+      setAppliedCoupon({ code: data.coupon.code, discountType: data.coupon.discountType, discountValue: data.coupon.discountValue });
+      toast.success(`쿠폰이 적용되었습니다! (-₩${data.discount.toLocaleString()})`);
+    } catch {
+      toast.error('쿠폰 확인에 실패했습니다.');
+    } finally {
+      setCouponLoading(false);
+    }
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -395,6 +427,45 @@ export default function CheckoutPage() {
               )}
             </section>
 
+            {/* Coupon */}
+            <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <h2 className="text-lg font-bold text-gray-900 mb-4">쿠폰 할인</h2>
+              {appliedCoupon ? (
+                <div className="flex items-center justify-between bg-purple-50 border border-purple-200 rounded-xl p-4">
+                  <div>
+                    <span className="font-bold text-purple-700">{appliedCoupon.code}</span>
+                    <span className="text-sm text-purple-500 ml-2">
+                      -{appliedCoupon.discountType === 'fixed' ? `₩${appliedCoupon.discountValue.toLocaleString()}` : `${appliedCoupon.discountValue}%`}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => { setAppliedCoupon(null); setCouponCode(''); }}
+                    className="text-sm text-red-500 hover:text-red-700 font-medium"
+                  >
+                    취소
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); applyCoupon(); } }}
+                    placeholder="쿠폰 코드 입력"
+                    className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none uppercase font-mono"
+                  />
+                  <button
+                    onClick={applyCoupon}
+                    disabled={couponLoading || !couponCode.trim()}
+                    className="px-5 py-3 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-800 disabled:opacity-50 transition-colors whitespace-nowrap"
+                  >
+                    {couponLoading ? '확인중...' : '적용'}
+                  </button>
+                </div>
+              )}
+            </section>
+
             {/* Order Summary (Mobile) */}
             <section className="block lg:hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
               <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -434,6 +505,12 @@ export default function CheckoutPage() {
                     {shipping === 0 ? '무료' : `${shipping.toLocaleString()}원`}
                   </span>
                 </div>
+                {couponDiscount > 0 && (
+                  <div className="flex justify-between text-purple-600 font-medium">
+                    <span>쿠폰 할인</span>
+                    <span>-{couponDiscount.toLocaleString()}원</span>
+                  </div>
+                )}
               </div>
 
               <div className="flex justify-between items-center py-4 border-t border-gray-100">
