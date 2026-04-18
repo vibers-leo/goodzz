@@ -2,13 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Star, Trash2, Search, MessageSquare, Loader2 } from 'lucide-react';
+import { Star, Trash2, Search, MessageSquare, Loader2, Reply } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 
 export default function ReviewAdmin() {
+  const { user } = useAuth();
   const [reviews, setReviews] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [replyingId, setReplyingId] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState('');
 
   useEffect(() => {
     fetchReviews();
@@ -43,6 +47,26 @@ export default function ReviewAdmin() {
     } catch (error) {
       console.error('Error deleting review:', error);
       toast.error('오류가 발생했습니다.');
+    }
+  };
+
+  const handleReply = async (reviewId: string) => {
+    if (!replyText.trim()) { toast.error('답변 내용을 입력해주세요.'); return; }
+    try {
+      const token = await user?.getIdToken();
+      const res = await fetch('/api/reviews', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ reviewId, replyContent: replyText }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      toast.success('답변이 등록되었습니다.');
+      setReplyingId(null);
+      setReplyText('');
+      setReviews(reviews.map(r => r.id === reviewId ? { ...r, replyContent: replyText, replyAt: new Date().toISOString() } : r));
+    } catch (err: any) {
+      toast.error(err.message || '답변 등록 실패');
     }
   };
 
@@ -120,14 +144,47 @@ export default function ReviewAdmin() {
                             {new Date(review.createdAt).toLocaleDateString()}
                         </td>
                         <td className="px-4 py-4 text-right">
-                            <button 
+                            <div className="flex items-center justify-end gap-1">
+                              <button
+                                onClick={() => { setReplyingId(replyingId === review.id ? null : review.id); setReplyText(review.replyContent || ''); }}
+                                className={`p-2 rounded-lg transition-all ${review.replyContent ? 'text-green-500 hover:bg-green-50' : 'text-gray-300 hover:text-blue-500 hover:bg-blue-50'}`}
+                                title={review.replyContent ? '답변 수정' : '답변 달기'}
+                              >
+                                <Reply size={16} />
+                              </button>
+                              <button
                                 onClick={() => handleDelete(review.id)}
                                 className="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                            >
+                              >
                                 <Trash2 size={16} />
-                            </button>
+                              </button>
+                            </div>
                         </td>
                     </tr>
+                    {replyingId === review.id && (
+                      <tr>
+                        <td colSpan={6} className="px-4 py-3 bg-blue-50/50">
+                          <div className="flex gap-2">
+                            <textarea
+                              value={replyText}
+                              onChange={e => setReplyText(e.target.value)}
+                              placeholder="답변을 입력하세요..."
+                              rows={2}
+                              className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none"
+                            />
+                            <div className="flex flex-col gap-1">
+                              <button onClick={() => handleReply(review.id)} className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700">등록</button>
+                              <button onClick={() => setReplyingId(null)} className="px-3 py-1.5 text-gray-500 text-xs">취소</button>
+                            </div>
+                          </div>
+                          {review.replyContent && (
+                            <div className="mt-2 text-xs text-green-700 bg-green-50 p-2 rounded">
+                              기존 답변: {review.replyContent}
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    )
                 ))
             )}
           </tbody>

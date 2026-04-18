@@ -97,6 +97,21 @@ export interface Order {
   paymentStatus: PaymentStatus;
   orderStatus: OrderStatus;
 
+  // 추가 필드
+  couponCode?: string;
+  couponDiscount?: number;
+  pointsUsed?: number;
+  pointsEarned?: number;
+  cashReceipt?: {
+    receiptKey: string;
+    type: string;
+    registrationNumber: string;
+    issueNumber: string;
+    issueUrl: string;
+    issuedAt: string;
+  };
+  adminMemo?: string;
+
   createdAt: string;
   updatedAt: string;
 }

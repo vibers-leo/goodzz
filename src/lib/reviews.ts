@@ -25,6 +25,10 @@ export interface Review {
   rating: number; // 1 to 5
   content: string;
   images?: string[];
+  // 관리자/벤더 답변
+  replyContent?: string;
+  replyBy?: string;
+  replyAt?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -47,6 +51,9 @@ function docToReview(doc: DocumentData, id: string): Review {
     rating: data.rating || 5,
     content: data.content || '',
     images: data.images || [],
+    replyContent: data.replyContent,
+    replyBy: data.replyBy,
+    replyAt: data.replyAt?.toDate?.()?.toISOString() || data.replyAt,
     createdAt: data.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
     updatedAt: data.updatedAt?.toDate?.()?.toISOString() || new Date().toISOString(),
   };
@@ -148,6 +155,23 @@ export async function createReview(input: CreateReviewInput): Promise<string | n
   } catch (error) {
     console.error('Error creating review:', error);
     return null;
+  }
+}
+
+// 리뷰 답변 (관리자/벤더)
+export async function replyToReview(reviewId: string, replyContent: string, replyBy: string): Promise<boolean> {
+  try {
+    const docRef = doc(db, 'reviews', reviewId);
+    await updateDoc(docRef, {
+      replyContent,
+      replyBy,
+      replyAt: Timestamp.now(),
+      updatedAt: Timestamp.now(),
+    });
+    return true;
+  } catch (error) {
+    console.error('Error replying to review:', error);
+    return false;
   }
 }
 

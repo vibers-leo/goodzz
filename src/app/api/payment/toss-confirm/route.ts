@@ -7,6 +7,7 @@ import { forwardOrderToWowPress } from '@/lib/wowpress/order-forwarder';
 import { sendOrderConfirmEmail, sendOrderReceivedEmail } from '@/lib/email';
 import { createNotification } from '@/lib/notifications';
 import { getAdminFirestore } from '@/lib/firebase-admin';
+import { earnPoints, POINT_CONFIG } from '@/lib/points';
 
 export async function POST(request: NextRequest) {
   try {
@@ -142,6 +143,14 @@ export async function POST(request: NextRequest) {
           }
         } catch (error) {
           console.error('❌ Settlement error (order still completed):', error);
+        }
+      }
+
+      // 포인트 적립 (구매 금액의 1%)
+      if (updatedOrder?.userId) {
+        const pointAmount = Math.floor(updatedOrder.totalAmount * POINT_CONFIG.earnRate);
+        if (pointAmount > 0) {
+          earnPoints(updatedOrder.userId, pointAmount, '주문 적립', 'order', orderId).catch(() => {});
         }
       }
 

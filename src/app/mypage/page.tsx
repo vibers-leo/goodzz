@@ -36,14 +36,20 @@ export default function MyPageDashboard() {
           setStats(prev => ({ ...prev, shipping: shippingCount }));
         }
 
-        // 사용 가능한 쿠폰 수 조회
+        // 쿠폰 수 + 포인트 잔액 조회
         try {
           const token = await user.getIdToken();
-          const couponRes = await fetch('/api/coupons/available', { headers: { Authorization: `Bearer ${token}` } });
+          const [couponRes, pointRes] = await Promise.all([
+            fetch('/api/coupons/available', { headers: { Authorization: `Bearer ${token}` } }),
+            fetch('/api/points', { headers: { Authorization: `Bearer ${token}` } }),
+          ]);
           const couponData = await couponRes.json();
-          if (couponData.success) {
-            setStats(prev => ({ ...prev, coupons: couponData.count }));
-          }
+          const pointData = await pointRes.json();
+          setStats(prev => ({
+            ...prev,
+            coupons: couponData.success ? couponData.count : prev.coupons,
+            points: pointData.success ? pointData.balance.toLocaleString() : prev.points,
+          }));
         } catch {}
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
@@ -182,6 +188,22 @@ export default function MyPageDashboard() {
         </div>
       </div>
       
+      {/* 바로가기 메뉴 */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+        {[
+          { label: '주문 내역', href: '/mypage/orders', icon: 'solar:box-bold' },
+          { label: '포인트', href: '/mypage/points', icon: 'solar:star-circle-bold' },
+          { label: '쿠폰함', href: '/mypage/coupons', icon: 'solar:ticket-bold' },
+          { label: '배송지 관리', href: '/mypage/addresses', icon: 'solar:map-point-bold' },
+        ].map(menu => (
+          <Link key={menu.href} href={menu.href} className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-gray-100 hover:border-purple-200 hover:shadow-sm transition-all">
+            {/* @ts-ignore */}
+            <iconify-icon icon={menu.icon} class="text-xl text-gray-400" />
+            <span className="text-sm font-bold text-gray-700">{menu.label}</span>
+          </Link>
+        ))}
+      </div>
+
       {/* Recommended Section (Visual Only) */}
       <div className="px-8 py-10 rounded-3xl flex flex-col md:flex-row justify-between items-center relative overflow-hidden group shadow-md" style={{ ...cardStyle }}>
           <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-gray-100 to-transparent -z-10" />

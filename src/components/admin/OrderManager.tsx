@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "./AdminComponents.module.css";
 import { toast } from "sonner";
-import { Loader2, ExternalLink, RefreshCw, Search, Package, XCircle } from "lucide-react";
+import { Loader2, ExternalLink, RefreshCw, Search, Package, XCircle, Download } from "lucide-react";
 import { Order, OrderStatus } from "@/lib/payment";
 import { useAuth } from "@/context/AuthContext";
 
@@ -27,21 +27,35 @@ export default function OrderManager() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isUpdating, setIsUpdating] = useState<string | null>(null);
 
-  const handleCancelOrder = async (order: Order) => {
-    const reason = prompt('환불 사유를 입력하세요:');
+  const handleCancelOrder = async (order: Order, vendorOrderIndex?: number) => {
+    const isPartial = vendorOrderIndex !== undefined;
+    const reason = prompt(isPartial ? '해당 벤더 상품 환불 사유를 입력하세요:' : '환불 사유를 입력하세요:');
     if (!reason) return;
+
+    let cancelAmount: number | undefined;
+    if (isPartial) {
+      const amountStr = prompt('환불 금액을 입력하세요 (빈칸 시 해당 벤더 전체 환불):');
+      if (amountStr) cancelAmount = Number(amountStr);
+    }
+
     setIsUpdating(order.id);
     try {
       const token = await user?.getIdToken();
       const res = await fetch('/api/payment/cancel', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ orderId: order.id, cancelReason: reason }),
+        body: JSON.stringify({
+          orderId: order.id,
+          cancelReason: reason,
+          ...(cancelAmount ? { cancelAmount } : {}),
+          ...(isPartial ? { vendorOrderIndex } : {}),
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       toast.success(data.message);
       fetchOrders();
+      setSelectedOrder(null);
     } catch (err: any) {
       toast.error(err.message || '환불 처리 실패');
     } finally {
@@ -138,6 +152,26 @@ export default function OrderManager() {
           title="새로고침"
         >
           <RefreshCw size={20} className={isLoading ? "animate-spin" : ""} />
+        </button>
+        <button
+          onClick={async () => {
+            const token = await user?.getIdToken();
+            const res = await fetch(`/api/admin/orders/export${filter !== 'All' ? `?status=${filter}` : ''}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!res.ok) { toast.error('내보내기 실패'); return; }
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `goodzz-orders-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            toast.success('주문 내보내기 완료');
+          }}
+          className="flex items-center gap-1.5 px-3 py-2 bg-green-600 text-white rounded-lg text-xs font-bold hover:bg-green-700"
+        >
+          <Download size={14} /> 엑셀 내보내기
         </button>
       </div>
 
@@ -327,6 +361,35 @@ export default function OrderManager() {
                   ))}
                 </div>
               </div>
+
+              {/* 벤더별 부분취소 */}
+              {selectedOrder.vendorOrders && selectedOrder.vendorOrders.length > 1 && selectedOrder.paymentStatus === 'PAID' && (
+                <div className="mt-6">
+                  <h4 className="font-bold mb-3">벤더별 부분 환불</h4>
+                  <div className="space-y-2">
+                    {selectedOrder.vendorOrders.map((vo, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg text-sm">
+                        <div>
+                          <span className="font-bold">{vo.vendorName}</span>
+                          <span className="text-gray-500 ml-2">{vo.subtotal.toLocaleString()}원</span>
+                          <span className={`ml-2 text-xs font-bold ${vo.status === 'cancelled' ? 'text-red-500' : 'text-green-600'}`}>
+                            {vo.status === 'cancelled' ? '취소됨' : vo.status}
+                          </span>
+                        </div>
+                        {vo.status !== 'cancelled' && (
+                          <button
+                            onClick={() => handleCancelOrder(selectedOrder, idx)}
+                            disabled={isUpdating === selectedOrder.id}
+                            className="px-3 py-1.5 text-xs font-bold text-red-600 border border-red-200 rounded-lg hover:bg-red-50"
+                          >
+                            부분 환불
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className={styles.modalFooter}>
                 <div className="flex gap-3">

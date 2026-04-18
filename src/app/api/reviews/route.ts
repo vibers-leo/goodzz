@@ -3,9 +3,12 @@ import {
   getReviewsByProduct,
   getReviewsByUser,
   createReview,
-  deleteReview
+  deleteReview,
+  replyToReview
 } from '@/lib/reviews';
 import { updateProduct } from '@/lib/products';
+import { requireRole, unauthorizedResponse } from '@/lib/auth-middleware';
+import { earnPoints, POINT_CONFIG } from '@/lib/points';
 
 // GET: 리뷰 목록 조회
 export async function GET(request: NextRequest) {
@@ -37,19 +40,40 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// PATCH: 리뷰 답변 (관리자/벤더)
+export async function PATCH(request: NextRequest) {
+  try {
+    const auth = await requireRole(request, ['seller', 'admin']);
+    if (!auth.authorized) return unauthorizedResponse(auth.error);
+
+    const { reviewId, replyContent } = await request.json();
+    if (!reviewId || !replyContent) {
+      return NextResponse.json({ error: 'reviewId와 replyContent가 필요합니다.' }, { status: 400 });
+    }
+
+    const success = await replyToReview(reviewId, replyContent, auth.userId || 'admin');
+    if (!success) return NextResponse.json({ error: '답변 등록 실패' }, { status: 500 });
+
+    return NextResponse.json({ success: true, message: '답변이 등록되었습니다.' });
+  } catch (error) {
+    console.error('Review reply error:', error);
+    return NextResponse.json({ error: '답변 처리 실패' }, { status: 500 });
+  }
+}
+
 // POST: 리뷰 등록
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { productId, userId, userName, rating, content } = body;
-    
+
     if (!productId || !userId || !rating || !content) {
       return NextResponse.json(
         { error: '필수 리뷰 정보가 누락되었습니다.' },
         { status: 400 }
       );
     }
-    
+
     const reviewId = await createReview({
       productId,
       userId,
@@ -76,6 +100,13 @@ export async function POST(request: NextRequest) {
         reviewCount: reviews.length,
       });
     } catch {}
+
+    // 리뷰 포인트 적립
+    if (userId) {
+      const hasImages = body.images && body.images.length > 0;
+      const reward = hasImages ? POINT_CONFIG.photoReviewReward : POINT_CONFIG.reviewReward;
+      earnPoints(userId, reward, hasImages ? '포토리뷰 작성' : '리뷰 작성', 'review', reviewId).catch(() => {});
+    }
 
     return NextResponse.json({
       success: true,

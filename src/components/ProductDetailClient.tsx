@@ -20,6 +20,7 @@ import { uploadDesignImage } from '@/lib/designs';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import ReviewGrid from './reviews/ReviewGrid';
+import ProductQASection from './product/ProductQASection';
 import ReviewModal from './ReviewModal';
 import { useAuth } from '@/context/AuthContext';
 import { Camera } from 'lucide-react';
@@ -790,6 +791,9 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         </div>
 
         <ReviewGrid reviews={reviews} isLoading={reviewsLoading} />
+
+        {/* Q&A Section */}
+        <ProductQASection productId={product.id} />
       </div>
 
       {/* Review Write Modal */}
