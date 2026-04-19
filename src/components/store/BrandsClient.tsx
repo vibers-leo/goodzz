@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -19,8 +19,14 @@ interface Brand {
   totalProducts: number;
 }
 
-export default function BrandsClient({ brands }: { brands: Brand[] }) {
+export default function BrandsClient({ brands: initialBrands }: { brands: Brand[] }) {
+  const [brands, setBrands] = useState(initialBrands);
   const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    if (initialBrands.length > 0) return;
+    fetch('/api/store').then(r => r.json()).then(d => { if (d.success) setBrands(d.brands); }).catch(() => {});
+  }, []);
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   const categories = ['all', ...new Set(brands.map((b) => b.category).filter(Boolean) as string[])];

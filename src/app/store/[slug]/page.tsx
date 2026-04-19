@@ -1,58 +1,45 @@
-import React from 'react';
-import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
+'use client';
+
+export const dynamic = 'force-dynamic';
+
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import StorePageClient from '@/components/store/StorePageClient';
+import { Loader2 } from 'lucide-react';
+import Link from 'next/link';
 
-interface PageProps {
-  params: Promise<{ slug: string }>;
-}
+export default function StorePage() {
+  const { slug } = useParams();
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-async function fetchStore(slug: string) {
-  try {
-    const { getAdminFirestore } = await import('@/lib/firebase-admin');
-    const db = await getAdminFirestore();
-    const snap = await db.collection('vendors')
-      .where('store.slug', '==', slug)
-      .where('status', '==', 'approved')
-      .limit(1).get();
-    if (snap.empty) return null;
-    const vendor = { id: snap.docs[0].id, ...snap.docs[0].data() };
-    const prodSnap = await db.collection('products')
-      .where('vendorId', '==', vendor.id)
-      .where('isActive', '==', true).get();
-    const products = prodSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-    return { success: true, vendor, products };
-  } catch {
-    return null;
+  useEffect(() => {
+    if (!slug) return;
+    fetch(`/api/store/${slug}`)
+      .then(r => r.json())
+      .then(d => { if (d.success) setData(d); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+      </div>
+    );
   }
-}
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const data = await fetchStore(slug);
-  if (!data) return { title: '스토어를 찾을 수 없습니다' };
-
-  const { vendor } = data;
-  const storeName = vendor.businessName;
-  const desc = vendor.store?.shortBio || `${storeName}의 브랜드 굿즈 스토어`;
-
-  return {
-    title: `${storeName} 스토어`,
-    description: desc,
-    openGraph: {
-      title: `${storeName} | GOODZZ`,
-      description: desc,
-      images: vendor.store?.banner ? [{ url: vendor.store.banner }] : undefined,
-    },
-  };
-}
-
-export default async function StorePage({ params }: PageProps) {
-  const { slug } = await params;
-  const data = await fetchStore(slug);
-  if (!data) notFound();
+  if (!data) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+        <p className="text-2xl font-bold text-gray-800">스토어를 찾을 수 없습니다</p>
+        <Link href="/brands" className="text-purple-600 font-bold hover:underline">브랜드 목록으로</Link>
+      </div>
+    );
+  }
 
   return (
     <>

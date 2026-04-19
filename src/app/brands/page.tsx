@@ -9,19 +9,8 @@ export const metadata: Metadata = {
   description: 'GOODZZ에 입점한 브랜드들을 만나보세요. 각 브랜드의 스토어에서 특별한 굿즈를 확인하세요.',
 };
 
-async function fetchBrands() {
-  try {
-    const { getAdminFirestore } = await import('@/lib/firebase-admin');
-    const db = await getAdminFirestore();
-    const snap = await db.collection('vendors').where('status', '==', 'approved').get();
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  } catch {
-    return [];
-  }
-}
-
 export default async function BrandsPage() {
-  const brands = await fetchBrands();
+  const brands: any[] = [];
 
   return (
     <>
