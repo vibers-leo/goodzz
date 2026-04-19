@@ -127,6 +127,22 @@ export default function VendorDashboardPage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* 바로가기 메뉴 */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
+          {[
+            { label: '주문 관리', href: '/mypage/vendor/orders', icon: '📦' },
+            { label: '상품 관리', href: '/mypage/vendor/products', icon: '🏷️' },
+            { label: '정산 내역', href: '/mypage/vendor/settlements', icon: '💰' },
+            { label: 'Q&A 답변', href: '/mypage/vendor/qa', icon: '💬' },
+            { label: '스토어 설정', href: '/mypage/vendor/store', icon: '🏪' },
+          ].map(menu => (
+            <a key={menu.href} href={menu.href} className="flex items-center gap-2 p-4 bg-white rounded-xl border border-gray-100 hover:border-purple-200 hover:shadow-sm transition-all">
+              <span className="text-lg">{menu.icon}</span>
+              <span className="text-sm font-bold text-gray-700">{menu.label}</span>
+            </a>
+          ))}
+        </div>
+
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow p-6">

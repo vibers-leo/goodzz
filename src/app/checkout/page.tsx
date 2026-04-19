@@ -7,9 +7,10 @@ import { toast } from 'sonner';
 import Link from 'next/link';
 import Image from 'next/image';
 import Script from 'next/script';
-import { ArrowLeft, CreditCard, ShoppingBag, Smartphone, Loader2 } from 'lucide-react';
+import { ArrowLeft, CreditCard, ShoppingBag, Smartphone, Loader2, MapPin, Coins } from 'lucide-react';
 import { TOSS_CONFIG } from '@/lib/payment';
 import { useAuth } from '@/context/AuthContext';
+import { calculateShipping, DEFAULT_SHIPPING_POLICY } from '@/lib/shipping-policy';
 
 // 결제 수단 타입
 type PaymentMethod = 'CARD' | 'EASY_PAY' | 'VIRTUAL_ACCOUNT' | 'TRANSFER';
@@ -39,6 +40,14 @@ export default function CheckoutPage() {
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountType: string; discountValue: number } | null>(null);
   const [couponLoading, setCouponLoading] = useState(false);
 
+  // 배송지 주소록
+  const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
+  const [showAddressList, setShowAddressList] = useState(false);
+
+  // 포인트
+  const [pointBalance, setPointBalance] = useState(0);
+  const [usePointAmount, setUsePointAmount] = useState(0);
+
   useEffect(() => {
     setMounted(true);
     
@@ -49,6 +58,36 @@ export default function CheckoutPage() {
         name: user.displayName || '',
         email: user.email || '',
       }));
+    }
+
+    // 배송지 + 포인트 로드
+    if (user) {
+      (async () => {
+        try {
+          const token = await user.getIdToken();
+          const [addrRes, pointRes] = await Promise.all([
+            fetch('/api/addresses', { headers: { Authorization: `Bearer ${token}` } }),
+            fetch('/api/points', { headers: { Authorization: `Bearer ${token}` } }),
+          ]);
+          const addrData = await addrRes.json();
+          const pointData = await pointRes.json();
+          if (addrData.success) setSavedAddresses(addrData.addresses);
+          if (pointData.success) setPointBalance(pointData.balance);
+
+          // 기본 배송지 자동 적용
+          const defaultAddr = addrData.addresses?.find((a: any) => a.isDefault);
+          if (defaultAddr) {
+            setFormData(prev => ({
+              ...prev,
+              name: defaultAddr.name || prev.name,
+              phone: defaultAddr.phone || prev.phone,
+              postcode: defaultAddr.postalCode || '',
+              address: defaultAddr.postalCode ? `[${defaultAddr.postalCode}] ${defaultAddr.address}` : defaultAddr.address,
+              detailAddress: defaultAddr.addressDetail || '',
+            }));
+          }
+        } catch {}
+      })();
     }
 
     // 토스 페이먼츠 SDK 로드
@@ -68,7 +107,7 @@ export default function CheckoutPage() {
   }, [user]);
 
   const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const shipping = subtotal > 50000 ? 0 : 3000;
+  const shipping = calculateShipping(DEFAULT_SHIPPING_POLICY, subtotal, formData.postcode || '');
 
   // 쿠폰 할인 계산
   const couponDiscount = appliedCoupon
@@ -76,7 +115,7 @@ export default function CheckoutPage() {
       ? appliedCoupon.discountValue
       : Math.round(subtotal * appliedCoupon.discountValue / 100)
     : 0;
-  const total = Math.max(0, subtotal + shipping - couponDiscount);
+  const total = Math.max(0, subtotal + shipping - couponDiscount - usePointAmount);
 
   async function applyCoupon() {
     if (!couponCode.trim()) return;
@@ -169,6 +208,7 @@ export default function CheckoutPage() {
           shippingFee: shipping,
           couponCode: appliedCoupon?.code || null,
           couponDiscount,
+          pointsUsed: usePointAmount,
           userId: user?.uid || null,
         }),
       });
@@ -285,10 +325,51 @@ export default function CheckoutPage() {
           <div className="space-y-8">
             {/* Shipping Info */}
             <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-              <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <span>📍</span> 배송지 정보
-              </h2>
-              
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                  <span>📍</span> 배송지 정보
+                </h2>
+                {savedAddresses.length > 0 && (
+                  <button
+                    onClick={() => setShowAddressList(!showAddressList)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-purple-600 border border-purple-200 rounded-lg hover:bg-purple-50"
+                  >
+                    <MapPin className="w-3.5 h-3.5" /> 저장된 배송지
+                  </button>
+                )}
+              </div>
+
+              {showAddressList && savedAddresses.length > 0 && (
+                <div className="mb-4 space-y-2">
+                  {savedAddresses.map(addr => (
+                    <button
+                      key={addr.id}
+                      onClick={() => {
+                        setFormData(prev => ({
+                          ...prev,
+                          name: addr.name,
+                          phone: addr.phone,
+                          postcode: addr.postalCode,
+                          address: addr.postalCode ? `[${addr.postalCode}] ${addr.address}` : addr.address,
+                          detailAddress: addr.addressDetail,
+                        }));
+                        setShowAddressList(false);
+                        toast.success(`${addr.label || addr.name} 배송지가 적용되었습니다.`);
+                      }}
+                      className="w-full text-left p-3 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-purple-50/50 transition-all"
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        {addr.isDefault && <span className="text-[10px] font-bold text-purple-600 bg-purple-100 px-1.5 py-0.5 rounded">기본</span>}
+                        {addr.label && <span className="text-xs font-bold text-gray-500">{addr.label}</span>}
+                        <span className="text-sm font-bold">{addr.name}</span>
+                        <span className="text-xs text-gray-400">{addr.phone}</span>
+                      </div>
+                      <p className="text-xs text-gray-500">{addr.postalCode && `(${addr.postalCode}) `}{addr.address} {addr.addressDetail}</p>
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -460,6 +541,37 @@ export default function CheckoutPage() {
               )}
             </section>
 
+            {/* 포인트 사용 */}
+            {user && pointBalance > 0 && (
+              <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Coins className="w-5 h-5 text-yellow-500" /> 포인트 사용
+                </h2>
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 relative">
+                    <input
+                      type="number"
+                      value={usePointAmount || ''}
+                      onChange={(e) => {
+                        const val = Math.min(Number(e.target.value), pointBalance, subtotal + shipping - couponDiscount);
+                        setUsePointAmount(Math.max(0, val));
+                      }}
+                      placeholder="사용할 포인트 입력"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none font-mono"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-400">P</span>
+                  </div>
+                  <button
+                    onClick={() => setUsePointAmount(Math.min(pointBalance, subtotal + shipping - couponDiscount))}
+                    className="px-4 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 text-sm whitespace-nowrap"
+                  >
+                    전액 사용
+                  </button>
+                </div>
+                <p className="text-xs text-gray-400 mt-2">보유 포인트: <span className="font-bold text-purple-600">{pointBalance.toLocaleString()}P</span></p>
+              </section>
+            )}
+
             {/* Order Summary (Mobile) */}
             <section className="block lg:hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
               <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -503,6 +615,12 @@ export default function CheckoutPage() {
                   <div className="flex justify-between text-purple-600 font-medium">
                     <span>쿠폰 할인</span>
                     <span>-{couponDiscount.toLocaleString()}원</span>
+                  </div>
+                )}
+                {usePointAmount > 0 && (
+                  <div className="flex justify-between text-yellow-600 font-medium">
+                    <span>포인트 사용</span>
+                    <span>-{usePointAmount.toLocaleString()}P</span>
                   </div>
                 )}
               </div>

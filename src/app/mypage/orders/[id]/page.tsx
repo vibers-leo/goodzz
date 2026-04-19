@@ -27,6 +27,7 @@ export default function OrderDetailPage() {
   const router = useRouter();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
+  const [cashReceiptLoading, setCashReceiptLoading] = useState(false);
   
   // Review Modal State
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
@@ -245,6 +246,48 @@ export default function OrderDetailPage() {
                 )}
               </div>
             </div>
+
+            {/* 현금영수증 */}
+            {order.paymentStatus === 'PAID' && !(order as any).cashReceipt && (
+              <div className="mt-6 pt-6 border-t border-gray-100">
+                <button
+                  disabled={cashReceiptLoading}
+                  onClick={async () => {
+                    const type = confirm('소득공제용(개인)은 확인, 지출증빙용(사업자)은 취소를 누르세요.') ? '소득공제' : '지출증빙';
+                    const number = prompt(type === '소득공제' ? '휴대폰 번호를 입력해주세요 (예: 01012345678)' : '사업자등록번호를 입력해주세요');
+                    if (!number) return;
+                    setCashReceiptLoading(true);
+                    try {
+                      const token = await user?.getIdToken();
+                      const res = await fetch('/api/payment/cash-receipt', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                        body: JSON.stringify({ orderId: order.id, type, registrationNumber: number }),
+                      });
+                      const data = await res.json();
+                      if (!res.ok) throw new Error(data.error);
+                      toast.success(data.message);
+                    } catch (err: any) {
+                      toast.error(err.message || '현금영수증 발급 실패');
+                    } finally {
+                      setCashReceiptLoading(false);
+                    }
+                  }}
+                  className="w-full py-3 text-sm font-bold text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50"
+                >
+                  {cashReceiptLoading ? '처리 중...' : '현금영수증 발급 신청'}
+                </button>
+              </div>
+            )}
+            {(order as any).cashReceipt && (
+              <div className="mt-6 pt-6 border-t border-gray-100 text-sm text-gray-500">
+                <p className="font-bold text-green-600 mb-1">현금영수증 발급 완료</p>
+                <p>발급번호: {(order as any).cashReceipt.issueNumber}</p>
+                {(order as any).cashReceipt.issueUrl && (
+                  <a href={(order as any).cashReceipt.issueUrl} target="_blank" rel="noopener noreferrer" className="text-purple-600 text-xs hover:underline">영수증 보기</a>
+                )}
+              </div>
+            )}
           </section>
         </div>
 

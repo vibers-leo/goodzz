@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Star, ShieldCheck, User } from 'lucide-react';
+import { Star, ShieldCheck, User, MessageSquareReply } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
@@ -11,6 +11,8 @@ interface Review {
   rating: number;
   content: string;
   images?: string[];
+  replyContent?: string;
+  replyAt?: string;
   createdAt: string;
 }
 
@@ -81,6 +83,17 @@ export default function ReviewCard({ review, index }: ReviewCardProps) {
         <p className="text-sm text-gray-600 leading-relaxed mb-4 flex-1">
           {review.content}
         </p>
+
+        {/* 사장님 답변 */}
+        {review.replyContent && (
+          <div className="bg-purple-50 rounded-xl p-4 mb-4 border-l-4 border-purple-400">
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <MessageSquareReply size={12} className="text-purple-600" />
+              <span className="text-[10px] font-black text-purple-600 uppercase tracking-wider">사장님 답변</span>
+            </div>
+            <p className="text-xs text-purple-900 leading-relaxed">{review.replyContent}</p>
+          </div>
+        )}
 
         <div className="flex items-center justify-between pt-4 border-t border-gray-50">
           <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">
