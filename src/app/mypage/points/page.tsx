@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 import { Coins, ArrowUp, ArrowDown, Gift } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';

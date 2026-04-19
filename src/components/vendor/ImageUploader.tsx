@@ -3,7 +3,7 @@
 import React, { useRef, useState } from 'react';
 import { Upload, X, Loader2, GripVertical } from 'lucide-react';
 import { toast } from 'sonner';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/context/AuthContext';
 
 interface ImageUploaderProps {
   images: string[];

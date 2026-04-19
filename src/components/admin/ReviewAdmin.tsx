@@ -115,7 +115,8 @@ export default function ReviewAdmin() {
                 </tr>
             ) : (
                 filteredReviews.map((review) => (
-                    <tr key={review.id} className="hover:bg-gray-50/50 transition-colors group">
+                    <React.Fragment key={review.id}>
+                    <tr className="hover:bg-gray-50/50 transition-colors group">
                         <td className="px-4 py-4">
                             <span className="font-bold text-gray-900">{review.userName}</span>
                             <p className="text-[10px] text-gray-400 font-mono">{review.userId.slice(0, 8)}...</p>
@@ -184,7 +185,8 @@ export default function ReviewAdmin() {
                           )}
                         </td>
                       </tr>
-                    )
+                    )}
+                    </React.Fragment>
                 ))
             )}
           </tbody>
