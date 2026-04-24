@@ -213,9 +213,10 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
-      {/* Left: Canvas / Image Section */}
-      <div className="space-y-4 top-24 sticky">
+    <div>
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+      {/* Left: Image Gallery — 7/12 */}
+      <div className="lg:col-span-7 space-y-4">
         <div 
             ref={containerRef}
             className="aspect-square bg-gray-100 rounded-2xl overflow-hidden border border-gray-100 relative group shadow-inner select-none"
@@ -224,9 +225,10 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             src={product.thumbnail}
             alt={product.name}
             fill
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes="(max-width: 768px) 100vw, 58vw"
             className="object-cover"
             priority
+            unoptimized
           />
           
           {generatedImage && (
@@ -284,10 +286,46 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             </div>
           )}
         </div>
+
+        {/* 서브 이미지 갤러리 */}
+        {product.images && product.images.length > 1 && (
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {product.images.map((img, idx) => (
+              <div key={idx} className="w-20 h-20 rounded-xl overflow-hidden border-2 border-gray-100 shrink-0 cursor-pointer hover:border-gray-900 transition-colors relative">
+                <Image src={img} alt={`${product.name} ${idx + 1}`} fill className="object-cover" sizes="80px" unoptimized />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* 배송/보장 정보 — 쿠팡 스타일 */}
+        <div className="bg-gray-50 rounded-2xl p-5 space-y-3">
+          <div className="flex items-center gap-3">
+            <Truck size={18} className="text-purple-600 shrink-0" />
+            <div>
+              <p className="text-sm font-bold text-gray-900">무료배송 <span className="text-gray-400 font-normal">5만원 이상 구매 시</span></p>
+              <p className="text-xs text-gray-400">제주/도서산간 추가 3,000원</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <ShieldCheck size={18} className="text-green-600 shrink-0" />
+            <div>
+              <p className="text-sm font-bold text-gray-900">100% 품질 보장</p>
+              <p className="text-xs text-gray-400">불량 시 전액 환불 / 재제작</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Sparkles size={18} className="text-amber-500 shrink-0" />
+            <div>
+              <p className="text-sm font-bold text-gray-900">소량 주문 가능 <span className="text-gray-400 font-normal">1개부터</span></p>
+              <p className="text-xs text-gray-400">100개 이상 대량 할인 적용</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Right: Product Info & Options */}
-      <div className="space-y-6">
+      {/* Right: Product Info & Buy — 5/12, sticky */}
+      <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24 lg:self-start">
         <div className="pb-6 border-b border-gray-100">
           <div className="flex items-center gap-2 mb-3">
             <span className="bg-gray-900 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest">
@@ -307,9 +345,22 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           <h1 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight mb-3" style={{ fontFamily: "'Outfit', sans-serif" }}>
             {product.name}
           </h1>
-          <p className="text-gray-500 text-sm leading-relaxed max-w-lg">
+          <p className="text-gray-500 text-sm leading-relaxed max-w-lg mb-4">
             {product.description || '최고급 소재와 AI 기술이 만나 탄생한 커스텀 제품입니다. 세상에 단 하나뿐인 디자인을 지금 바로 완성해보세요.'}
           </p>
+
+          {/* 가격 */}
+          <div className="flex items-end gap-3">
+            {product.originalPrice && product.originalPrice > product.price && (
+              <>
+                <span className="text-2xl font-black text-red-500">
+                  {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
+                </span>
+                <span className="text-sm text-gray-400 line-through">{product.originalPrice.toLocaleString()}원</span>
+              </>
+            )}
+            <span className="text-3xl font-black text-gray-900">{currentPrice.toLocaleString()}<span className="text-lg">원</span></span>
+          </div>
           {product.vendorName && product.vendorType === 'marketplace' && (
             <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-purple-50 border border-purple-100 rounded-full">
               <span className="w-5 h-5 rounded-full bg-purple-500 text-white text-[10px] font-bold flex items-center justify-center">
@@ -767,8 +818,9 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         )}
       </AnimatePresence>
 
-      {/* Reviews Section (NEW PREMIUM GRID) */}
-      <div className="mt-32 border-t border-gray-100 pt-20">
+    </div>
+      {/* Reviews Section — full-width 하단 */}
+      <div className="mt-20 border-t border-gray-100 pt-16">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-50 text-primary-600 text-[10px] font-black uppercase tracking-widest mb-3">
